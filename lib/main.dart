@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -7,7 +6,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Tutorial App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -78,38 +77,23 @@ class _ToDoListState extends State<ToDoList> {
 
   @override
   Widget build(BuildContext context) {
+    var screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
-      appBar: AppBar(title: Text('To-do List!')),
+      appBar: AppBar(title: Text('Tutorial App')),
       body: ListView(children: [
-        Center(
-            child: Card(
-                margin: EdgeInsets.all(10.0),
-                color: Color.fromRGBO(1, 2, 3, 10),
-                child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Image(
-                        width: 200,
-                        height: 200,
-                        image:
-                            AssetImage('assets/images/phillip_profile.jpg'))))),
-        Center(
-            child: Card(
-                margin: EdgeInsets.all(10.0),
-                color: Color.fromRGBO(1, 2, 3, 10),
-                child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Image(
-                        width: 300,
-                        height: 300,
-                        image:
-                            AssetImage('assets/images/phillip_profile.jpg'))))),
-        Center(
-            child: Card(
-                margin: EdgeInsets.all(10.0),
-                color: Colors.cyan,
-                child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Text("helloorfrgvdfvsfvsoo"))))
+        Card(
+            margin: EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 20.0),
+            color: Colors.white,
+            child: Column(children: [
+              Padding(
+                  padding: EdgeInsets.fromLTRB(
+                      0.0, (screenHeight * 0.1), 0.0, (screenHeight * 0.2)),
+                  child: Image(
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      image: AssetImage('assets/images/phillip_profile.jpg')))
+            ])),
       ]),
       floatingActionButton: FloatingActionButton(
         onPressed: _navigateToDoEntry,
