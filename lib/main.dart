@@ -86,13 +86,31 @@ class _ToDoListState extends State<ToDoList> {
             margin: EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 20.0),
             color: Colors.white,
             child: Column(children: [
+              ListTile(
+                  title: Text("Profile Name"),
+                  leading: IconButton(
+                    icon: Icon(Icons.portrait),
+                    onPressed: () {
+                      print("Pressed Profile");
+                    },
+                  ),
+                  trailing: IconButton(
+                      icon: Icon(Icons.more_vert),
+                      onPressed: () {
+                        print("Pressed More");
+                      })),
+              Image(
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  image: AssetImage('assets/images/phillip_profile.jpg')),
               Padding(
                   padding: EdgeInsets.fromLTRB(
-                      0.0, (screenHeight * 0.1), 0.0, (screenHeight * 0.2)),
-                  child: Image(
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      image: AssetImage('assets/images/phillip_profile.jpg')))
+                      screenHeight * 0.02,
+                      screenHeight * 0.02,
+                      screenHeight * 0.02,
+                      screenHeight * 0.02),
+                  child: Text(
+                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
             ])),
       ]),
       floatingActionButton: FloatingActionButton(
