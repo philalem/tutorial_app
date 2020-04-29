@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tutorial_app/video-player.dart';
 
 void main() => runApp(MyApp());
 
@@ -10,7 +11,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ToDoList(),
+      home: VideoPlayerApp(),
     );
   }
 }
@@ -87,7 +88,7 @@ class _ToDoListState extends State<ToDoList> {
             color: Colors.white,
             child: Column(children: [
               ListTile(
-                  title: Text("Profile Name"),
+                  title: Text("Tutorial Name"),
                   leading: IconButton(
                     icon: Icon(Icons.portrait),
                     onPressed: () {
@@ -109,8 +110,10 @@ class _ToDoListState extends State<ToDoList> {
                       screenHeight * 0.02,
                       screenHeight * 0.02,
                       screenHeight * 0.02),
-                  child: Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."))
+                  child: ListTile(
+                    title: Text(
+                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
+                  )),
             ])),
       ]),
       floatingActionButton: FloatingActionButton(
