@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tutorial_app/video-player.dart';
 
 class Home extends StatefulWidget {
@@ -11,13 +12,15 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var listCardHeight = screenHeight * 0.02;
+    SystemChrome.setEnabledSystemUIOverlays([]);
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(title: Text("Explore")),
       body: ListView.separated(
         separatorBuilder: (context, index) => Divider(
           color: Colors.blueGrey,
         ),
-        itemCount: 8,
+        itemCount: 10,
         itemBuilder: (context, index) => ListTile(
           title: Padding(
             padding: EdgeInsets.symmetric(vertical: listCardHeight),

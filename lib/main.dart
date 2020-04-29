@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tutorial_app/home.dart';
 import 'package:tutorial_app/video-player.dart';
 
@@ -49,8 +50,9 @@ class _ToDoListState extends State<ToDoList> {
   }
 
   void _navigateToDoEntry() {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-      return Scaffold(
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) {
+        return Scaffold(
           appBar: AppBar(
             title: Text('Add a Task'),
           ),
@@ -64,14 +66,16 @@ class _ToDoListState extends State<ToDoList> {
               hintText: 'Type in a new task!',
               contentPadding: const EdgeInsets.all(16.0),
             ),
-          ));
-    }));
+          ),
+        );
+      }),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
-
+    SystemChrome.setEnabledSystemUIOverlays([]);
     return Scaffold(
       appBar: AppBar(title: Text('Tutorial App')),
       body: ListView(children: [
