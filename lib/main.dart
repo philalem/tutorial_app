@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:tutorial_app/home.dart';
-import 'package:tutorial_app/video-player.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(CreaidApp());
 
-class MyApp extends StatelessWidget {
+class CreaidApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -14,109 +12,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: Home(),
-    );
-  }
-}
-
-class ToDoList extends StatefulWidget {
-  @override
-  createState() => _ToDoListState();
-}
-
-class _ToDoListState extends State<ToDoList> {
-  List<String> _toDoItems = [];
-  List<bool> _toDoItemsBool = [];
-
-  void _addToDoItem(String text) {
-    setState(() {
-      _toDoItems.add(text);
-      _toDoItemsBool.add(false);
-    });
-  }
-
-  Widget _buildToDoList(BuildContext context) {
-    return ListView.builder(
-        shrinkWrap: true,
-        itemCount: _toDoItems.length,
-        itemBuilder: (context, index) {
-          if (index < _toDoItems.length) {
-            return _buildToDoItem(_toDoItems[index], index, context);
-          }
-        });
-  }
-
-  Widget _buildToDoItem(String toDoText, int index, BuildContext context) {
-    return Image.asset('assets/images/phillip-profile.jpg');
-  }
-
-  void _navigateToDoEntry() {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text('Add a Task'),
-          ),
-          body: TextField(
-            autofocus: true,
-            onSubmitted: (enteredText) {
-              _addToDoItem(enteredText);
-              Navigator.pop(context);
-            },
-            decoration: InputDecoration(
-              hintText: 'Type in a new task!',
-              contentPadding: const EdgeInsets.all(16.0),
-            ),
-          ),
-        );
-      }),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
-    SystemChrome.setEnabledSystemUIOverlays([]);
-    return Scaffold(
-      appBar: AppBar(title: Text('Tutorial App')),
-      body: ListView(children: [
-        Card(
-            margin: EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 20.0),
-            color: Colors.white,
-            child: Column(children: [
-              ListTile(
-                  title: Text("Tutorial Name"),
-                  leading: IconButton(
-                    icon: Icon(Icons.portrait),
-                    onPressed: () {
-                      print("Pressed Profile");
-                    },
-                  ),
-                  trailing: IconButton(
-                      icon: Icon(Icons.more_vert),
-                      onPressed: () {
-                        print("Pressed More");
-                      })),
-              Image(
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  image: AssetImage('assets/images/phillip_profile.jpg')),
-              Padding(
-                  padding: EdgeInsets.fromLTRB(
-                      screenHeight * 0.02,
-                      screenHeight * 0.02,
-                      screenHeight * 0.02,
-                      screenHeight * 0.02),
-                  child: ListTile(
-                    title: Text(
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
-                  )),
-            ])),
-      ]),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _navigateToDoEntry,
-        tooltip: 'Add task',
-        child: Icon(Icons.add),
-      ),
     );
   }
 }
