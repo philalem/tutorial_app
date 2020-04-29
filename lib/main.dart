@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tutorial_app/home.dart';
 import 'package:tutorial_app/video-player.dart';
 
 void main() => runApp(MyApp());
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: VideoPlayerApp(),
+      home: Home(),
     );
   }
 }
@@ -45,15 +46,6 @@ class _ToDoListState extends State<ToDoList> {
 
   Widget _buildToDoItem(String toDoText, int index, BuildContext context) {
     return Image.asset('assets/images/phillip-profile.jpg');
-    // key: Key(toDoText),
-    // child: ListTile(
-    //   title: Text(toDoText),
-    //   onTap: () =>
-    //       setState(() => _toDoItemsBool[index] = !_toDoItemsBool[index]),
-    //   leading: _toDoItemsBool[index]
-    //       ? Icon(Icons.radio_button_checked)
-    //       : Icon(Icons.radio_button_unchecked),
-    // ));
   }
 
   void _navigateToDoEntry() {
