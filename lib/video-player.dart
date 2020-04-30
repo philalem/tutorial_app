@@ -85,8 +85,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         ),
         Align(
           alignment: Alignment.topLeft,
-          child: InkWell(
-            splashColor: Colors.grey,
+          child: SafeArea(
             child: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {
