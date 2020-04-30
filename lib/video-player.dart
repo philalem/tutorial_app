@@ -57,11 +57,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([]);
     return Scaffold(
-      appBar: true
-          ? null
-          : AppBar(
-              title: Text('Butterfly Video'),
-            ),
       // Use a FutureBuilder to display a loading spinner while waiting for the
       // VideoPlayerController to finish initializing.
       body: Stack(children: <Widget>[
@@ -90,11 +85,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         ),
         Align(
           alignment: Alignment.topLeft,
-          child: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+          child: InkWell(
+            splashColor: Colors.grey,
+            child: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
           ),
         ),
       ]),

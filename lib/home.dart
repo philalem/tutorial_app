@@ -8,11 +8,20 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  var _navBarItemIndex = 1;
+
+  void _onNavBarItemTapped(int index) {
+    setState(() {
+      _navBarItemIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var listCardHeight = screenHeight * 0.02;
     SystemChrome.setEnabledSystemUIOverlays([]);
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(title: Text("Explore")),
@@ -21,22 +30,44 @@ class _HomeState extends State<Home> {
           color: Colors.blueGrey,
         ),
         itemCount: 10,
-        itemBuilder: (context, index) => ListTile(
-          title: Padding(
-            padding: EdgeInsets.symmetric(vertical: listCardHeight),
-            child: Text(
-              'Item $index',
-              style: Theme.of(context).textTheme.headline,
+        itemBuilder: (context, index) => InkWell(
+          child: ListTile(
+            title: Padding(
+              padding: EdgeInsets.symmetric(vertical: listCardHeight),
+              child: Text(
+                'Item $index',
+                style: Theme.of(context).textTheme.headline,
+              ),
             ),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) {
+                  return VideoPlayerScreen();
+                }),
+              );
+            },
           ),
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) {
-                return VideoPlayerScreen();
-              }),
-            );
-          },
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.lightBlue,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications),
+            title: Text('Notifications'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            title: Text('Home'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.portrait),
+            title: Text('Profile'),
+          ),
+        ],
+        currentIndex: _navBarItemIndex,
+        selectedItemColor: Colors.amber[800],
+        onTap: _onNavBarItemTapped,
       ),
     );
   }
