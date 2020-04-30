@@ -51,14 +51,23 @@ class _HomeState extends State<Home> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.lightBlue,
+        type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.view_stream),
+            title: Text('Feed'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            title: Text('Explore'),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.camera),
+            title: Text('Create'),
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
             title: Text('Notifications'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text('Home'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.portrait),

@@ -87,7 +87,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
           alignment: Alignment.topLeft,
           child: SafeArea(
             child: IconButton(
-              icon: Icon(Icons.arrow_back),
+              icon: Icon(Icons.close),
               onPressed: () {
                 Navigator.of(context).pop();
               },
