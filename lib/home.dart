@@ -24,7 +24,7 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-      appBar: AppBar(title: Text("Explore")),
+      appBar: AppBar(title: Text("Creaid")),
       body: ListView.separated(
         separatorBuilder: (context, index) => Divider(
           color: Colors.blueGrey,
