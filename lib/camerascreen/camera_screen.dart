@@ -101,7 +101,10 @@ class _CameraScreenState extends State {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final deviceRatio = size.width / size.height;
+    final height = size.height;
+    final width = size.width;
+    final deviceRatio = width / height;
+    bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
     SystemChrome.setEnabledSystemUIOverlays([]);
 
     return Scaffold(
@@ -116,7 +119,8 @@ class _CameraScreenState extends State {
                     // If the VideoPlayerController has finished initialization, use
                     // the data it provides to limit the aspect ratio of the video.
                     return Transform.scale(
-                      scale: controller.value.aspectRatio / deviceRatio,
+                      scale:
+                          controller.value.aspectRatio / (deviceRatio * 0.95),
                       child: AspectRatio(
                         aspectRatio: controller.value.aspectRatio,
                         child: _cameraPreviewWidget(),
@@ -130,12 +134,31 @@ class _CameraScreenState extends State {
                 },
               ),
               Positioned(
-                child: Row(
-                  children: [
-                    _cameraTogglesRowWidget(),
-                    _captureControlRowWidget(context),
-                    Spacer()
-                  ],
+                bottom: (isIOS) ? (height * 0.05) : 0.0,
+                child: Container(
+                  width: width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Spacer(),
+                      _cameraTogglesRowWidget(),
+                      Spacer(
+                        flex: 3,
+                      ),
+                      _captureControlRowWidget(context),
+                      Spacer(
+                        flex: 3,
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.arrow_forward,
+                          color: Colors.grey,
+                        ),
+                        onPressed: null,
+                      ),
+                      Spacer(),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -166,22 +189,12 @@ class _CameraScreenState extends State {
 
   /// Display the control bar with buttons to take pictures
   Widget _captureControlRowWidget(context) {
-    return Expanded(
-      child: Align(
-        alignment: Alignment.center,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            FloatingActionButton(
-                child: Icon(Icons.camera),
-                backgroundColor: Colors.blueGrey,
-                onPressed: () {
-                  _onCapturePressed(context);
-                })
-          ],
-        ),
-      ),
+    return FloatingActionButton(
+      child: Icon(Icons.add),
+      backgroundColor: Colors.grey,
+      onPressed: () {
+        _onCapturePressed(context);
+      },
     );
   }
 
@@ -194,14 +207,11 @@ class _CameraScreenState extends State {
     CameraDescription selectedCamera = cameras[selectedCameraIdx];
     CameraLensDirection lensDirection = selectedCamera.lensDirection;
 
-    return Expanded(
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: FlatButton.icon(
-            onPressed: _onSwitchCamera,
-            icon: Icon(_getCameraLensIcon(lensDirection)),
-            label: Text(
-                "${lensDirection.toString().substring(lensDirection.toString().indexOf('.') + 1)}")),
+    return IconButton(
+      onPressed: _onSwitchCamera,
+      icon: Icon(
+        _getCameraLensIcon(lensDirection),
+        color: Colors.grey[200],
       ),
     );
   }
@@ -209,9 +219,9 @@ class _CameraScreenState extends State {
   IconData _getCameraLensIcon(CameraLensDirection direction) {
     switch (direction) {
       case CameraLensDirection.back:
-        return Icons.camera_rear;
+        return Icons.flip_to_front;
       case CameraLensDirection.front:
-        return Icons.camera_front;
+        return Icons.flip_to_back;
       case CameraLensDirection.external:
         return Icons.camera;
       default:
