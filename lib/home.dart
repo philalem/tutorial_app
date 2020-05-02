@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tutorial_app/video-player.dart';
+import 'package:tutorial_app/camerascreen/camera_screen.dart';
+import 'package:tutorial_app/create.dart';
+import 'package:tutorial_app/explore.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -8,12 +10,29 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var _navBarItemIndex = 1;
+  var _navBarItemIndex = 0;
+  final List<Widget> _pages = [
+    Explore(),
+    Explore(),
+    Explore(),
+    Explore(),
+    Create(),
+  ];
 
   void _onNavBarItemTapped(int index) {
-    setState(() {
-      _navBarItemIndex = index;
-    });
+    if (index == 2) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            return CameraScreen();
+          },
+        ),
+      );
+    } else {
+      setState(() {
+        _navBarItemIndex = index;
+      });
+    }
   }
 
   @override
@@ -24,31 +43,11 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-      appBar: AppBar(title: Text("Creaid")),
-      body: ListView.separated(
-        separatorBuilder: (context, index) => Divider(
-          color: Colors.blueGrey,
-        ),
-        itemCount: 10,
-        itemBuilder: (context, index) => InkWell(
-          child: ListTile(
-            title: Padding(
-              padding: EdgeInsets.symmetric(vertical: listCardHeight),
-              child: Text(
-                'Item $index',
-                style: Theme.of(context).textTheme.headline,
-              ),
-            ),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) {
-                  return VideoPlayerScreen();
-                }),
-              );
-            },
-          ),
-        ),
+      appBar: AppBar(
+        title: Text("Creaid"),
+        centerTitle: true,
       ),
+      body: _pages[_navBarItemIndex],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.lightBlue,
         type: BottomNavigationBarType.fixed,

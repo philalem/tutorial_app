@@ -13,7 +13,7 @@ class CreaidApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: CameraScreen(),
+      home: Home(),
     );
   }
 }
