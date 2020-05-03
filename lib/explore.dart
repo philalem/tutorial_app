@@ -11,13 +11,13 @@ class _ExploreState extends State<Explore> {
   Widget build(BuildContext context) {
     return ListView.separated(
       separatorBuilder: (context, index) => Divider(
-        color: Colors.blueGrey,
+        color: Colors.grey[400],
       ),
       itemCount: 10,
       itemBuilder: (context, index) => InkWell(
         child: ListTile(
           title: Padding(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.all(5),
             child: Text(
               'Item $index',
             ),

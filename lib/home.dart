@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:tutorial_app/camerascreen/camera_screen.dart';
-import 'package:tutorial_app/create.dart';
 import 'package:tutorial_app/explore.dart';
+import 'package:tutorial_app/notifications.dart';
+import 'package:tutorial_app/profile.dart';
+import 'package:tutorial_app/video-player.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -10,13 +13,13 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var _navBarItemIndex = 0;
+  var _navBarItemIndex = 1;
   final List<Widget> _pages = [
     Explore(),
     Explore(),
     Explore(),
-    Explore(),
-    Create(),
+    Notifications(),
+    Profile(),
   ];
 
   void _onNavBarItemTapped(int index) {
@@ -25,6 +28,14 @@ class _HomeState extends State<Home> {
         MaterialPageRoute(
           builder: (context) {
             return CameraScreen();
+          },
+        ),
+      );
+    } else if (index == 0) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            return VideoPlayerScreen();
           },
         ),
       );
@@ -37,14 +48,17 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    var screenHeight = MediaQuery.of(context).size.height;
-    var listCardHeight = screenHeight * 0.02;
-    SystemChrome.setEnabledSystemUIOverlays([]);
-
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Text("Creaid"),
+        title: Container(
+          height: 60,
+          width: 150,
+          child: Image.asset(
+            "assets/images/logo.png",
+            fit: BoxFit.contain,
+          ),
+        ),
         centerTitle: true,
       ),
       body: _pages[_navBarItemIndex],
