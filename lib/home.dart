@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:tutorial_app/camerascreen/camera_screen.dart';
 import 'package:tutorial_app/explore.dart';
 import 'package:tutorial_app/notifications.dart';
@@ -27,6 +26,7 @@ class _HomeState extends State<Home> {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) {
+            print("opening camera");
             return CameraScreen();
           },
         ),
@@ -35,6 +35,7 @@ class _HomeState extends State<Home> {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) {
+            print("opening video stream");
             return VideoPlayerScreen();
           },
         ),
@@ -48,6 +49,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
@@ -80,7 +83,7 @@ class _HomeState extends State<Home> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
-            title: Text('Notifications'),
+            title: Text('Alerts'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.portrait),

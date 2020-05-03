@@ -55,7 +55,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIOverlays([]);
     return Scaffold(
       // Use a FutureBuilder to display a loading spinner while waiting for the
       // VideoPlayerController to finish initializing.
@@ -89,6 +88,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
             child: IconButton(
               icon: Icon(Icons.close),
               onPressed: () {
+                print("disconnecting video stream");
                 Navigator.of(context).pop();
               },
             ),

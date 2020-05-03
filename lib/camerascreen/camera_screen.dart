@@ -42,8 +42,9 @@ class CameraScreen extends StatefulWidget {
   }
 }
 
-class _CameraScreenState extends State {
-  CameraController controller;
+class _CameraScreenState extends State<CameraScreen> {
+  CameraController _controller;
+  bool _overlaysOn = false;
   List cameras;
   int selectedCameraIdx;
   String imagePath;
@@ -70,25 +71,25 @@ class _CameraScreenState extends State {
   }
 
   Future _initCameraController(CameraDescription cameraDescription) async {
-    if (controller != null) {
-      await controller.dispose();
+    if (_controller != null) {
+      await _controller.dispose();
     }
 
-    controller = CameraController(cameraDescription, ResolutionPreset.high);
+    _controller = CameraController(cameraDescription, ResolutionPreset.high);
 
     // If the controller is updated then update the UI.
-    controller.addListener(() {
+    _controller.addListener(() {
       if (mounted) {
         setState(() {});
       }
 
-      if (controller.value.hasError) {
-        print('Camera error ${controller.value.errorDescription}');
+      if (_controller.value.hasError) {
+        print('Camera error ${_controller.value.errorDescription}');
       }
     });
 
     try {
-      _initializeVideoFuture = controller.initialize();
+      _initializeVideoFuture = _controller.initialize();
     } on CameraException catch (e) {
       _showCameraException(e);
     }
@@ -105,7 +106,6 @@ class _CameraScreenState extends State {
     final width = size.width;
     final deviceRatio = width / height;
     bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
-    SystemChrome.setEnabledSystemUIOverlays([]);
 
     return Scaffold(
       body: SafeArea(
@@ -120,9 +120,9 @@ class _CameraScreenState extends State {
                     // the data it provides to limit the aspect ratio of the video.
                     return Transform.scale(
                       scale:
-                          controller.value.aspectRatio / (deviceRatio * 0.95),
+                          _controller.value.aspectRatio / (deviceRatio * 0.95),
                       child: AspectRatio(
-                        aspectRatio: controller.value.aspectRatio,
+                        aspectRatio: _controller.value.aspectRatio,
                         child: _cameraPreviewWidget(),
                       ),
                     );
@@ -154,10 +154,26 @@ class _CameraScreenState extends State {
                           Icons.arrow_forward,
                           color: Colors.grey,
                         ),
-                        onPressed: null,
+                        onPressed: () {},
                       ),
                       Spacer(),
                     ],
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: SafeArea(
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.close,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      print("disconnecting camera");
+                      _controller.dispose();
+                      Navigator.of(context).pop();
+                    },
                   ),
                 ),
               ),
@@ -170,7 +186,7 @@ class _CameraScreenState extends State {
 
   /// Display Camera preview.
   Widget _cameraPreviewWidget() {
-    if (controller == null || !controller.value.isInitialized) {
+    if (_controller == null || !_controller.value.isInitialized) {
       return const Text(
         'Loading',
         style: TextStyle(
@@ -182,8 +198,8 @@ class _CameraScreenState extends State {
     }
 
     return AspectRatio(
-      aspectRatio: controller.value.aspectRatio,
-      child: CameraPreview(controller),
+      aspectRatio: _controller.value.aspectRatio,
+      child: CameraPreview(_controller),
     );
   }
 
@@ -248,7 +264,7 @@ class _CameraScreenState extends State {
         '${DateTime.now()}.png',
       );
       print(path);
-      await controller.takePicture(path);
+      await _controller.takePicture(path);
 
       // If the picture was taken, display it on a new screen
       Navigator.push(

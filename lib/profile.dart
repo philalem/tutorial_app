@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -6,6 +7,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  bool _overlaysOn = true;
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -39,7 +41,22 @@ class _ProfileState extends State<Profile> {
               padding: EdgeInsets.only(top: 10),
               child: RaisedButton(
                 color: Colors.white,
-                onPressed: () {},
+                onPressed: () {
+                  if (_overlaysOn) {
+                    print(_overlaysOn);
+                    SystemChrome.setEnabledSystemUIOverlays([]);
+                    setState(() {
+                      _overlaysOn = !_overlaysOn;
+                    });
+                  } else {
+                    print(_overlaysOn);
+                    SystemChrome.setEnabledSystemUIOverlays(
+                        [SystemUiOverlay.top]);
+                    setState(() {
+                      _overlaysOn = !_overlaysOn;
+                    });
+                  }
+                },
                 textColor: Colors.lightBlue,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18.0),
@@ -91,36 +108,21 @@ class _ProfileState extends State<Profile> {
             ),
           ],
         ),
-        Padding(
-          padding: EdgeInsets.only(top: 5),
-          child: Column(
-            children: [
-              ['1', '2', '3', '4'],
-              ['5', '6', '7', '8'],
-              ['9', '10', '11', '12'],
-              ['13', '14', '15', '16'],
-              ['17', '18', '19', '20'],
-            ].map((data) {
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: data.map(
-                  (item) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(vertical: 1),
-                      child: Container(
-                        height: 100,
-                        width: 100,
-                        padding: const EdgeInsets.all(8),
-                        child: Text(item.toString()),
-                        color: Colors.teal[100],
-                      ),
-                    );
-                  },
-                ).toList(),
-              );
-            }).toList(),
+        GridView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            crossAxisSpacing: 1.0,
+            mainAxisSpacing: 1.0,
           ),
+          itemCount: 20,
+          itemBuilder: (context, index) {
+            return Container(
+              color: Colors.green,
+              child: Text("Index: $index"),
+            );
+          },
         ),
       ],
     );
