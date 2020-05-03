@@ -8,18 +8,16 @@ class Create extends StatefulWidget {
 class _CreateState extends State<Create> {
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return ListView(
       children: <Widget>[
         Column(
           children: <Widget>[
             Container(
               margin: EdgeInsets.only(
-                top: screenHeight * 0.1,
+                top: 80,
               ),
-              width: screenHeight * 0.12,
-              height: screenHeight * 0.12,
+              width: 120,
+              height: 120,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
@@ -29,7 +27,7 @@ class _CreateState extends State<Create> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: screenHeight * 0.02),
+              padding: EdgeInsets.only(top: 15),
               child: Text(
                 "Phillip LeMaster",
                 style: TextStyle(
@@ -38,7 +36,7 @@ class _CreateState extends State<Create> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: screenHeight * 0.01),
+              padding: EdgeInsets.only(top: 10),
               child: RaisedButton(
                 color: Colors.white,
                 onPressed: () {},
@@ -59,7 +57,7 @@ class _CreateState extends State<Create> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: screenHeight * 0.005),
+              padding: EdgeInsets.only(top: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
@@ -94,7 +92,7 @@ class _CreateState extends State<Create> {
           ],
         ),
         Padding(
-          padding: EdgeInsets.only(top: screenHeight * 0.005),
+          padding: EdgeInsets.only(top: 5),
           child: Column(
             children: [
               ['1', '2', '3', '4'],
@@ -103,23 +101,23 @@ class _CreateState extends State<Create> {
               ['13', '14', '15', '16'],
               ['17', '18', '19', '20'],
             ].map((data) {
-              return Padding(
-                padding: EdgeInsets.only(top: screenHeight * 0.005),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: data.map(
-                    (item) {
-                      return Container(
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: data.map(
+                  (item) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: 1),
+                      child: Container(
                         height: 100,
                         width: 100,
                         padding: const EdgeInsets.all(8),
                         child: Text(item.toString()),
                         color: Colors.teal[100],
-                      );
-                    },
-                  ).toList(),
-                ),
+                      ),
+                    );
+                  },
+                ).toList(),
               );
             }).toList(),
           ),
