@@ -93,20 +93,36 @@ class _CreateState extends State<Create> {
             ),
           ],
         ),
-        Column(
-          children: ['1', '2', '3', '4', '5', '6', '7'].map((data) {
-            return Padding(
-              key: Key(data),
-              padding: EdgeInsets.only(top: screenHeight * 0.005),
-              child: Container(
-                height: 100,
-                width: 100,
-                padding: const EdgeInsets.all(8),
-                child: const Text('He\'d have you all unravel at the'),
-                color: Colors.teal[100],
-              ),
-            );
-          }).toList(),
+        Padding(
+          padding: EdgeInsets.only(top: screenHeight * 0.005),
+          child: Column(
+            children: [
+              ['1', '2', '3', '4'],
+              ['5', '6', '7', '8'],
+              ['9', '10', '11', '12'],
+              ['13', '14', '15', '16'],
+              ['17', '18', '19', '20'],
+            ].map((data) {
+              return Padding(
+                padding: EdgeInsets.only(top: screenHeight * 0.005),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: data.map(
+                    (item) {
+                      return Container(
+                        height: 100,
+                        width: 100,
+                        padding: const EdgeInsets.all(8),
+                        child: Text(item.toString()),
+                        color: Colors.teal[100],
+                      );
+                    },
+                  ).toList(),
+                ),
+              );
+            }).toList(),
+          ),
         ),
       ],
     );
