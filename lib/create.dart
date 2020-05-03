@@ -8,60 +8,107 @@ class Create extends StatefulWidget {
 class _CreateState extends State<Create> {
   @override
   Widget build(BuildContext context) {
-    return Form(
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(10),
-            child: Card(
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: 5,
-                ),
-                child: TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: 'Title',
-                    contentPadding: const EdgeInsets.all(16.0),
-                  ),
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    return ListView(
+      children: <Widget>[
+        Column(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(
+                top: screenHeight * 0.1,
+              ),
+              width: screenHeight * 0.12,
+              height: screenHeight * 0.12,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  fit: BoxFit.contain,
+                  image: AssetImage("./assets/images/phillip_profile.jpg"),
                 ),
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(10),
-            child: Card(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Padding(
+              padding: EdgeInsets.only(top: screenHeight * 0.02),
+              child: Text(
+                "Phillip LeMaster",
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: screenHeight * 0.01),
+              child: RaisedButton(
+                color: Colors.white,
+                onPressed: () {},
+                textColor: Colors.lightBlue,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                    side: BorderSide(color: Colors.lightBlue)),
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      "Follow ",
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    Icon(Icons.add)
+                  ],
+                  mainAxisSize: MainAxisSize.min,
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: screenHeight * 0.005),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(16, 16, 0, 0),
+                  Spacer(
+                    flex: 2,
+                  ),
+                  FlatButton(
+                    textColor: Colors.black,
+                    onPressed: () {
+                      /*...*/
+                    },
                     child: Text(
-                      'Step 1',
-                      textAlign: TextAlign.left,
-                      style: Theme.of(context).textTheme.headline,
+                      "Following: 10",
                     ),
                   ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      hintText: 'Title',
-                      contentPadding: const EdgeInsets.all(16.0),
+                  Spacer(),
+                  FlatButton(
+                    textColor: Colors.black,
+                    onPressed: () {
+                      /*...*/
+                    },
+                    child: Text(
+                      "Followers: 10",
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(16, 16, 0, 16),
-                    child: RaisedButton(
-                      child: Text('Press Me!'),
-                      onPressed: () {
-                        print('Pressed');
-                      },
-                    ),
+                  Spacer(
+                    flex: 2,
                   ),
                 ],
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+        Column(
+          children: ['1', '2', '3', '4', '5', '6', '7'].map((data) {
+            return Padding(
+              key: Key(data),
+              padding: EdgeInsets.only(top: screenHeight * 0.005),
+              child: Container(
+                height: 100,
+                width: 100,
+                padding: const EdgeInsets.all(8),
+                child: const Text('He\'d have you all unravel at the'),
+                color: Colors.teal[100],
+              ),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 }
