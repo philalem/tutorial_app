@@ -5,6 +5,7 @@ import 'package:tutorial_app/explore.dart';
 import 'package:tutorial_app/notifications.dart';
 import 'package:tutorial_app/profile.dart';
 import 'package:tutorial_app/video-player.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -53,12 +54,10 @@ class _HomeState extends State<Home> {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Container(
-          height: 60,
-          width: 150,
-          child: Image.asset(
-            "assets/images/logo.png",
-            fit: BoxFit.contain,
+        title: Text(
+          "Creaid",
+          style: GoogleFonts.satisfy(
+            fontSize: 42,
           ),
         ),
         centerTitle: true,
