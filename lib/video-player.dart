@@ -55,65 +55,86 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // Use a FutureBuilder to display a loading spinner while waiting for the
-      // VideoPlayerController to finish initializing.
-      body: Stack(children: <Widget>[
-        FutureBuilder(
-          future: _initializeVideoPlayerFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              // If the VideoPlayerController has finished initialization, use
-              // the data it provides to limit the aspect ratio of the video.
-              return SizedBox.expand(
-                child: FittedBox(
-                  fit: BoxFit.cover,
-                  child: SizedBox(
-                    width: _controller.value.size?.width ?? 0,
-                    height: _controller.value.size?.height ?? 0,
-                    child: VideoPlayer(_controller),
-                  ),
+    var screenHeight = MediaQuery.of(context).size.height;
+    return ListView(
+      children: [
+        Card(
+          margin: EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 20.0),
+          color: Colors.white,
+          child: Column(
+            children: [
+              ListTile(
+                title: Text("Tutorial Name"),
+                trailing: IconButton(
+                  icon: Icon(Icons.more_vert),
+                  onPressed: () {
+                    print("Pressed More");
+                  },
                 ),
-              );
-            } else {
-              // If the VideoPlayerController is still initializing, show a
-              // loading spinner.
-              return Center(child: CircularProgressIndicator());
-            }
-          },
-        ),
-        Align(
-          alignment: Alignment.topLeft,
-          child: SafeArea(
-            child: IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                print("disconnecting video stream");
-                Navigator.of(context).pop();
-              },
-            ),
+              ),
+              FutureBuilder(
+                future: _initializeVideoPlayerFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    // If the VideoPlayerController has finished initialization, use
+                    // the data it provides to limit the aspect ratio of the video.
+                    return FittedBox(
+                      fit: BoxFit.cover,
+                      child: SizedBox(
+                        width: 100,
+                        height: 400,
+                        child: VideoPlayer(_controller),
+                      ),
+                    );
+                  } else {
+                    // If the VideoPlayerController is still initializing, show a
+                    // loading spinner.
+                    return Center(child: CircularProgressIndicator());
+                  }
+                },
+              ),
+              FloatingActionButton(
+                onPressed: () {
+                  // Wrap the play or pause in a call to `setState`. This ensures the
+                  // correct icon is shown.
+                  setState(
+                    () {
+                      // If the video is playing, pause it.
+                      if (_controller.value.isPlaying) {
+                        _controller.pause();
+                      } else {
+                        // If the video is paused, play it.
+                        _controller.play();
+                      }
+                    },
+                  );
+                },
+                // Display the correct icon depending on the state of the player.
+                child: Icon(
+                  _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                ),
+              ),
+              ListTile(
+                title: Text("Creator Name"),
+                leading: IconButton(
+                  icon: Icon(Icons.portrait),
+                  onPressed: () {
+                    print("Pressed Profile");
+                  },
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(screenHeight * 0.02, 0,
+                    screenHeight * 0.02, screenHeight * 0.02),
+                child: ListTile(
+                  title: Text(
+                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
+                ),
+              ),
+            ],
           ),
         ),
-      ]),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Wrap the play or pause in a call to `setState`. This ensures the
-          // correct icon is shown.
-          setState(() {
-            // If the video is playing, pause it.
-            if (_controller.value.isPlaying) {
-              _controller.pause();
-            } else {
-              // If the video is paused, play it.
-              _controller.play();
-            }
-          });
-        },
-        // Display the correct icon depending on the state of the player.
-        child: Icon(
-          _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-        ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      ],
     );
   }
 }

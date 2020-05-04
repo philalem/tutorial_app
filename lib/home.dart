@@ -15,7 +15,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   var _navBarItemIndex = 1;
   final List<Widget> _pages = [
-    Explore(),
+    VideoPlayerScreen(),
     Explore(),
     Explore(),
     Notifications(),
@@ -29,15 +29,6 @@ class _HomeState extends State<Home> {
           builder: (context) {
             print("opening camera");
             return CameraScreen();
-          },
-        ),
-      );
-    } else if (index == 0) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) {
-            print("opening video stream");
-            return VideoPlayerScreen();
           },
         ),
       );
@@ -64,28 +55,26 @@ class _HomeState extends State<Home> {
       ),
       body: _pages[_navBarItemIndex],
       bottomNavigationBar: BottomNavigationBar(
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        iconSize: 30,
         backgroundColor: Colors.lightBlue,
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.view_stream),
-            title: Text('Feed'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
-            title: Text('Explore'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.camera),
-            title: Text('Create'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
-            title: Text('Alerts'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.portrait),
-            title: Text('Profile'),
           ),
         ],
         currentIndex: _navBarItemIndex,
