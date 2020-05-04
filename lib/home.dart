@@ -49,7 +49,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
     return Scaffold(
       resizeToAvoidBottomPadding: false,

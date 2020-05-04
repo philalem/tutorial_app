@@ -14,6 +14,17 @@ class _NotificationsState extends State<Notifications> {
       ),
       itemCount: 10,
       itemBuilder: (context, index) => ListTile(
+        leading: Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              fit: BoxFit.contain,
+              image: AssetImage("./assets/images/phillip_profile.jpg"),
+            ),
+          ),
+        ),
         title: Padding(
           padding: EdgeInsets.all(5),
           child: Text(
