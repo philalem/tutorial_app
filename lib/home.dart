@@ -48,7 +48,7 @@ class _HomeState extends State<Home> {
         title: Text(
           "Creaid",
           style: GoogleFonts.satisfy(
-            fontSize: 42,
+            fontSize: 34,
           ),
         ),
         centerTitle: true,
@@ -63,18 +63,23 @@ class _HomeState extends State<Home> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.view_stream),
+            title: Text('Feed'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
+            title: Text('Explore'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.camera),
+            title: Text('Create'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
+            title: Text('Alerts'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.portrait),
+            title: Text('Profile'),
           ),
         ],
         currentIndex: _navBarItemIndex,
