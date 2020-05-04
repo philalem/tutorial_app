@@ -56,6 +56,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   @override
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
     return ListView(
       children: [
         Card(
@@ -78,11 +79,11 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                   if (snapshot.connectionState == ConnectionState.done) {
                     // If the VideoPlayerController has finished initialization, use
                     // the data it provides to limit the aspect ratio of the video.
-                    return FittedBox(
-                      fit: BoxFit.cover,
-                      child: SizedBox(
-                        width: 100,
-                        height: 400,
+                    return Container(
+                      height: 450,
+                      child: AspectRatio(
+                        aspectRatio: _controller.value.aspectRatio,
+                        // Use the VideoPlayer widget to display the video.
                         child: VideoPlayer(_controller),
                       ),
                     );
