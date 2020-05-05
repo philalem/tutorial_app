@@ -56,8 +56,13 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Expanded(
-                flex: 2,
-                child: Image.file(File(widget.imagePath), fit: BoxFit.cover)),
+              flex: 2,
+              child: Container(
+                height: 700,
+                child:
+                    Image.file(File(widget.imagePath), fit: BoxFit.fitHeight),
+              ),
+            ),
             SizedBox(height: 10.0),
             Flexible(
               flex: 1,

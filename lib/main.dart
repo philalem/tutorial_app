@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tutorial_app/home.dart';
+import 'package:creaid/home.dart';
 
 void main() => runApp(CreaidApp());
 
@@ -7,7 +7,7 @@ class CreaidApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Tutorial App',
+      title: 'Creaid',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

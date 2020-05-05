@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tutorial_app/camerascreen/camera_screen.dart';
-import 'package:tutorial_app/explore.dart';
-import 'package:tutorial_app/notifications.dart';
-import 'package:tutorial_app/profile.dart';
-import 'package:tutorial_app/video-player.dart';
+import 'package:creaid/camerascreen/camera_screen.dart';
+import 'package:creaid/explore.dart';
+import 'package:creaid/notifications.dart';
+import 'package:creaid/profile.dart';
+import 'package:creaid/video-player.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatefulWidget {

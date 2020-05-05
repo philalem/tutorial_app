@@ -1,4 +1,4 @@
-package com.example.tutorial_app
+package com.creaid.creaid
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

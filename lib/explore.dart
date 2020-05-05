@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tutorial_app/video-player.dart';
+import 'package:creaid/video-player.dart';
 
 class Explore extends StatefulWidget {
   @override
