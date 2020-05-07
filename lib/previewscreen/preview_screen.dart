@@ -29,10 +29,8 @@
  */
 
 import 'dart:io';
-import 'dart:typed_data';
-import 'package:esys_flutter_share/esys_flutter_share.dart';
+
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 import 'package:video_player/video_player.dart';
 
 class PreviewImageScreen extends StatefulWidget {
@@ -60,28 +58,13 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Preview'),
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Colors.lightBlue,
       ),
       body: Container(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             SizedBox(height: 10.0),
-            Flexible(
-              flex: 1,
-              child: Container(
-                padding: EdgeInsets.all(60.0),
-                child: RaisedButton(
-                  onPressed: () {
-                    // getBytesFromFile().then((bytes) {
-                    //   Share.file('Share via:', basename(widget.paths),
-                    //       bytes.buffer.asUint8List(), 'image/png');
-                    // });
-                  },
-                  child: Text('Share'),
-                ),
-              ),
-            ),
             Column(
               children: _controller
                   .map(
@@ -94,66 +77,60 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                   )
                   .toList(),
             ),
+            Flexible(
+              flex: 1,
+              child: Container(
+                padding: EdgeInsets.all(60.0),
+                child: RaisedButton(
+                  color: Colors.white,
+                  onPressed: () {},
+                  textColor: Colors.lightBlue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                    side: BorderSide(color: Colors.lightBlue),
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        "Share",
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ],
+                    mainAxisSize: MainAxisSize.min,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
-
-  // Future<ByteData> getBytesFromFile() async {
-  //   Uint8List bytes = File(widget.paths).readAsBytesSync() as Uint8List;
-  //   return ByteData.view(bytes.buffer);
-  // }
 
   Expanded _thumbnailWidget(controller) {
     return Expanded(
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            _controller == null
-                ? Container()
-                : SizedBox(
-                    child: Container(
-                      child: Center(
-                        child: AspectRatio(
-                            aspectRatio: controller.value.size != null
-                                ? controller.value.aspectRatio
-                                : 1.0,
-                            child: VideoPlayer(controller)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          _controller == null
+              ? Container()
+              : SizedBox(
+                  child: Container(
+                    child: Center(
+                      child: AspectRatio(
+                        aspectRatio: controller.value.size != null
+                            ? controller.value.aspectRatio
+                            : 1.0,
+                        child: VideoPlayer(controller),
                       ),
-                      decoration:
-                          BoxDecoration(border: Border.all(color: Colors.pink)),
                     ),
-                    width: 64.0,
-                    height: 64.0,
                   ),
-          ],
-        ),
+                  width: 100,
+                  height: 400,
+                ),
+        ],
       ),
     );
   }
-
-  // Widget _getVideoPlayer(path) {
-  //   _controller = VideoPlayerController.file(
-  //     File(path),
-  //   )..initialize().then((_) {
-  //       setState(() {});
-  //     });
-
-  //   if (_controller.value.initialized) {
-  //     return AspectRatio(
-  //       aspectRatio: _controller.value.aspectRatio,
-  //       child: VideoPlayer(_controller),
-  //     );
-  //   }
-  //   return Container(
-  //     margin: EdgeInsets.all(10),
-  //     color: Colors.black,
-  //     height: 500,
-  //     width: 500,
-  //     child: Text("data"),
-  //   );
-  // }
 }
