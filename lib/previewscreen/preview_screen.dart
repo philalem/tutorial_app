@@ -29,53 +29,75 @@
  */
 
 import 'dart:io';
-import 'dart:typed_data';
-import 'package:esys_flutter_share/esys_flutter_share.dart';
+
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
+import 'package:video_player/video_player.dart';
 
 class PreviewImageScreen extends StatefulWidget {
-  final String imagePath;
-
-  PreviewImageScreen({this.imagePath});
+  final List<String> paths;
+  PreviewImageScreen({this.paths});
 
   @override
   _PreviewImageScreenState createState() => _PreviewImageScreenState();
 }
 
 class _PreviewImageScreenState extends State<PreviewImageScreen> {
+  List<VideoPlayerController> _controller = [];
+
+  @override
+  void initState() {
+    super.initState();
+    for (var i = 0; i < widget.paths.length; i++) {
+      _controller.add(VideoPlayerController.file(File(widget.paths[i])));
+      _controller[i].initialize();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Preview'),
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Colors.lightBlue,
       ),
       body: Container(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Expanded(
-              flex: 2,
-              child: Container(
-                height: 700,
-                child:
-                    Image.file(File(widget.imagePath), fit: BoxFit.fitHeight),
-              ),
-            ),
             SizedBox(height: 10.0),
+            Column(
+              children: _controller
+                  .map(
+                    (controller) => Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        _thumbnailWidget(controller),
+                      ],
+                    ),
+                  )
+                  .toList(),
+            ),
             Flexible(
               flex: 1,
               child: Container(
                 padding: EdgeInsets.all(60.0),
                 child: RaisedButton(
-                  onPressed: () {
-                    getBytesFromFile().then((bytes) {
-                      Share.file('Share via:', basename(widget.imagePath),
-                          bytes.buffer.asUint8List(), 'image/png');
-                    });
-                  },
-                  child: Text('Share'),
+                  color: Colors.white,
+                  onPressed: () {},
+                  textColor: Colors.lightBlue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                    side: BorderSide(color: Colors.lightBlue),
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        "Share",
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ],
+                    mainAxisSize: MainAxisSize.min,
+                  ),
                 ),
               ),
             ),
@@ -85,8 +107,30 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     );
   }
 
-  Future<ByteData> getBytesFromFile() async {
-    Uint8List bytes = File(widget.imagePath).readAsBytesSync() as Uint8List;
-    return ByteData.view(bytes.buffer);
+  Expanded _thumbnailWidget(controller) {
+    return Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          _controller == null
+              ? Container()
+              : SizedBox(
+                  child: Container(
+                    child: Center(
+                      child: AspectRatio(
+                        aspectRatio: controller.value.size != null
+                            ? controller.value.aspectRatio
+                            : 1.0,
+                        child: VideoPlayer(controller),
+                      ),
+                    ),
+                  ),
+                  width: 100,
+                  height: 400,
+                ),
+        ],
+      ),
+    );
   }
 }
