@@ -33,17 +33,28 @@ import 'dart:typed_data';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+import 'package:video_player/video_player.dart';
 
 class PreviewImageScreen extends StatefulWidget {
-  final String imagePath;
-
-  PreviewImageScreen({this.imagePath});
+  final List<String> paths;
+  PreviewImageScreen({this.paths});
 
   @override
   _PreviewImageScreenState createState() => _PreviewImageScreenState();
 }
 
 class _PreviewImageScreenState extends State<PreviewImageScreen> {
+  List<VideoPlayerController> _controller = [];
+
+  @override
+  void initState() {
+    super.initState();
+    for (var i = 0; i < widget.paths.length; i++) {
+      _controller.add(VideoPlayerController.file(File(widget.paths[i])));
+      _controller[i].initialize();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,14 +66,6 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Expanded(
-              flex: 2,
-              child: Container(
-                height: 700,
-                child:
-                    Image.file(File(widget.imagePath), fit: BoxFit.fitHeight),
-              ),
-            ),
             SizedBox(height: 10.0),
             Flexible(
               flex: 1,
@@ -70,14 +73,26 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                 padding: EdgeInsets.all(60.0),
                 child: RaisedButton(
                   onPressed: () {
-                    getBytesFromFile().then((bytes) {
-                      Share.file('Share via:', basename(widget.imagePath),
-                          bytes.buffer.asUint8List(), 'image/png');
-                    });
+                    // getBytesFromFile().then((bytes) {
+                    //   Share.file('Share via:', basename(widget.paths),
+                    //       bytes.buffer.asUint8List(), 'image/png');
+                    // });
                   },
                   child: Text('Share'),
                 ),
               ),
+            ),
+            Column(
+              children: _controller
+                  .map(
+                    (controller) => Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        _thumbnailWidget(controller),
+                      ],
+                    ),
+                  )
+                  .toList(),
             ),
           ],
         ),
@@ -85,8 +100,61 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     );
   }
 
-  Future<ByteData> getBytesFromFile() async {
-    Uint8List bytes = File(widget.imagePath).readAsBytesSync() as Uint8List;
-    return ByteData.view(bytes.buffer);
+  // Future<ByteData> getBytesFromFile() async {
+  //   Uint8List bytes = File(widget.paths).readAsBytesSync() as Uint8List;
+  //   return ByteData.view(bytes.buffer);
+  // }
+
+  Expanded _thumbnailWidget(controller) {
+    controller.initialize();
+    return Expanded(
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            _controller == null
+                ? Container()
+                : SizedBox(
+                    child: Container(
+                      child: Center(
+                        child: AspectRatio(
+                            aspectRatio: controller.value.size != null
+                                ? controller.value.aspectRatio
+                                : 1.0,
+                            child: VideoPlayer(controller)),
+                      ),
+                      decoration:
+                          BoxDecoration(border: Border.all(color: Colors.pink)),
+                    ),
+                    width: 64.0,
+                    height: 64.0,
+                  ),
+          ],
+        ),
+      ),
+    );
   }
+
+  // Widget _getVideoPlayer(path) {
+  //   _controller = VideoPlayerController.file(
+  //     File(path),
+  //   )..initialize().then((_) {
+  //       setState(() {});
+  //     });
+
+  //   if (_controller.value.initialized) {
+  //     return AspectRatio(
+  //       aspectRatio: _controller.value.aspectRatio,
+  //       child: VideoPlayer(_controller),
+  //     );
+  //   }
+  //   return Container(
+  //     margin: EdgeInsets.all(10),
+  //     color: Colors.black,
+  //     height: 500,
+  //     width: 500,
+  //     child: Text("data"),
+  //   );
+  // }
 }

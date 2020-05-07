@@ -49,6 +49,7 @@ class _CameraScreenState extends State<CameraScreen> {
   int selectedCameraIdx;
   String imagePath;
   Future<void> _initializeVideoFuture;
+  List<String> paths = [];
 
   @override
   void initState() {
@@ -101,9 +102,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   void dispose() {
-    // Ensure disposing of the VideoPlayerController to free up resources.
-    _controller.dispose();
-
+    _controller?.dispose();
     super.dispose();
   }
 
@@ -120,27 +119,7 @@ class _CameraScreenState extends State<CameraScreen> {
         child: Container(
           child: Stack(
             children: <Widget>[
-              FutureBuilder(
-                future: _initializeVideoFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    // If the VideoPlayerController has finished initialization, use
-                    // the data it provides to limit the aspect ratio of the video.
-                    return Transform.scale(
-                      scale:
-                          _controller.value.aspectRatio / (deviceRatio * 0.95),
-                      child: AspectRatio(
-                        aspectRatio: _controller.value.aspectRatio,
-                        child: _cameraPreviewWidget(),
-                      ),
-                    );
-                  } else {
-                    // If the VideoPlayerController is still initializing, show a
-                    // loading spinner.
-                    return Center(child: CircularProgressIndicator());
-                  }
-                },
-              ),
+              _getCamera(deviceRatio),
               Positioned(
                 bottom: (isIOS) ? (height * 0.05) : 0.0,
                 child: Container(
@@ -153,16 +132,25 @@ class _CameraScreenState extends State<CameraScreen> {
                       Spacer(
                         flex: 3,
                       ),
-                      _captureControlRowWidget(context),
+                      _captureControlRowWidget(context, paths),
                       Spacer(
                         flex: 3,
                       ),
                       IconButton(
                         icon: Icon(
                           Icons.arrow_forward,
-                          color: Colors.grey,
+                          color: Colors.white,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          if (_controller.value.isRecordingVideo)
+                            _controller.stopVideoRecording();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  PreviewImageScreen(paths: paths),
+                            ),
+                          );
+                        },
                       ),
                       Spacer(),
                     ],
@@ -211,13 +199,26 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
+  Widget _getCamera(deviceRatio) {
+    if (_controller == null || !_controller.value.isInitialized) {
+      return Container();
+    }
+    return Transform.scale(
+      scale: _controller.value.aspectRatio / (deviceRatio * 0.95),
+      child: AspectRatio(
+        aspectRatio: _controller.value.aspectRatio,
+        child: _cameraPreviewWidget(),
+      ),
+    );
+  }
+
   /// Display the control bar with buttons to take pictures
-  Widget _captureControlRowWidget(context) {
+  Widget _captureControlRowWidget(context, List<String> paths) {
     return FloatingActionButton(
       child: Icon(Icons.add),
       backgroundColor: Colors.grey,
       onPressed: () {
-        _onCapturePressed(context);
+        _onCapturePressed(context, paths);
       },
     );
   }
@@ -260,7 +261,7 @@ class _CameraScreenState extends State<CameraScreen> {
     _initCameraController(selectedCamera);
   }
 
-  void _onCapturePressed(context) async {
+  void _onCapturePressed(context, List<String> paths) async {
     // Take the Picture in a try / catch block. If anything goes wrong,
     // catch the error.
     try {
@@ -271,16 +272,20 @@ class _CameraScreenState extends State<CameraScreen> {
         (await getTemporaryDirectory()).path,
         '${DateTime.now()}.png',
       );
-      print(path);
-      await _controller.takePicture(path);
+
+      if (_controller.value.isRecordingVideo) {
+        print("stopping the recording");
+        await _controller.stopVideoRecording();
+      } else {
+        print("path to recording: " + path);
+        print("starting the recording");
+        setState(() {
+          paths.add(path);
+        });
+        await _controller.startVideoRecording(path);
+      }
 
       // If the picture was taken, display it on a new screen
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PreviewImageScreen(imagePath: path),
-        ),
-      );
     } catch (e) {
       // If an error occurs, log the error to the console.
       print(e);
