@@ -28,11 +28,12 @@
  * THE SOFTWARE.
  */
 
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+
 import '../previewscreen/preview_screen.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -265,29 +266,24 @@ class _CameraScreenState extends State<CameraScreen> {
     // Take the Picture in a try / catch block. If anything goes wrong,
     // catch the error.
     try {
-      // Attempt to take a picture and log where it's been saved
-      final path = join(
-        // In this example, store the picture in the temp directory. Find
-        // the temp directory using the `path_provider` plugin.
-        (await getTemporaryDirectory()).path,
-        '${DateTime.now()}.mp4',
-      );
+      String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
+      final Directory extDir = await getApplicationDocumentsDirectory();
+      final String dirPath = '${extDir.path}/Movies/flutter_test';
+      await Directory(dirPath).create(recursive: true);
+      final String filePath = '$dirPath/${timestamp()}.mp4';
 
       if (_controller.value.isRecordingVideo) {
         print("stopping the recording");
         await _controller.stopVideoRecording();
       } else {
-        print("path to recording: " + path);
+        print("path to recording: " + filePath);
         print("starting the recording");
         setState(() {
-          paths.add(path);
+          paths.add(filePath);
         });
-        await _controller.startVideoRecording(path);
+        await _controller.startVideoRecording(filePath);
       }
-
-      // If the picture was taken, display it on a new screen
     } catch (e) {
-      // If an error occurs, log the error to the console.
       print(e);
     }
   }

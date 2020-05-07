@@ -119,8 +119,12 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
         ),
       );
       await uploadTask.onComplete;
-      print(
-          'Was video upload successful: ' + uploadTask.isSuccessful.toString());
+
+      var successfulUpload = uploadTask.isSuccessful;
+      if (successfulUpload) {
+        Directory(widget.paths[i]).deleteSync(recursive: true);
+      }
+      print('Was video upload successful: ' + successfulUpload.toString());
     }
   }
 
