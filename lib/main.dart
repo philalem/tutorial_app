@@ -1,5 +1,7 @@
+import 'package:creaid/authenticate.dart';
+//import 'package:creaid/login.dart';
 import 'package:flutter/material.dart';
-import 'package:creaid/home.dart';
+//import 'package:creaid/home.dart';
 
 void main() => runApp(CreaidApp());
 
@@ -11,7 +13,7 @@ class CreaidApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Home(),
+      home: Authenticate(),
     );
   }
 }
