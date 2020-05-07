@@ -106,7 +106,6 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   // }
 
   Expanded _thumbnailWidget(controller) {
-    controller.initialize();
     return Expanded(
       child: Align(
         alignment: Alignment.centerRight,
