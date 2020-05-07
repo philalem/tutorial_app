@@ -270,7 +270,7 @@ class _CameraScreenState extends State<CameraScreen> {
         // In this example, store the picture in the temp directory. Find
         // the temp directory using the `path_provider` plugin.
         (await getTemporaryDirectory()).path,
-        '${DateTime.now()}.png',
+        '${DateTime.now()}.mp4',
       );
 
       if (_controller.value.isRecordingVideo) {
