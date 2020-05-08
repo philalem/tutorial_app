@@ -51,6 +51,7 @@ class _CameraScreenState extends State<CameraScreen> {
   String imagePath;
   Future<void> _initializeVideoFuture;
   List<String> paths = [];
+  bool isRecording = false;
 
   @override
   void initState() {
@@ -217,7 +218,7 @@ class _CameraScreenState extends State<CameraScreen> {
   Widget _captureControlRowWidget(context, List<String> paths) {
     return FloatingActionButton(
       child: Icon(Icons.add),
-      backgroundColor: Colors.grey,
+      backgroundColor: isRecording ? Colors.red : Colors.lightBlue,
       onPressed: () {
         _onCapturePressed(context, paths);
       },
@@ -274,12 +275,16 @@ class _CameraScreenState extends State<CameraScreen> {
 
       if (_controller.value.isRecordingVideo) {
         print("stopping the recording");
+        setState(() {
+          isRecording = false;
+        });
         await _controller.stopVideoRecording();
       } else {
         print("path to recording: " + filePath);
         print("starting the recording");
         setState(() {
           paths.add(filePath);
+          isRecording = true;
         });
         await _controller.startVideoRecording(filePath);
       }

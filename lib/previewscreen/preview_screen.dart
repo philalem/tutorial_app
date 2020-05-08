@@ -45,59 +45,62 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       ),
       body: Stack(
         children: <Widget>[
-          Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                SizedBox(height: 10.0),
-                Column(
-                  children: _controller
-                      .map(
-                        (controller) => Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            _thumbnailWidget(controller),
-                          ],
+          ListView(
+            children: <Widget>[
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    SizedBox(height: 10.0),
+                    Column(
+                      children: _controller
+                          .map(
+                            (controller) => Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                _thumbnailWidget(controller),
+                              ],
+                            ),
+                          )
+                          .toList(),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(60.0),
+                      child: RaisedButton(
+                        color: Colors.white,
+                        onPressed: () {
+                          setState(() {
+                            isSaving = true;
+                          });
+                          _saveVideosToDb();
+                          setState(() {
+                            isSaving = false;
+                          });
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        },
+                        textColor: Colors.lightBlue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                          side: BorderSide(color: Colors.lightBlue),
                         ),
-                      )
-                      .toList(),
-                ),
-                Flexible(
-                  flex: 1,
-                  child: Container(
-                    padding: EdgeInsets.all(60.0),
-                    child: RaisedButton(
-                      color: Colors.white,
-                      onPressed: () {
-                        setState(() {
-                          isSaving = true;
-                        });
-                        _saveVideosToDb();
-                        setState(() {
-                          isSaving = false;
-                        });
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
-                      },
-                      textColor: Colors.lightBlue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.lightBlue),
-                      ),
-                      child: Row(
-                        children: <Widget>[
-                          Text(
-                            "Share",
-                            style: TextStyle(fontSize: 15),
-                          ),
-                        ],
-                        mainAxisSize: MainAxisSize.min,
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "Share",
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          ],
+                          mainAxisSize: MainAxisSize.min,
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
           isSaving
               ? Container(
@@ -128,30 +131,28 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     }
   }
 
-  Expanded _thumbnailWidget(controller) {
-    return Expanded(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          _controller == null
-              ? Container()
-              : SizedBox(
-                  child: Container(
-                    child: Center(
-                      child: AspectRatio(
-                        aspectRatio: controller.value.size != null
-                            ? controller.value.aspectRatio
-                            : 1.0,
-                        child: VideoPlayer(controller),
-                      ),
+  Row _thumbnailWidget(controller) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        _controller == null
+            ? Container()
+            : SizedBox(
+                child: Container(
+                  child: Center(
+                    child: AspectRatio(
+                      aspectRatio: controller.value.size != null
+                          ? controller.value.aspectRatio
+                          : 1.0,
+                      child: VideoPlayer(controller),
                     ),
                   ),
-                  width: 100,
-                  height: 400,
                 ),
-        ],
-      ),
+                width: 100,
+                height: 400,
+              ),
+      ],
     );
   }
 }
