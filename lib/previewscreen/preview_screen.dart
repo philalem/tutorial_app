@@ -138,18 +138,15 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       children: <Widget>[
         _controller == null
             ? Container()
-            : SizedBox(
-                child: Container(
-                  child: Center(
-                    child: AspectRatio(
-                      aspectRatio: controller.value.size != null
-                          ? controller.value.aspectRatio
-                          : 1.0,
-                      child: VideoPlayer(controller),
-                    ),
+            : Container(
+                child: Center(
+                  child: AspectRatio(
+                    aspectRatio: controller.value.size != null
+                        ? controller.value.aspectRatio
+                        : 1.0,
+                    child: VideoPlayer(controller),
                   ),
                 ),
-                width: 100,
                 height: 400,
               ),
       ],
