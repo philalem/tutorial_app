@@ -134,20 +134,22 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   Row _thumbnailWidget(controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
+      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         _controller == null
             ? Container()
-            : Container(
-                child: Center(
-                  child: AspectRatio(
-                    aspectRatio: controller.value.size != null
-                        ? controller.value.aspectRatio
-                        : 1.0,
-                    child: VideoPlayer(controller),
+            : SafeArea(
+                child: Container(
+                  child: Center(
+                    child: AspectRatio(
+                      aspectRatio: controller.value.size != null
+                          ? controller.value.aspectRatio
+                          : 1.0,
+                      child: VideoPlayer(controller),
+                    ),
                   ),
+                  height: 400,
                 ),
-                height: 400,
               ),
       ],
     );

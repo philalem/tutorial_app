@@ -28,9 +28,11 @@
  * THE SOFTWARE.
  */
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -45,13 +47,17 @@ class CameraScreen extends StatefulWidget {
 
 class _CameraScreenState extends State<CameraScreen> {
   CameraController _controller;
-  bool _overlaysOn = false;
   List cameras;
   int selectedCameraIdx;
   String imagePath;
   Future<void> _initializeVideoFuture;
   List<String> paths = [];
   bool isRecording = false;
+  double _width = 60;
+  double _height = 60;
+  bool _pause = false;
+  bool _chooseColor = true;
+  var _color = Colors.white;
 
   @override
   void initState() {
@@ -140,7 +146,7 @@ class _CameraScreenState extends State<CameraScreen> {
                       ),
                       IconButton(
                         icon: Icon(
-                          Icons.arrow_forward,
+                          Icons.image,
                           color: Colors.white,
                         ),
                         onPressed: () {
@@ -159,19 +165,46 @@ class _CameraScreenState extends State<CameraScreen> {
                   ),
                 ),
               ),
-              Align(
-                alignment: Alignment.topLeft,
-                child: SafeArea(
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.close,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      print("disconnecting camera");
-                      _controller.dispose();
-                      Navigator.of(context).pop();
-                    },
+              Positioned(
+                top: (height * 0.02),
+                child: Container(
+                  width: width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Spacer(),
+                      IconButton(
+                        icon: Icon(
+                          Icons.close,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          print("disconnecting camera");
+                          _controller.dispose();
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      Spacer(
+                        flex: 20,
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.check,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          if (_controller.value.isRecordingVideo)
+                            _controller.stopVideoRecording();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  PreviewImageScreen(paths: paths),
+                            ),
+                          );
+                        },
+                      ),
+                      Spacer(),
+                    ],
                   ),
                 ),
               ),
@@ -216,12 +249,38 @@ class _CameraScreenState extends State<CameraScreen> {
 
   /// Display the control bar with buttons to take pictures
   Widget _captureControlRowWidget(context, List<String> paths) {
-    return FloatingActionButton(
-      child: Icon(Icons.add),
-      backgroundColor: isRecording ? Colors.red : Colors.lightBlue,
-      onPressed: () {
-        _onCapturePressed(context, paths);
-      },
+    return Container(
+      width: 80.0,
+      height: 80.0,
+      child: RawMaterialButton(
+        shape: CircleBorder(),
+        fillColor: Colors.lightBlue,
+        elevation: 0.0,
+        child: AnimatedContainer(
+          width: _width,
+          height: _height,
+          duration: Duration(seconds: 1),
+          curve: Curves.easeInOut,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: _color,
+          ),
+        ),
+        onPressed: () {
+          setState(() {
+            if (isRecording) {
+              _color = Colors.white;
+              _pause = true;
+              _width = 60;
+              _height = 60;
+            } else {
+              _pause = false;
+              _startOneSecondTimer();
+            }
+          });
+          _onCapturePressed(context, paths);
+        },
+      ),
     );
   }
 
@@ -238,7 +297,8 @@ class _CameraScreenState extends State<CameraScreen> {
       onPressed: _onSwitchCamera,
       icon: Icon(
         _getCameraLensIcon(lensDirection),
-        color: Colors.grey[200],
+        size: 30,
+        color: Colors.white,
       ),
     );
   }
@@ -246,11 +306,7 @@ class _CameraScreenState extends State<CameraScreen> {
   IconData _getCameraLensIcon(CameraLensDirection direction) {
     switch (direction) {
       case CameraLensDirection.back:
-        return Icons.flip_to_front;
-      case CameraLensDirection.front:
-        return Icons.flip_to_back;
-      case CameraLensDirection.external:
-        return Icons.camera;
+        return CupertinoIcons.switch_camera_solid;
       default:
         return Icons.device_unknown;
     }
@@ -298,5 +354,30 @@ class _CameraScreenState extends State<CameraScreen> {
     print(errorText);
 
     print('Error: ${e.code}\n${e.description}');
+  }
+
+  void _startOneSecondTimer() {
+    const oneSec = const Duration(seconds: 1);
+    Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        if (_pause) {
+          timer.cancel();
+          setState(() {
+            _color = Colors.white;
+            _width = 60;
+            _height = 60;
+            _chooseColor = true;
+          });
+        } else {
+          setState(() {
+            _width = _chooseColor ? 75 : 60;
+            _height = _chooseColor ? 75 : 60;
+            _color = _chooseColor ? Colors.red[300] : Colors.white;
+            _chooseColor = !_chooseColor;
+          });
+        }
+      },
+    );
   }
 }
