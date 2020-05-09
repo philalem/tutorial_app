@@ -12,6 +12,7 @@
 # FireBase Related
 android/app/google-services.json
 ios/Runner/GoogleService-Info.plist
+ios/Podfile.lock
 
 # IntelliJ related
 *.iml
