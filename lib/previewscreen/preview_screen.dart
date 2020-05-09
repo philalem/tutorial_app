@@ -1,92 +1,155 @@
-/*
- * Copyright (c) 2019 Razeware LLC
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * Notwithstanding the foregoing, you may not use, copy, modify, merge, publish,
- * distribute, sublicense, create a derivative work, and/or sell copies of the
- * Software in any work that is designed, intended, or marketed for pedagogical or
- * instructional purposes related to programming, coding, application development,
- * or information technology.  Permission for such use, copying, modification,
- * merger, publication, distribution, sublicensing, creation of derivative works,
- * or sale is expressly withheld.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
 import 'dart:io';
-import 'dart:typed_data';
-import 'package:esys_flutter_share/esys_flutter_share.dart';
+
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
+import 'package:video_player/video_player.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class PreviewImageScreen extends StatefulWidget {
-  final String imagePath;
-
-  PreviewImageScreen({this.imagePath});
+  final List<String> paths;
+  PreviewImageScreen({this.paths});
 
   @override
   _PreviewImageScreenState createState() => _PreviewImageScreenState();
 }
 
 class _PreviewImageScreenState extends State<PreviewImageScreen> {
+  final List<StorageReference> storageReferences = [];
+  List<VideoPlayerController> _controller = [];
+  bool isSaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    for (var i = 0; i < widget.paths.length; i++) {
+      _controller.add(VideoPlayerController.file(File(widget.paths[i])));
+      _controller[i].initialize();
+      storageReferences
+          .add(FirebaseStorage.instance.ref().child(widget.paths[i]));
+    }
+  }
+
+  @override
+  void dispose() {
+    for (var i = 0; i < _controller.length; i++) {
+      _controller[i]?.dispose();
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Preview'),
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: Colors.lightBlue,
       ),
-      body: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Expanded(
-              flex: 2,
-              child: Container(
-                height: 700,
-                child:
-                    Image.file(File(widget.imagePath), fit: BoxFit.fitHeight),
-              ),
-            ),
-            SizedBox(height: 10.0),
-            Flexible(
-              flex: 1,
-              child: Container(
-                padding: EdgeInsets.all(60.0),
-                child: RaisedButton(
-                  onPressed: () {
-                    getBytesFromFile().then((bytes) {
-                      Share.file('Share via:', basename(widget.imagePath),
-                          bytes.buffer.asUint8List(), 'image/png');
-                    });
-                  },
-                  child: Text('Share'),
+      body: Stack(
+        children: <Widget>[
+          ListView(
+            children: <Widget>[
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    SizedBox(height: 10.0),
+                    Column(
+                      children: _controller
+                          .map(
+                            (controller) => Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                _thumbnailWidget(controller),
+                              ],
+                            ),
+                          )
+                          .toList(),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(60.0),
+                      child: RaisedButton(
+                        color: Colors.white,
+                        onPressed: () {
+                          setState(() {
+                            isSaving = true;
+                          });
+                          _saveVideosToDb();
+                          setState(() {
+                            isSaving = false;
+                          });
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        },
+                        textColor: Colors.lightBlue,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                          side: BorderSide(color: Colors.lightBlue),
+                        ),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              "Share",
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          ],
+                          mainAxisSize: MainAxisSize.min,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+          isSaving
+              ? Container(
+                  alignment: Alignment.center,
+                  child: CircularProgressIndicator(),
+                )
+              : Container(),
+        ],
       ),
     );
   }
 
-  Future<ByteData> getBytesFromFile() async {
-    Uint8List bytes = File(widget.imagePath).readAsBytesSync() as Uint8List;
-    return ByteData.view(bytes.buffer);
+  void _saveVideosToDb() async {
+    for (var i = 0; i < storageReferences.length; i++) {
+      final StorageUploadTask uploadTask = storageReferences[i].putFile(
+        File(widget.paths[i]),
+        StorageMetadata(
+          contentType: 'videos/.mp4',
+        ),
+      );
+      await uploadTask.onComplete;
+
+      var successfulUpload = uploadTask.isSuccessful;
+      if (successfulUpload) {
+        Directory(widget.paths[i]).deleteSync(recursive: true);
+      }
+      print('Was video upload successful: ' + successfulUpload.toString());
+    }
+  }
+
+  Row _thumbnailWidget(controller) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        _controller == null
+            ? Container()
+            : Container(
+                child: Center(
+                  child: AspectRatio(
+                    aspectRatio: controller.value.size != null
+                        ? controller.value.aspectRatio
+                        : 1.0,
+                    child: VideoPlayer(controller),
+                  ),
+                ),
+                height: 400,
+              ),
+      ],
+    );
   }
 }
