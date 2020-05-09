@@ -42,7 +42,7 @@ class _LoginState extends State<Login> {
         ],
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
         child: Form(
           key: _formKey,
           child: Column(
