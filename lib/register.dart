@@ -38,7 +38,7 @@ class _RegisterState extends State<Register> {
         ],
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
         child: Form(
           key: _formKey,
           child: Column(
