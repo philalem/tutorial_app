@@ -1,4 +1,5 @@
 
+import 'package:creaid/customTextField.dart';
 import 'package:creaid/firebaseAuth.dart';
 import 'package:flutter/material.dart';
 import 'package:creaid/home.dart';
@@ -41,7 +42,7 @@ class _LoginState extends State<Login> {
         ],
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -54,38 +55,20 @@ class _LoginState extends State<Login> {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 20.0),
-              Text(
-                'Email',
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black12,
-                  fontSize: 10.0
-                  ),
-              ),
-              TextFormField(
-                validator: (val) => val.isEmpty ? "Need to enter an email" : null,
-                onChanged: (val) {
-                  setState(() => email = val);
-                }
+              CustomTextField(
+                icon: Icon(Icons.email),
+                obsecure: false,
+                onChanged: (input) => email = input,
+                validator: (input) => input.isEmpty ? "Need to enter a valid email" : null,
+                hint: "Email",
               ),
               SizedBox(height: 20.0),
-              Text(
-                'Password',
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black12,
-                  fontSize: 10.0
-                  ),
-              ),
-              TextFormField(
-                validator: (val) => val.isEmpty ? "Need to enter a password" : null,
-                obscureText: true,
-                onChanged: (val) {
-                  setState(() => password = val);
-                },
-
+              CustomTextField(
+                icon: Icon(Icons.panorama_fish_eye),
+                obsecure: true,
+                onChanged: (input) => password = input,
+                validator: (input) => input.length<6 ? "Need to enter a password with length greater then 6" : null,
+                hint: "Password",
               ),
               SizedBox(height: 20.0),
               RaisedButton(
@@ -96,6 +79,7 @@ class _LoginState extends State<Login> {
                 ),
                 onPressed: () async {
                   if(_formKey.currentState.validate()) {
+                    _formKey.currentState.save();
                     dynamic res = await _auth.signInWithEmailAndPassword(email, password);
 
                     if (res == null) {

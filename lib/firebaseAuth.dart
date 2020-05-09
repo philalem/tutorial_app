@@ -1,3 +1,5 @@
+import 'package:creaid/userDBService.dart';
+
 import 'user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -12,6 +14,10 @@ class FireBaseAuthorization {
     return _auth.onAuthStateChanged.map(_userFromFireBaseUser);
   }
 
+  Future getCurrentUser() async {
+    return await _auth.currentUser();
+  }
+
   Future signInWithEmailAndPassword(String email, String password) async {
     try {
       AuthResult res = await _auth.signInWithEmailAndPassword(email: email, password: password);
@@ -23,10 +29,19 @@ class FireBaseAuthorization {
     }
   }
 
-  Future registerWithEmailAndPassword(String email, String password) async {
+  Future updateUserName(String name, FirebaseUser user) async {
+    var update = UserUpdateInfo();
+    update.displayName = name;
+    await user.updateProfile(update);
+    await user.reload();
+  }
+
+  Future registerWithEmailAndPassword(String email, String password, String name, List<String> interests) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser user = result.user;
+      updateUserName(name, user);
+      UserDbService(uuid: user.uid).updateUserInfo(name, email, password, interests);
       return _userFromFireBaseUser(user);
     } catch (error) {
       print(error.toString());

@@ -1,6 +1,5 @@
-import 'package:creaid/firebaseAuth.dart';
-import 'package:creaid/home.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:creaid/customTextField.dart';
+import 'package:creaid/interestsSignUp.dart';
 import 'package:flutter/material.dart';
 
 class Register extends StatefulWidget {
@@ -15,12 +14,10 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
 
   final _formKey = GlobalKey<FormState>();
-  final FireBaseAuthorization _auth = FireBaseAuthorization();
 
   String email = '';
   String password = '';
   String name = '';
-  String error = '';
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +38,7 @@ class _RegisterState extends State<Register> {
         ],
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -54,88 +51,46 @@ class _RegisterState extends State<Register> {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 20.0),
-              Text(
-                'Name',
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black12,
-                  fontSize: 10.0
-                  ),
-              ),
-              TextFormField(
-                validator: (val) => val.isEmpty ? 'Enter a valid name' : null,
-                onChanged: (val) {
-                  setState(() => name = val);
-                }
+              CustomTextField(
+                icon: Icon(Icons.person),
+                obsecure: false,
+                onChanged: (input) => name = input,
+                validator: (input) => input.isEmpty ? "Need to enter a name" : null,
+                hint: "Name",
               ),
               SizedBox(height: 20.0),
-              Text(
-                'Email',
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black12,
-                  fontSize: 10.0
-                  ),
-              ),
-              TextFormField(
-                validator: (val) => val.isEmpty ? 'Enter a valid email' : null,
-                onChanged: (val) {
-                  setState(() => email = val);
-                }
+              CustomTextField(
+                icon: Icon(Icons.email),
+                obsecure: false,
+                onChanged: (input) => email = input,
+                validator: (input) => input.isEmpty ? "Need to enter a valid email" : null,
+                hint: "Email",
               ),
               SizedBox(height: 20.0),
-              Text(
-                'Password',
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black12,
-                  fontSize: 10.0
-                  ),
-              ),
-              TextFormField(
-                validator: (val) => val.length<6 ? 'Enter a valid password' : null,
-                obscureText: true,
-                onChanged: (val) {
-                  setState(() => password = val);
-                },
-
+              CustomTextField(
+                icon: Icon(Icons.panorama_fish_eye),
+                obsecure: false,
+                onChanged: (input) => password = input,
+                validator: (input) => input.length<7 ? "Need to enter a password with a length longer then 6" : null,
+                hint: "Password",
               ),
               SizedBox(height: 20.0),
               RaisedButton(
                 color: Colors.black,
                 child: Text(
-                  'Register',
+                  'Next',
                   style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () async {
                   if (_formKey.currentState.validate()) {
-                    dynamic res = await _auth.registerWithEmailAndPassword(email, password);
-
-                    if(res == null) {
-                      setState(() {
-                        error = 'Can not register this user';
-                      });
-                    } else {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Home()),
-                      );
-                    }
-
-                    
+                    _formKey.currentState.save();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => InterestsSignUp(email: email, name: name, password: password)),
+                    );   
                   }
                 }
               ),
-              SizedBox(height: 12.0),
-              Text(
-                error,
-                style: TextStyle(
-                  color: Colors.red, fontSize: 14.0
-                ),
-              )
             ]
           )
         )
