@@ -68,38 +68,81 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
             bottom: (isIOS) ? (height * 0.05) : 0.0,
             child: Container(
               width: width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Column(
                 children: <Widget>[
-                  Spacer(flex: 1),
-                  RaisedButton(
-                    color: Colors.lightBlue,
-                    onPressed: () async {
-                      setState(() {
-                        isSaving = true;
-                      });
-                      await _saveVideosToDb();
-                      setState(() {
-                        isSaving = false;
-                      });
-                      Navigator.of(context).pop();
-                      Navigator.of(context).pop();
-                    },
-                    textColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        Text(
-                          "Share",
-                          style: TextStyle(fontSize: 15),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 10, left: 20),
+                        child: Text(
+                          'Title',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 34,
+                          ),
                         ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: 20,
+                          bottom: 30,
+                        ),
+                        child: Text(
+                          'Description...',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    width: width,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Spacer(flex: 1),
+                        RaisedButton(
+                          color: Colors.lightBlue,
+                          onPressed: () async {
+                            setState(() {
+                              isSaving = true;
+                            });
+                            await _saveVideosToDb();
+                            setState(() {
+                              isSaving = false;
+                            });
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          },
+                          textColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                "Share",
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ],
+                            mainAxisSize: MainAxisSize.min,
+                          ),
+                        ),
+                        Spacer(flex: 1),
                       ],
-                      mainAxisSize: MainAxisSize.min,
                     ),
                   ),
-                  Spacer(flex: 1),
                 ],
               ),
             ),
