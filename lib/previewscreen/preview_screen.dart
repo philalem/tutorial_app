@@ -15,6 +15,7 @@ class PreviewImageScreen extends StatefulWidget {
 class _PreviewImageScreenState extends State<PreviewImageScreen> {
   final List<StorageReference> storageReferences = [];
   List<VideoPlayerController> _controller = [];
+  List<Future<void>> _initializeVideoPlayerFuture = [];
   bool isSaving = false;
 
   @override
@@ -22,7 +23,9 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     super.initState();
     for (var i = 0; i < widget.paths.length; i++) {
       _controller.add(VideoPlayerController.file(File(widget.paths[i])));
-      _controller[i].initialize();
+      _initializeVideoPlayerFuture.add(_controller[i].initialize());
+      _controller[i].setLooping(true);
+      _controller[i].play();
       storageReferences
           .add(FirebaseStorage.instance.ref().child(widget.paths[i]));
     }
@@ -47,23 +50,19 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          ListView(
-            children: <Widget>[
-              Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    SizedBox(height: 10.0),
-                    Column(
-                      children: _controller
-                          .map((controller) =>
-                              _getCamera(deviceRatio, controller))
-                          .toList(),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          FutureBuilder(
+            future: _initializeVideoPlayerFuture[0],
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                // If the VideoPlayerController has finished initialization, use
+                // the data it provides to limit the aspect ratio of the video.
+                return _getCamera(deviceRatio, _controller[0]);
+              } else {
+                // If the VideoPlayerController is still initializing, show a
+                // loading spinner.
+                return Center(child: CircularProgressIndicator());
+              }
+            },
           ),
           Positioned(
             bottom: (isIOS) ? (height * 0.05) : 0.0,
@@ -74,22 +73,21 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                 children: <Widget>[
                   Spacer(flex: 1),
                   RaisedButton(
-                    color: Colors.white70,
-                    onPressed: () {
+                    color: Colors.lightBlue,
+                    onPressed: () async {
                       setState(() {
                         isSaving = true;
                       });
-                      _saveVideosToDb();
+                      await _saveVideosToDb();
                       setState(() {
                         isSaving = false;
                       });
                       Navigator.of(context).pop();
                       Navigator.of(context).pop();
                     },
-                    textColor: Colors.lightBlue,
+                    textColor: Colors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18.0),
-                      side: BorderSide(color: Colors.lightBlue),
                     ),
                     child: Row(
                       children: <Widget>[
@@ -136,7 +134,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       return Container();
     }
     return Transform.scale(
-      scale: controller.value.aspectRatio / (deviceRatio * 0.95),
+      scale: controller.value.aspectRatio / (deviceRatio * 0.90),
       child: AspectRatio(
         aspectRatio: controller.value.aspectRatio,
         child: VideoPlayer(controller),

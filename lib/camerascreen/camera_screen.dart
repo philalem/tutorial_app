@@ -241,7 +241,7 @@ class _CameraScreenState extends State<CameraScreen> {
           width: _width,
           height: _height,
           duration: Duration(seconds: 1),
-          curve: Curves.easeInOut,
+          curve: Curves.decelerate,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: _color,
