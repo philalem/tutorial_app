@@ -38,11 +38,13 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final height = size.height;
+    final width = size.width;
+    final deviceRatio = width / height;
+    bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Preview'),
-        backgroundColor: Colors.lightBlue,
-      ),
       body: Stack(
         children: <Widget>[
           ListView(
@@ -54,53 +56,69 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                     SizedBox(height: 10.0),
                     Column(
                       children: _controller
-                          .map(
-                            (controller) => Row(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                _thumbnailWidget(controller),
-                              ],
-                            ),
-                          )
+                          .map((controller) =>
+                              _getCamera(deviceRatio, controller))
                           .toList(),
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(60.0),
-                      child: RaisedButton(
-                        color: Colors.white,
-                        onPressed: () {
-                          setState(() {
-                            isSaving = true;
-                          });
-                          _saveVideosToDb();
-                          setState(() {
-                            isSaving = false;
-                          });
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
-                        },
-                        textColor: Colors.lightBlue,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
-                          side: BorderSide(color: Colors.lightBlue),
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              "Share",
-                              style: TextStyle(fontSize: 15),
-                            ),
-                          ],
-                          mainAxisSize: MainAxisSize.min,
-                        ),
-                      ),
                     ),
                   ],
                 ),
               ),
             ],
+          ),
+          Positioned(
+            bottom: (isIOS) ? (height * 0.05) : 0.0,
+            child: Container(
+              width: width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Spacer(flex: 1),
+                  RaisedButton(
+                    color: Colors.white70,
+                    onPressed: () {
+                      setState(() {
+                        isSaving = true;
+                      });
+                      _saveVideosToDb();
+                      setState(() {
+                        isSaving = false;
+                      });
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    },
+                    textColor: Colors.lightBlue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      side: BorderSide(color: Colors.lightBlue),
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                          "Share",
+                          style: TextStyle(fontSize: 15),
+                        ),
+                      ],
+                      mainAxisSize: MainAxisSize.min,
+                    ),
+                  ),
+                  Spacer(flex: 1),
+                ],
+              ),
+            ),
+          ),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: IconButton(
+                icon: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
           ),
           isSaving
               ? Container(
@@ -109,6 +127,19 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                 )
               : Container(),
         ],
+      ),
+    );
+  }
+
+  Widget _getCamera(deviceRatio, controller) {
+    if (controller == null) {
+      return Container();
+    }
+    return Transform.scale(
+      scale: controller.value.aspectRatio / (deviceRatio * 0.95),
+      child: AspectRatio(
+        aspectRatio: controller.value.aspectRatio,
+        child: VideoPlayer(controller),
       ),
     );
   }

@@ -215,25 +215,6 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  /// Display Camera preview.
-  Widget _cameraPreviewWidget() {
-    if (_controller == null || !_controller.value.isInitialized) {
-      return const Text(
-        'Loading',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 20.0,
-          fontWeight: FontWeight.w900,
-        ),
-      );
-    }
-
-    return AspectRatio(
-      aspectRatio: _controller.value.aspectRatio,
-      child: CameraPreview(_controller),
-    );
-  }
-
   Widget _getCamera(deviceRatio) {
     if (_controller == null || !_controller.value.isInitialized) {
       return Container();
@@ -242,7 +223,7 @@ class _CameraScreenState extends State<CameraScreen> {
       scale: _controller.value.aspectRatio / (deviceRatio * 0.95),
       child: AspectRatio(
         aspectRatio: _controller.value.aspectRatio,
-        child: _cameraPreviewWidget(),
+        child: CameraPreview(_controller),
       ),
     );
   }
