@@ -45,9 +45,10 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     final height = size.height;
     final width = size.width;
     final deviceRatio = width / height;
-    bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+    final bottom = MediaQuery.of(context).viewInsets.bottom;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       resizeToAvoidBottomPadding: false,
       body: Stack(
         children: <Widget>[
@@ -67,105 +68,125 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
           ),
           Positioned(
             bottom: height * 0.05,
-            child: Container(
-              width: width,
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                          bottom: 10,
-                          left: 30,
-                        ),
-                        child: Text(
-                          'Title',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 34,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: bottom),
+              child: Container(
+                width: width,
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 0,
+                            left: 30,
+                          ),
+                          child: SizedBox(
+                            width: width - 30 * 2,
+                            child: TextFormField(
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 34,
+                              ),
+                              decoration: const InputDecoration(
+                                hintText: 'Title',
+                                hintStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 34,
+                                ),
+                                border: InputBorder.none,
+                              ),
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Please enter some text';
+                                }
+                                return null;
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: 30,
-                          left: 30,
-                        ),
-                        child: SizedBox(
-                          width: width - 30 * 2,
-                          child: TextFormField(
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                            decoration: const InputDecoration(
-                              labelText: 'Description',
-                              labelStyle: TextStyle(
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 30,
+                            left: 30,
+                          ),
+                          child: SizedBox(
+                            width: width - 30 * 2,
+                            child: TextFormField(
+                              style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                               ),
-                              border: InputBorder.none,
-                            ),
-                            validator: (value) {
-                              if (value.isEmpty) {
-                                return 'Please enter some text';
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    width: width,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Spacer(flex: 1),
-                        RaisedButton(
-                          color: Colors.lightBlue,
-                          onPressed: () async {
-                            setState(() {
-                              isSaving = true;
-                            });
-                            await _saveVideosToDb();
-                            setState(() {
-                              isSaving = false;
-                            });
-                            Navigator.of(context).pop();
-                            Navigator.of(context).pop();
-                          },
-                          textColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18.0),
-                          ),
-                          child: Row(
-                            children: <Widget>[
-                              Text(
-                                "Share",
-                                style: TextStyle(fontSize: 16),
+                              decoration: const InputDecoration(
+                                hintText: 'What you need:',
+                                hintStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                                border: InputBorder.none,
                               ),
-                            ],
-                            mainAxisSize: MainAxisSize.min,
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Please enter some text';
+                                }
+                                return null;
+                              },
+                            ),
                           ),
                         ),
-                        Spacer(flex: 1),
                       ],
                     ),
-                  ),
-                ],
+                    Container(
+                      width: width,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Spacer(flex: 1),
+                          RaisedButton(
+                            color: Colors.lightBlue,
+                            onPressed: () async {
+                              setState(() {
+                                isSaving = true;
+                              });
+                              await _saveVideosToDb();
+                              setState(() {
+                                isSaving = false;
+                              });
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            },
+                            textColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                            ),
+                            child: Row(
+                              children: <Widget>[
+                                Text(
+                                  "Share",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ],
+                              mainAxisSize: MainAxisSize.min,
+                            ),
+                          ),
+                          Spacer(flex: 1),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
