@@ -48,6 +48,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
 
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: Stack(
         children: <Widget>[
           FutureBuilder(
@@ -65,7 +66,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
             },
           ),
           Positioned(
-            bottom: (isIOS) ? (height * 0.05) : 0.0,
+            bottom: height * 0.05,
             child: Container(
               width: width,
               child: Column(
@@ -92,34 +93,36 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          hintText: 'Title',
-                          hintStyle: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
-                      ),
                       Padding(
-                        padding: EdgeInsets.only(
-                          left: 30,
+                        padding: const EdgeInsets.only(
                           bottom: 30,
+                          left: 30,
                         ),
-                        child: Text(
-                          'Description...',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                        child: SizedBox(
+                          width: width - 30 * 2,
+                          child: TextFormField(
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                            decoration: const InputDecoration(
+                              labelText: 'Description',
+                              labelStyle: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                              border: InputBorder.none,
+                            ),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                       ),
