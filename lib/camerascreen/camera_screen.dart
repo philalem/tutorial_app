@@ -247,9 +247,10 @@ class _CameraScreenState extends State<CameraScreen> {
           width: _width,
           height: _height,
           duration: Duration(seconds: 1),
-          curve: Curves.decelerate,
+          curve: Curves.easeInOut,
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
+            borderRadius: BorderRadius.circular(isRecording ? 10 : 60),
+            shape: BoxShape.rectangle,
             color: _color,
           ),
         ),
@@ -262,6 +263,9 @@ class _CameraScreenState extends State<CameraScreen> {
               _height = 60;
             } else {
               _pause = false;
+              _color = Colors.red;
+              _width = 50;
+              _height = 50;
               _startOneSecondTimer();
             }
           });
@@ -353,15 +357,11 @@ class _CameraScreenState extends State<CameraScreen> {
           timer.cancel();
           setState(() {
             _color = Colors.white;
-            _width = 60;
-            _height = 60;
             _chooseColor = true;
           });
         } else {
           setState(() {
-            _width = _chooseColor ? 75 : 60;
-            _height = _chooseColor ? 75 : 60;
-            _color = _chooseColor ? Colors.red[300] : Colors.white;
+            _color = _chooseColor ? Colors.red[200] : Colors.red;
             _chooseColor = !_chooseColor;
           });
         }
