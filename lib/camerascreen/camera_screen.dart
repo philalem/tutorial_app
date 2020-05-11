@@ -34,6 +34,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../previewscreen/preview_screen.dart';
@@ -123,94 +124,99 @@ class _CameraScreenState extends State<CameraScreen> {
     bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
 
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          child: Stack(
-            children: <Widget>[
-              _getCamera(deviceRatio),
-              Positioned(
-                bottom: (isIOS) ? (height * 0.05) : 0.0,
-                child: Container(
-                  width: width,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Spacer(),
-                      _cameraTogglesRowWidget(),
-                      Spacer(
-                        flex: 3,
-                      ),
-                      _captureControlRowWidget(context, paths),
-                      Spacer(
-                        flex: 3,
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.image,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          if (_controller.value.isRecordingVideo)
-                            _controller.stopVideoRecording();
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  PreviewImageScreen(paths: paths),
-                            ),
-                          );
-                        },
-                      ),
-                      Spacer(),
-                    ],
+      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomPadding: false,
+      body: Stack(
+        children: <Widget>[
+          _getCamera(deviceRatio),
+          Positioned(
+            bottom: (isIOS) ? (height * 0.05) : 0.0,
+            child: Container(
+              width: width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Spacer(),
+                  _cameraTogglesRowWidget(),
+                  Spacer(
+                    flex: 3,
                   ),
-                ),
-              ),
-              Positioned(
-                top: (height * 0.02),
-                child: Container(
-                  width: width,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Spacer(),
-                      IconButton(
-                        icon: Icon(
-                          Icons.close,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          print("disconnecting camera");
-                          _controller.dispose();
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      Spacer(
-                        flex: 20,
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.check,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          if (_controller.value.isRecordingVideo)
-                            _controller.stopVideoRecording();
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  PreviewImageScreen(paths: paths),
-                            ),
-                          );
-                        },
-                      ),
-                      Spacer(),
-                    ],
+                  _captureControlRowWidget(context, paths),
+                  Spacer(
+                    flex: 3,
                   ),
-                ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.image,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      if (_controller.value.isRecordingVideo)
+                        _controller.stopVideoRecording();
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PreviewImageScreen(paths: paths),
+                        ),
+                      );
+                    },
+                  ),
+                  Spacer(),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          Positioned(
+            top: (height * 0.02),
+            child: Container(
+              width: width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Spacer(),
+                  IconButton(
+                    icon: Icon(
+                      Icons.close,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      print("disconnecting camera");
+                      _controller.dispose();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  Spacer(
+                    flex: 20,
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.check,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      if (_controller.value.isRecordingVideo) {
+                        _controller.stopVideoRecording();
+                        setState(() {
+                          _color = Colors.white;
+                          _pause = true;
+                          _width = 60;
+                          _height = 60;
+                        });
+                      }
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PreviewImageScreen(paths: paths),
+                        ),
+                      );
+                    },
+                  ),
+                  Spacer(),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -304,6 +310,7 @@ class _CameraScreenState extends State<CameraScreen> {
     // Take the Picture in a try / catch block. If anything goes wrong,
     // catch the error.
     try {
+      HapticFeedback.mediumImpact();
       String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
       final Directory extDir = await getApplicationDocumentsDirectory();
       final String dirPath = '${extDir.path}/Movies/flutter_test';
