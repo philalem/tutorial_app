@@ -75,7 +75,10 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
                       Padding(
-                        padding: EdgeInsets.only(bottom: 10, left: 20),
+                        padding: EdgeInsets.only(
+                          bottom: 10,
+                          left: 30,
+                        ),
                         child: Text(
                           'Title',
                           style: TextStyle(
@@ -90,9 +93,25 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          hintText: 'Title',
+                          hintStyle: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                      ),
                       Padding(
                         padding: EdgeInsets.only(
-                          left: 20,
+                          left: 30,
                           bottom: 30,
                         ),
                         child: Text(
