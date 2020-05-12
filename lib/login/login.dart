@@ -1,23 +1,27 @@
-import 'package:creaid/customTextField.dart';
-import 'package:creaid/interestsSignUp.dart';
-import 'package:flutter/material.dart';
 
-class Register extends StatefulWidget {
+import 'package:creaid/utility/customTextField.dart';
+import 'package:creaid/utility/firebaseAuth.dart';
+import 'package:flutter/material.dart';
+import 'package:creaid/home.dart';
+
+class Login extends StatefulWidget {
 
   final Function toggleView;
-  Register({this.toggleView});
+  Login({this.toggleView});
+
 
   @override
-  _RegisterState createState() => _RegisterState();
+  _LoginState createState() => _LoginState();
 }
 
-class _RegisterState extends State<Register> {
+class _LoginState extends State<Login> {
 
   final _formKey = GlobalKey<FormState>();
+  final FireBaseAuthorization _auth = FireBaseAuthorization();
 
   String email = '';
   String password = '';
-  String name = '';
+  String error = '';
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +34,7 @@ class _RegisterState extends State<Register> {
         actions: <Widget>[
           FlatButton.icon(
             icon: Icon(Icons.person),
-            label: Text('Sign in'),
+            label: Text('Register'),
             onPressed: () {
               widget.toggleView();
             }
@@ -45,18 +49,10 @@ class _RegisterState extends State<Register> {
             children: <Widget>[
               SizedBox(height: 20.0),
               Text(
-                'Signup for your Creaid acount:',
+                'Login to your Creaid acount:',
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 20.0),
-              CustomTextField(
-                icon: Icon(Icons.person),
-                obsecure: false,
-                onChanged: (input) => name = input,
-                validator: (input) => input.isEmpty ? "Need to enter a name" : null,
-                hint: "Name",
               ),
               SizedBox(height: 20.0),
               CustomTextField(
@@ -69,27 +65,40 @@ class _RegisterState extends State<Register> {
               SizedBox(height: 20.0),
               CustomTextField(
                 icon: Icon(Icons.panorama_fish_eye),
-                obsecure: false,
+                obsecure: true,
                 onChanged: (input) => password = input,
-                validator: (input) => input.length<7 ? "Need to enter a password with a length longer then 6" : null,
+                validator: (input) => input.length<6 ? "Need to enter a password with length greater then 6" : null,
                 hint: "Password",
               ),
               SizedBox(height: 20.0),
               RaisedButton(
                 color: Colors.black,
                 child: Text(
-                  'Next',
+                  'Sign in',
                   style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () async {
-                  if (_formKey.currentState.validate()) {
+                  if(_formKey.currentState.validate()) {
                     _formKey.currentState.save();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => InterestsSignUp(email: email, name: name, password: password)),
-                    );   
+                    dynamic res = await _auth.signInWithEmailAndPassword(email, password);
+
+                    if (res == null) {
+                      setState(() {
+                        error = 'Could not sign in with those credentials';
+                      });
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Home()),
+                      );
+                    }
                   }
                 }
+              ),
+              SizedBox(height: 12.0),
+              Text(
+                error,
+                style: TextStyle(color: Colors.red, fontSize: 14.0),
               ),
             ]
           )

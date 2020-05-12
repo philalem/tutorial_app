@@ -1,5 +1,4 @@
-import 'package:creaid/userDBService.dart';
-
+import 'package:creaid/utility/userDBService.dart';
 import 'user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 

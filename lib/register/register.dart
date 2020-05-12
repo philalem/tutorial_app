@@ -1,27 +1,23 @@
-
-import 'package:creaid/customTextField.dart';
-import 'package:creaid/firebaseAuth.dart';
+import 'package:creaid/utility/customTextField.dart';
+import 'package:creaid/register/interestsSignUp.dart';
 import 'package:flutter/material.dart';
-import 'package:creaid/home.dart';
 
-class Login extends StatefulWidget {
+class Register extends StatefulWidget {
 
   final Function toggleView;
-  Login({this.toggleView});
-
+  Register({this.toggleView});
 
   @override
-  _LoginState createState() => _LoginState();
+  _RegisterState createState() => _RegisterState();
 }
 
-class _LoginState extends State<Login> {
+class _RegisterState extends State<Register> {
 
   final _formKey = GlobalKey<FormState>();
-  final FireBaseAuthorization _auth = FireBaseAuthorization();
 
   String email = '';
   String password = '';
-  String error = '';
+  String name = '';
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +30,7 @@ class _LoginState extends State<Login> {
         actions: <Widget>[
           FlatButton.icon(
             icon: Icon(Icons.person),
-            label: Text('Register'),
+            label: Text('Sign in'),
             onPressed: () {
               widget.toggleView();
             }
@@ -49,10 +45,18 @@ class _LoginState extends State<Login> {
             children: <Widget>[
               SizedBox(height: 20.0),
               Text(
-                'Login to your Creaid acount:',
+                'Signup for your Creaid acount:',
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 20.0),
+              CustomTextField(
+                icon: Icon(Icons.person),
+                obsecure: false,
+                onChanged: (input) => name = input,
+                validator: (input) => input.isEmpty ? "Need to enter a name" : null,
+                hint: "Name",
               ),
               SizedBox(height: 20.0),
               CustomTextField(
@@ -65,40 +69,27 @@ class _LoginState extends State<Login> {
               SizedBox(height: 20.0),
               CustomTextField(
                 icon: Icon(Icons.panorama_fish_eye),
-                obsecure: true,
+                obsecure: false,
                 onChanged: (input) => password = input,
-                validator: (input) => input.length<6 ? "Need to enter a password with length greater then 6" : null,
+                validator: (input) => input.length<7 ? "Need to enter a password with a length longer then 6" : null,
                 hint: "Password",
               ),
               SizedBox(height: 20.0),
               RaisedButton(
                 color: Colors.black,
                 child: Text(
-                  'Sign in',
+                  'Next',
                   style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () async {
-                  if(_formKey.currentState.validate()) {
+                  if (_formKey.currentState.validate()) {
                     _formKey.currentState.save();
-                    dynamic res = await _auth.signInWithEmailAndPassword(email, password);
-
-                    if (res == null) {
-                      setState(() {
-                        error = 'Could not sign in with those credentials';
-                      });
-                    } else {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Home()),
-                      );
-                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => InterestsSignUp(email: email, name: name, password: password)),
+                    );   
                   }
                 }
-              ),
-              SizedBox(height: 12.0),
-              Text(
-                error,
-                style: TextStyle(color: Colors.red, fontSize: 14.0),
               ),
             ]
           )

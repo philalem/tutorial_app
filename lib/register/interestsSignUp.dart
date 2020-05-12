@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:creaid/home.dart';
-import 'package:creaid/firebaseAuth.dart';
+import 'package:creaid/utility/firebaseAuth.dart';
 
 class InterestsSignUp extends StatefulWidget {
   final String email, name, password;
