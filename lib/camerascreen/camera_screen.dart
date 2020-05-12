@@ -141,6 +141,7 @@ class _CameraScreenState extends State<CameraScreen> {
                     icon: Icon(
                       Icons.photo,
                       color: Colors.white,
+                      size: 30,
                     ),
                     onPressed: () {
                       if (_controller.value.isRecordingVideo) {
@@ -171,6 +172,7 @@ class _CameraScreenState extends State<CameraScreen> {
                     icon: Icon(
                       Icons.arrow_forward_ios,
                       color: Colors.white,
+                      size: 30,
                     ),
                     onPressed: () {
                       if (_controller.value.isRecordingVideo) {
@@ -195,14 +197,14 @@ class _CameraScreenState extends State<CameraScreen> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 30, left: 20),
+          SafeArea(
             child: Align(
               alignment: Alignment.topLeft,
               child: IconButton(
                 icon: Icon(
                   Icons.close,
                   color: Colors.white,
+                  size: 30,
                 ),
                 onPressed: () {
                   print("disconnecting camera");
@@ -212,8 +214,7 @@ class _CameraScreenState extends State<CameraScreen> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 30, right: 20),
+          SafeArea(
             child: Align(
               alignment: Alignment.topRight,
               child: _cameraTogglesRowWidget(),
@@ -292,8 +293,8 @@ class _CameraScreenState extends State<CameraScreen> {
       onPressed: _onSwitchCamera,
       icon: Icon(
         _getCameraLensIcon(lensDirection),
-        size: 30,
         color: Colors.white,
+        size: 30,
       ),
     );
   }
