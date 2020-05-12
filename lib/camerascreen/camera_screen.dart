@@ -128,16 +128,38 @@ class _CameraScreenState extends State<CameraScreen> {
       resizeToAvoidBottomPadding: false,
       body: Stack(
         children: <Widget>[
-          _getCamera(deviceRatio),
+          _getCamera(deviceRatio, isIOS),
           Positioned(
-            bottom: (isIOS) ? (height * 0.05) : 0.0,
+            bottom: height * 0.05,
             child: Container(
               width: width,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Spacer(),
-                  _cameraTogglesRowWidget(),
+                  IconButton(
+                    icon: Icon(
+                      Icons.photo,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      if (_controller.value.isRecordingVideo) {
+                        _controller.stopVideoRecording();
+                        setState(() {
+                          _color = Colors.white;
+                          _pause = true;
+                          _width = 60;
+                          _height = 60;
+                        });
+                      }
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PreviewImageScreen(paths: paths),
+                        ),
+                      );
+                    },
+                  ),
                   Spacer(
                     flex: 3,
                   ),
@@ -147,50 +169,7 @@ class _CameraScreenState extends State<CameraScreen> {
                   ),
                   IconButton(
                     icon: Icon(
-                      Icons.image,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      if (_controller.value.isRecordingVideo)
-                        _controller.stopVideoRecording();
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              PreviewImageScreen(paths: paths),
-                        ),
-                      );
-                    },
-                  ),
-                  Spacer(),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            top: (height * 0.02),
-            child: Container(
-              width: width,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Spacer(),
-                  IconButton(
-                    icon: Icon(
-                      Icons.close,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      print("disconnecting camera");
-                      _controller.dispose();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  Spacer(
-                    flex: 20,
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.check,
+                      Icons.arrow_forward_ios,
                       color: Colors.white,
                     ),
                     onPressed: () {
@@ -216,17 +195,42 @@ class _CameraScreenState extends State<CameraScreen> {
               ),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.only(top: 30, left: 20),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: IconButton(
+                icon: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  print("disconnecting camera");
+                  _controller.dispose();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 30, right: 20),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: _cameraTogglesRowWidget(),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget _getCamera(deviceRatio) {
+  Widget _getCamera(deviceRatio, isIOS) {
     if (_controller == null || !_controller.value.isInitialized) {
       return Container();
     }
     return Transform.scale(
-      scale: _controller.value.aspectRatio / (deviceRatio * 0.95),
+      scale:
+          _controller.value.aspectRatio / (deviceRatio * (isIOS ? 0.95 : 0.90)),
       child: AspectRatio(
         aspectRatio: _controller.value.aspectRatio,
         child: CameraPreview(_controller),
@@ -241,7 +245,7 @@ class _CameraScreenState extends State<CameraScreen> {
       height: 80.0,
       child: RawMaterialButton(
         shape: CircleBorder(),
-        fillColor: Colors.lightBlue,
+        fillColor: Colors.blueGrey,
         elevation: 0.0,
         child: AnimatedContainer(
           width: _width,
@@ -278,7 +282,7 @@ class _CameraScreenState extends State<CameraScreen> {
   /// Display a row of toggle to select the camera (or a message if no camera is available).
   Widget _cameraTogglesRowWidget() {
     if (cameras == null || cameras.isEmpty) {
-      return Spacer();
+      return Container();
     }
 
     CameraDescription selectedCamera = cameras[selectedCameraIdx];

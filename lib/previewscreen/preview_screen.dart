@@ -46,6 +46,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     final width = size.width;
     final deviceRatio = width / height;
     final bottom = MediaQuery.of(context).viewInsets.bottom;
+    bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -67,7 +68,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
             },
           ),
           Positioned(
-            bottom: height * 0.05,
+            bottom: isIOS ? height * 0.05 : 0.0,
             child: Padding(
               padding: EdgeInsets.only(bottom: bottom),
               child: Container(
