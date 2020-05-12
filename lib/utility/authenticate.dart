@@ -1,5 +1,5 @@
-import 'package:creaid/login.dart';
-import 'package:creaid/register.dart';
+import 'package:creaid/login/login.dart';
+import 'package:creaid/register/register.dart';
 import 'package:flutter/material.dart';
 
 class Authenticate extends StatefulWidget {
