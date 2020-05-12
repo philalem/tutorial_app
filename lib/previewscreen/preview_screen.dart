@@ -15,6 +15,7 @@ class PreviewImageScreen extends StatefulWidget {
 class _PreviewImageScreenState extends State<PreviewImageScreen> {
   final List<StorageReference> storageReferences = [];
   List<VideoPlayerController> _controller = [];
+  List<Future<void>> _initializeVideoPlayerFuture = [];
   bool isSaving = false;
 
   @override
@@ -22,7 +23,9 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     super.initState();
     for (var i = 0; i < widget.paths.length; i++) {
       _controller.add(VideoPlayerController.file(File(widget.paths[i])));
-      _controller[i].initialize();
+      _initializeVideoPlayerFuture.add(_controller[i].initialize());
+      _controller[i].setLooping(true);
+      _controller[i].play();
       storageReferences
           .add(FirebaseStorage.instance.ref().child(widget.paths[i]));
     }
@@ -38,69 +41,169 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final height = size.height;
+    final width = size.width;
+    final deviceRatio = width / height;
+    final bottom = MediaQuery.of(context).viewInsets.bottom;
+    bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Preview'),
-        backgroundColor: Colors.lightBlue,
-      ),
+      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomPadding: false,
       body: Stack(
         children: <Widget>[
-          ListView(
-            children: <Widget>[
-              Container(
+          FutureBuilder(
+            future: _initializeVideoPlayerFuture[0],
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                // If the VideoPlayerController has finished initialization, use
+                // the data it provides to limit the aspect ratio of the video.
+                return _getCamera(deviceRatio, _controller[0]);
+              } else {
+                // If the VideoPlayerController is still initializing, show a
+                // loading spinner.
+                return Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+          Positioned(
+            bottom: isIOS ? height * 0.05 : 0.0,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: bottom),
+              child: Container(
+                width: width,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    SizedBox(height: 10.0),
-                    Column(
-                      children: _controller
-                          .map(
-                            (controller) => Row(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                _thumbnailWidget(controller),
-                              ],
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 0,
+                            left: 30,
+                          ),
+                          child: SizedBox(
+                            width: width - 30 * 2,
+                            child: TextFormField(
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 34,
+                              ),
+                              decoration: const InputDecoration(
+                                hintText: 'Title',
+                                hintStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 34,
+                                ),
+                                border: InputBorder.none,
+                              ),
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Please enter some text';
+                                }
+                                return null;
+                              },
                             ),
-                          )
-                          .toList(),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 30,
+                            left: 30,
+                          ),
+                          child: SizedBox(
+                            width: width - 30 * 2,
+                            child: TextFormField(
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                              decoration: const InputDecoration(
+                                hintText: 'What you need:',
+                                hintStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                                border: InputBorder.none,
+                              ),
+                              validator: (value) {
+                                if (value.isEmpty) {
+                                  return 'Please enter some text';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     Container(
-                      padding: EdgeInsets.all(60.0),
-                      child: RaisedButton(
-                        color: Colors.white,
-                        onPressed: () {
-                          setState(() {
-                            isSaving = true;
-                          });
-                          _saveVideosToDb();
-                          setState(() {
-                            isSaving = false;
-                          });
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
-                        },
-                        textColor: Colors.lightBlue,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
-                          side: BorderSide(color: Colors.lightBlue),
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              "Share",
-                              style: TextStyle(fontSize: 15),
+                      width: width,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Spacer(flex: 1),
+                          RaisedButton(
+                            color: Colors.lightBlue,
+                            onPressed: () async {
+                              setState(() {
+                                isSaving = true;
+                              });
+                              await _saveVideosToDb();
+                              setState(() {
+                                isSaving = false;
+                              });
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pop();
+                            },
+                            textColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
                             ),
-                          ],
-                          mainAxisSize: MainAxisSize.min,
-                        ),
+                            child: Row(
+                              children: <Widget>[
+                                Text(
+                                  "Share",
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ],
+                              mainAxisSize: MainAxisSize.min,
+                            ),
+                          ),
+                          Spacer(flex: 1),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-            ],
+            ),
+          ),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: IconButton(
+                icon: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
           ),
           isSaving
               ? Container(
@@ -109,6 +212,19 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                 )
               : Container(),
         ],
+      ),
+    );
+  }
+
+  Widget _getCamera(deviceRatio, controller) {
+    if (controller == null) {
+      return Container();
+    }
+    return Transform.scale(
+      scale: controller.value.aspectRatio / (deviceRatio * 0.90),
+      child: AspectRatio(
+        aspectRatio: controller.value.aspectRatio,
+        child: VideoPlayer(controller),
       ),
     );
   }
@@ -134,20 +250,22 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   Row _thumbnailWidget(controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
+      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         _controller == null
             ? Container()
-            : Container(
-                child: Center(
-                  child: AspectRatio(
-                    aspectRatio: controller.value.size != null
-                        ? controller.value.aspectRatio
-                        : 1.0,
-                    child: VideoPlayer(controller),
+            : SafeArea(
+                child: Container(
+                  child: Center(
+                    child: AspectRatio(
+                      aspectRatio: controller.value.size != null
+                          ? controller.value.aspectRatio
+                          : 1.0,
+                      child: VideoPlayer(controller),
+                    ),
                   ),
+                  height: 400,
                 ),
-                height: 400,
               ),
       ],
     );

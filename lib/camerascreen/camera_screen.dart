@@ -28,10 +28,13 @@
  * THE SOFTWARE.
  */
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../previewscreen/preview_screen.dart';
@@ -45,13 +48,17 @@ class CameraScreen extends StatefulWidget {
 
 class _CameraScreenState extends State<CameraScreen> {
   CameraController _controller;
-  bool _overlaysOn = false;
   List cameras;
   int selectedCameraIdx;
   String imagePath;
   Future<void> _initializeVideoFuture;
   List<String> paths = [];
   bool isRecording = false;
+  double _width = 60;
+  double _height = 60;
+  bool _pause = false;
+  bool _chooseColor = true;
+  var _color = Colors.white;
 
   @override
   void initState() {
@@ -117,118 +124,165 @@ class _CameraScreenState extends State<CameraScreen> {
     bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
 
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          child: Stack(
-            children: <Widget>[
-              _getCamera(deviceRatio),
-              Positioned(
-                bottom: (isIOS) ? (height * 0.05) : 0.0,
-                child: Container(
-                  width: width,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Spacer(),
-                      _cameraTogglesRowWidget(),
-                      Spacer(
-                        flex: 3,
-                      ),
-                      _captureControlRowWidget(context, paths),
-                      Spacer(
-                        flex: 3,
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.arrow_forward,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          if (_controller.value.isRecordingVideo)
-                            _controller.stopVideoRecording();
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  PreviewImageScreen(paths: paths),
-                            ),
-                          );
-                        },
-                      ),
-                      Spacer(),
-                    ],
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.topLeft,
-                child: SafeArea(
-                  child: IconButton(
+      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomPadding: false,
+      body: Stack(
+        children: <Widget>[
+          _getCamera(deviceRatio, isIOS),
+          Positioned(
+            bottom: height * 0.05,
+            child: Container(
+              width: width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Spacer(),
+                  IconButton(
                     icon: Icon(
-                      Icons.close,
+                      Icons.photo,
                       color: Colors.white,
                     ),
                     onPressed: () {
-                      print("disconnecting camera");
-                      _controller.dispose();
-                      Navigator.of(context).pop();
+                      if (_controller.value.isRecordingVideo) {
+                        _controller.stopVideoRecording();
+                        setState(() {
+                          _color = Colors.white;
+                          _pause = true;
+                          _width = 60;
+                          _height = 60;
+                        });
+                      }
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PreviewImageScreen(paths: paths),
+                        ),
+                      );
                     },
                   ),
-                ),
+                  Spacer(
+                    flex: 3,
+                  ),
+                  _captureControlRowWidget(context, paths),
+                  Spacer(
+                    flex: 3,
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      if (_controller.value.isRecordingVideo) {
+                        _controller.stopVideoRecording();
+                        setState(() {
+                          _color = Colors.white;
+                          _pause = true;
+                          _width = 60;
+                          _height = 60;
+                        });
+                      }
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PreviewImageScreen(paths: paths),
+                        ),
+                      );
+                    },
+                  ),
+                  Spacer(),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.only(top: 30, left: 20),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: IconButton(
+                icon: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  print("disconnecting camera");
+                  _controller.dispose();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 30, right: 20),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: _cameraTogglesRowWidget(),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  /// Display Camera preview.
-  Widget _cameraPreviewWidget() {
-    if (_controller == null || !_controller.value.isInitialized) {
-      return const Text(
-        'Loading',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 20.0,
-          fontWeight: FontWeight.w900,
-        ),
-      );
-    }
-
-    return AspectRatio(
-      aspectRatio: _controller.value.aspectRatio,
-      child: CameraPreview(_controller),
-    );
-  }
-
-  Widget _getCamera(deviceRatio) {
+  Widget _getCamera(deviceRatio, isIOS) {
     if (_controller == null || !_controller.value.isInitialized) {
       return Container();
     }
     return Transform.scale(
-      scale: _controller.value.aspectRatio / (deviceRatio * 0.95),
+      scale:
+          _controller.value.aspectRatio / (deviceRatio * (isIOS ? 0.95 : 0.90)),
       child: AspectRatio(
         aspectRatio: _controller.value.aspectRatio,
-        child: _cameraPreviewWidget(),
+        child: CameraPreview(_controller),
       ),
     );
   }
 
   /// Display the control bar with buttons to take pictures
   Widget _captureControlRowWidget(context, List<String> paths) {
-    return FloatingActionButton(
-      child: Icon(Icons.add),
-      backgroundColor: isRecording ? Colors.red : Colors.lightBlue,
-      onPressed: () {
-        _onCapturePressed(context, paths);
-      },
+    return Container(
+      width: 80.0,
+      height: 80.0,
+      child: RawMaterialButton(
+        shape: CircleBorder(),
+        fillColor: Colors.blueGrey,
+        elevation: 0.0,
+        child: AnimatedContainer(
+          width: _width,
+          height: _height,
+          duration: Duration(seconds: 1),
+          curve: Curves.easeInOut,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(isRecording ? 10 : 60),
+            shape: BoxShape.rectangle,
+            color: _color,
+          ),
+        ),
+        onPressed: () {
+          setState(() {
+            if (isRecording) {
+              _color = Colors.white;
+              _pause = true;
+              _width = 60;
+              _height = 60;
+            } else {
+              _pause = false;
+              _color = Colors.red;
+              _width = 50;
+              _height = 50;
+              _startOneSecondTimer();
+            }
+          });
+          _onCapturePressed(context, paths);
+        },
+      ),
     );
   }
 
   /// Display a row of toggle to select the camera (or a message if no camera is available).
   Widget _cameraTogglesRowWidget() {
     if (cameras == null || cameras.isEmpty) {
-      return Spacer();
+      return Container();
     }
 
     CameraDescription selectedCamera = cameras[selectedCameraIdx];
@@ -238,7 +292,8 @@ class _CameraScreenState extends State<CameraScreen> {
       onPressed: _onSwitchCamera,
       icon: Icon(
         _getCameraLensIcon(lensDirection),
-        color: Colors.grey[200],
+        size: 30,
+        color: Colors.white,
       ),
     );
   }
@@ -246,11 +301,7 @@ class _CameraScreenState extends State<CameraScreen> {
   IconData _getCameraLensIcon(CameraLensDirection direction) {
     switch (direction) {
       case CameraLensDirection.back:
-        return Icons.flip_to_front;
-      case CameraLensDirection.front:
-        return Icons.flip_to_back;
-      case CameraLensDirection.external:
-        return Icons.camera;
+        return CupertinoIcons.switch_camera_solid;
       default:
         return Icons.device_unknown;
     }
@@ -267,6 +318,7 @@ class _CameraScreenState extends State<CameraScreen> {
     // Take the Picture in a try / catch block. If anything goes wrong,
     // catch the error.
     try {
+      HapticFeedback.mediumImpact();
       String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
       final Directory extDir = await getApplicationDocumentsDirectory();
       final String dirPath = '${extDir.path}/Movies/flutter_test';
@@ -298,5 +350,26 @@ class _CameraScreenState extends State<CameraScreen> {
     print(errorText);
 
     print('Error: ${e.code}\n${e.description}');
+  }
+
+  void _startOneSecondTimer() {
+    const oneSec = const Duration(seconds: 1);
+    Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        if (_pause) {
+          timer.cancel();
+          setState(() {
+            _color = Colors.white;
+            _chooseColor = true;
+          });
+        } else {
+          setState(() {
+            _color = _chooseColor ? Colors.red[200] : Colors.red;
+            _chooseColor = !_chooseColor;
+          });
+        }
+      },
+    );
   }
 }

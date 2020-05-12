@@ -58,7 +58,7 @@ class _HomeState extends State<Home> {
         showSelectedLabels: false,
         showUnselectedLabels: false,
         iconSize: 30,
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.blueGrey,
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
