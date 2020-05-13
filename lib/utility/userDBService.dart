@@ -1,8 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:creaid/utility/UserData.dart';
+import 'package:creaid/utility/firebaseAuth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class UserDbService {
   final String uuid;
   final CollectionReference creaidCollection = Firestore.instance.collection('userInfo');
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   UserDbService({this.uuid});
 
@@ -13,6 +17,36 @@ class UserDbService {
       'password': password,
       'interests': interests,
     });
+  }
+
+  List<String> _nameFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.documents.map((doc){
+      return doc.data['name'] ?? '';
+    });
+  }
+
+  UserData _mapUserData(DocumentSnapshot snapshot){
+    return UserData(
+      uuid: uuid,
+      email: snapshot['email'],
+      name: snapshot['name'],
+      interests: snapshot['email']
+    );
+  }
+
+  Future<List<DocumentSnapshot>> getUsername() async {
+    final FirebaseUser user = await _auth.currentUser();
+    return creaidCollection.document(user.uid).snapshots().toList();
+    
+  }
+
+  Stream<QuerySnapshot> get name {
+    return creaidCollection.snapshots();
+  }
+
+  Stream<UserData> getNames() {
+    return creaidCollection.document(uuid).snapshots()
+      .map(_mapUserData);
   }
 
 }

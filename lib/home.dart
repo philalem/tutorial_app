@@ -1,3 +1,4 @@
+import 'package:creaid/dynamicProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:creaid/camerascreen/camera_screen.dart';
@@ -19,7 +20,8 @@ class _HomeState extends State<Home> {
     Explore(),
     Explore(),
     Notifications(),
-    Profile(),
+    //Profile(),
+    DynamicProfile()
   ];
 
   void _onNavBarItemTapped(int index) {
