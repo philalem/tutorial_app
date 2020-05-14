@@ -164,11 +164,12 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                           Spacer(flex: 1),
                           RaisedButton(
                             color: Colors.lightBlue,
-                            onPressed: () async {
+                            onPressed: () {
                               setState(() {
                                 isSaving = true;
                               });
-                              await _saveVideosToDb();
+                              _addPostToDb();
+                              _saveVideosToDb();
                               setState(() {
                                 isSaving = false;
                               });
@@ -254,17 +255,25 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     }
   }
 
-  void addPostToDb() async {
-    FirebaseUser uid = await getCurrentUser();
+  void _addPostToDb() async {
+    print('Adding post information...');
+    //FirebaseUser uid = await getCurrentUser();
     DocumentReference ref = await databaseReference
         .collection("posts")
-        .document(uid.toString())
+        .document("uid.toString()")
         .collection("user-posts")
         .add({
       'title': titleTextController.text,
-      'description': descriptionTextController,
+      'description': descriptionTextController.text,
+      'videos': widget.paths,
+      'number-likes': 0,
+      'date': DateTime.now(),
+    }).catchError((e) {
+      print("Got error: ${e.error}");
+      return 1;
     });
-    print(ref.documentID);
+    print("Document ID: " + ref.documentID);
+    print('Done.');
   }
 
   Future<FirebaseUser> getCurrentUser() async {
