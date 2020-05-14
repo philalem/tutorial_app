@@ -22,15 +22,15 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   List<VideoPlayerController> _controller = [];
   List<Future<void>> _initializeVideoPlayerFuture = [];
   bool isSaving = false;
+  int numberVideo = 0;
 
   @override
   void initState() {
     super.initState();
     for (var i = 0; i < widget.paths.length; i++) {
       _controller.add(VideoPlayerController.file(File(widget.paths[i])));
+      _controller[0].addListener(() => _checkEndOfVideo());
       _initializeVideoPlayerFuture.add(_controller[i].initialize());
-      _controller[i].setLooping(true);
-      _controller[i].play();
       storageReferences
           .add(FirebaseStorage.instance.ref().child(widget.paths[i]));
     }
@@ -224,10 +224,24 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     );
   }
 
+  void _checkEndOfVideo() {
+    if (_controller[numberVideo].value.position ==
+        _controller[numberVideo].value.duration) {
+      int previousVideo = numberVideo;
+      _controller[numberVideo].pause();
+      setState(() {
+        numberVideo = _controller.length - 1 == numberVideo ? 0 : numberVideo++;
+      });
+      _controller[numberVideo].play();
+      _controller[previousVideo].seekTo(Duration(seconds: 0));
+    }
+  }
+
   Widget _getCamera(deviceRatio, controller) {
     if (controller == null) {
       return Container();
     }
+    controller.play();
     return Transform.scale(
       scale: controller.value.aspectRatio / (deviceRatio * 0.90),
       child: AspectRatio(
