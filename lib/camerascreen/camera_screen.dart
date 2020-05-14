@@ -32,6 +32,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -321,8 +322,10 @@ class _CameraScreenState extends State<CameraScreen> {
     try {
       HapticFeedback.mediumImpact();
       String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
+      final FirebaseAuth _auth = FirebaseAuth.instance;
+      FirebaseUser uid = await _auth.currentUser();
       final Directory extDir = await getApplicationDocumentsDirectory();
-      final String dirPath = '${extDir.path}/Movies/flutter_test';
+      final String dirPath = '${extDir.path}/${uid.toString()}/user-posts/';
       await Directory(dirPath).create(recursive: true);
       final String filePath = '$dirPath/${timestamp()}.mp4';
 
