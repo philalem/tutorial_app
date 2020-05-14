@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -14,6 +16,9 @@ class PreviewImageScreen extends StatefulWidget {
 
 class _PreviewImageScreenState extends State<PreviewImageScreen> {
   final List<StorageReference> storageReferences = [];
+  final titleTextController = TextEditingController();
+  final descriptionTextController = TextEditingController();
+  final databaseReference = Firestore.instance;
   List<VideoPlayerController> _controller = [];
   List<Future<void>> _initializeVideoPlayerFuture = [];
   bool isSaving = false;
@@ -87,6 +92,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                           child: SizedBox(
                             width: width - 30 * 2,
                             child: TextFormField(
+                              controller: titleTextController,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -124,6 +130,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                           child: SizedBox(
                             width: width - 30 * 2,
                             child: TextFormField(
+                              controller: descriptionTextController,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -157,11 +164,12 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                           Spacer(flex: 1),
                           RaisedButton(
                             color: Colors.lightBlue,
-                            onPressed: () async {
+                            onPressed: () {
                               setState(() {
                                 isSaving = true;
                               });
-                              await _saveVideosToDb();
+                              _addPostToDb();
+                              _saveVideosToDb();
                               setState(() {
                                 isSaving = false;
                               });
@@ -245,6 +253,32 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       }
       print('Was video upload successful: ' + successfulUpload.toString());
     }
+  }
+
+  void _addPostToDb() async {
+    print('Adding post information...');
+    //FirebaseUser uid = await getCurrentUser();
+    DocumentReference ref = await databaseReference
+        .collection("posts")
+        .document("uid.toString()")
+        .collection("user-posts")
+        .add({
+      'title': titleTextController.text,
+      'description': descriptionTextController.text,
+      'videos': widget.paths,
+      'number-likes': 0,
+      'date': DateTime.now(),
+    }).catchError((e) {
+      print("Got error: ${e.error}");
+      return 1;
+    });
+    print("Document ID: " + ref.documentID);
+    print('Done.');
+  }
+
+  Future<FirebaseUser> getCurrentUser() async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    return await _auth.currentUser();
   }
 
   Row _thumbnailWidget(controller) {
