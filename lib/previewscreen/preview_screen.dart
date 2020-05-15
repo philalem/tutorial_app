@@ -59,12 +59,12 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       body: Stack(
         children: <Widget>[
           FutureBuilder(
-            future: _initializeVideoPlayerFuture[0],
+            future: _initializeVideoPlayerFuture[numberVideo],
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 // If the VideoPlayerController has finished initialization, use
                 // the data it provides to limit the aspect ratio of the video.
-                return _getCamera(deviceRatio, _controller[0]);
+                return _getCamera(deviceRatio, _controller[numberVideo]);
               } else {
                 // If the VideoPlayerController is still initializing, show a
                 // loading spinner.
@@ -271,10 +271,10 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
 
   void _addPostToDb() async {
     print('Adding post information...');
-    //FirebaseUser uid = await getCurrentUser();
+    FirebaseUser uid = await getCurrentUser();
     DocumentReference ref = await databaseReference
         .collection("posts")
-        .document("uid.toString()")
+        .document(uid.uid.toString())
         .collection("user-posts")
         .add({
       'title': titleTextController.text,

@@ -295,7 +295,7 @@ class _CameraScreenState extends State<CameraScreen> {
       final FirebaseAuth _auth = FirebaseAuth.instance;
       FirebaseUser uid = await _auth.currentUser();
       final Directory extDir = await getApplicationDocumentsDirectory();
-      final String dirPath = '${extDir.path}/${uid.toString()}/user-posts/';
+      final String dirPath = '${extDir.path}/${uid.uid.toString()}/user-posts';
       await Directory(dirPath).create(recursive: true);
       final String filePath = '$dirPath/${timestamp()}.mp4';
 
