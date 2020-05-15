@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:creaid/utility/UserData.dart';
-import 'package:creaid/utility/firebaseAuth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UserDbService {
@@ -29,8 +28,7 @@ class UserDbService {
     return UserData(
       uuid: uuid,
       email: snapshot['email'],
-      name: snapshot['name'],
-      interests: snapshot['email']
+      name: snapshot['name']
     );
   }
 
