@@ -19,27 +19,43 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   final titleTextController = TextEditingController();
   final descriptionTextController = TextEditingController();
   final databaseReference = Firestore.instance;
-  List<VideoPlayerController> _controller = [];
+  List<String> _paths;
+  int index = 0;
+  double _progress = 0;
+  bool _changeLock = false;
+  List<VideoPlayerController> _controllers = [];
   List<Future<void>> _initializeVideoPlayerFuture = [];
   bool isSaving = false;
-  int numberVideo = 0;
 
   @override
   void initState() {
     super.initState();
-    for (var i = 0; i < widget.paths.length; i++) {
-      _controller.add(VideoPlayerController.file(File(widget.paths[i])));
-      _controller[0].addListener(() => _checkEndOfVideo());
-      _initializeVideoPlayerFuture.add(_controller[i].initialize());
-      storageReferences
-          .add(FirebaseStorage.instance.ref().child(widget.paths[i]));
+    _paths = widget.paths;
+    for (var i = 0; i < _paths.length; i++) {
+      storageReferences.add(FirebaseStorage.instance.ref().child(_paths[i]));
+    }
+    _controllers.add(null);
+    _initializeVideoPlayerFuture.add(null);
+
+    for (int i = 0; i < ((_paths.length > 2) ? 2 : _paths.length); i++) {
+      _controllers.add(VideoPlayerController.file(File(_paths[i])));
+    }
+
+    attachListenerAndInit(_controllers[1]).then((_) {
+      _controllers[1].play().then((_) {
+        setState(() {});
+      });
+    });
+
+    if (_controllers.length > 2) {
+      attachListenerAndInit(_controllers[2]);
     }
   }
 
   @override
   void dispose() {
-    for (var i = 0; i < _controller.length; i++) {
-      _controller[i]?.dispose();
+    for (var i = 0; i < _controllers.length; i++) {
+      _controllers[i]?.dispose();
     }
     super.dispose();
   }
@@ -59,12 +75,12 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       body: Stack(
         children: <Widget>[
           FutureBuilder(
-            future: _initializeVideoPlayerFuture[numberVideo],
+            future: _initializeVideoPlayerFuture[1],
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 // If the VideoPlayerController has finished initialization, use
                 // the data it provides to limit the aspect ratio of the video.
-                return _getCamera(deviceRatio, _controller[numberVideo]);
+                return _getCamera(deviceRatio, _controllers[1]);
               } else {
                 // If the VideoPlayerController is still initializing, show a
                 // loading spinner.
@@ -224,17 +240,82 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     );
   }
 
-  void _checkEndOfVideo() {
-    if (_controller[numberVideo].value.position ==
-        _controller[numberVideo].value.duration) {
-      int previousVideo = numberVideo;
-      _controller[numberVideo].pause();
-      setState(() {
-        numberVideo = _controller.length - 1 == numberVideo ? 0 : numberVideo++;
-      });
-      _controller[numberVideo].play();
-      _controller[previousVideo].seekTo(Duration(seconds: 0));
+  Future<void> attachListenerAndInit(VideoPlayerController controller) async {
+    if (!controller.hasListeners && controller.value != null) {
+      addNewListener(controller);
     }
+    _initializeVideoPlayerFuture.add(controller.initialize().then((_) {}));
+    return;
+  }
+
+  Future<void> addNewListener(VideoPlayerController controller) {
+    controller.addListener(() {
+      int duration = controller.value.duration.inMilliseconds;
+      int position = controller.value.position.inMilliseconds;
+      if (duration - position < 1) {
+        controller.seekTo(Duration(milliseconds: 0));
+        nextVideo();
+      }
+    });
+  }
+
+  void previousVideo() {
+    if (_changeLock) {
+      return;
+    }
+    _changeLock = true;
+
+    if (index == 0) {
+      _changeLock = false;
+      return;
+    }
+    _controllers[1]?.pause();
+    index--;
+
+    if (index != _paths.length - 2) {
+      _controllers.last?.dispose();
+      _initializeVideoPlayerFuture.removeLast();
+      _controllers.removeLast();
+    }
+    if (index != 0) {
+      _controllers.insert(
+          0, VideoPlayerController.file(File(_paths[index - 1])));
+      attachListenerAndInit(_controllers.first);
+    } else {
+      _controllers.insert(0, null);
+    }
+
+    _controllers[1].play().then((_) {
+      setState(() {
+        _changeLock = false;
+      });
+    });
+  }
+
+  void nextVideo() {
+    if (_changeLock) {
+      return;
+    }
+    _changeLock = true;
+    if (index == _paths.length - 1) {
+      _changeLock = false;
+      return;
+    }
+    _controllers[1]?.pause();
+    index++;
+    _controllers.first?.dispose();
+    _controllers.removeAt(0);
+    _initializeVideoPlayerFuture.removeAt(0);
+    if (index != _paths.length - 1) {
+      _controllers.add(VideoPlayerController.file(File(_paths[index + 1])));
+      attachListenerAndInit(_controllers.last);
+    }
+
+    _controllers[1].play().then((_) {
+      setState(() {
+        _changeLock = false;
+      });
+    });
   }
 
   Widget _getCamera(deviceRatio, controller) {
@@ -300,7 +381,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        _controller == null
+        _controllers == null
             ? Container()
             : SafeArea(
                 child: Container(
