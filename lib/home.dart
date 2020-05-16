@@ -51,6 +51,7 @@ class _HomeState extends State<Home> {
             fontSize: 34,
           ),
         ),
+        backgroundColor: Colors.blueGrey,
         centerTitle: true,
       ),
       body: _pages[_navBarItemIndex],
