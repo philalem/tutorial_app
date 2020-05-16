@@ -24,7 +24,6 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   double _progress = 0;
   bool _changeLock = false;
   List<VideoPlayerController> _controllers = [];
-  List<Future<void>> _initializeVideoPlayerFuture = [];
   bool isSaving = false;
 
   @override
@@ -35,7 +34,6 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       storageReferences.add(FirebaseStorage.instance.ref().child(_paths[i]));
     }
     _controllers.add(null);
-    _initializeVideoPlayerFuture.add(null);
 
     for (int i = 0; i < ((_paths.length > 2) ? 2 : _paths.length); i++) {
       _controllers.add(VideoPlayerController.file(File(_paths[i])));
@@ -53,6 +51,11 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final height = size.height;
@@ -66,20 +69,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       resizeToAvoidBottomPadding: false,
       body: Stack(
         children: <Widget>[
-          FutureBuilder(
-            future: _initializeVideoPlayerFuture[1],
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                // If the VideoPlayerController has finished initialization, use
-                // the data it provides to limit the aspect ratio of the video.
-                return _getCamera(deviceRatio, _controllers[1]);
-              } else {
-                // If the VideoPlayerController is still initializing, show a
-                // loading spinner.
-                return Center(child: CircularProgressIndicator());
-              }
-            },
-          ),
+          _getCamera(deviceRatio, _controllers[1]),
           Positioned(
             bottom: isIOS ? height * 0.05 : 0.0,
             child: Padding(
@@ -236,15 +226,16 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     if (!controller.hasListeners) {
       addNewListener(controller);
     }
-    _initializeVideoPlayerFuture.add(controller.initialize().then((_) {}));
+    controller.initialize().then((_) {});
     return;
   }
 
-  Future<void> addNewListener(VideoPlayerController controller) {
+  void addNewListener(VideoPlayerController controller) {
     controller.addListener(() {
-      int duration = controller.value.duration.inMilliseconds;
-      int position = controller.value.position.inMilliseconds;
-      if (duration - position < 1) {
+      if (controller.value.initialized &&
+          controller.value.duration.inMilliseconds -
+                  controller.value.position.inMilliseconds <
+              1) {
         controller.seekTo(Duration(milliseconds: 0));
         nextVideo();
       }
@@ -255,7 +246,6 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     _controllers[1]?.pause();
     index--;
     _controllers.last?.dispose();
-    _initializeVideoPlayerFuture.removeLast();
     _controllers.removeLast();
 
     if (index != 0) {
@@ -303,12 +293,13 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     if (controller == null) {
       return Container();
     }
-    controller.play();
-    return Transform.scale(
-      scale: controller.value.aspectRatio / (deviceRatio * 0.90),
-      child: AspectRatio(
-        aspectRatio: controller.value.aspectRatio,
-        child: VideoPlayer(controller),
+    return SizedBox(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      child: Center(
+        child: VideoPlayer(
+          _controllers[1],
+        ),
       ),
     );
   }
