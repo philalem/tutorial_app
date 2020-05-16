@@ -27,7 +27,6 @@ class _InterestsSignUpState extends State<InterestsSignUp> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.blueGrey,
         elevation: 0.0,
         title: Text('Creaid'),
       ),

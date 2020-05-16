@@ -161,7 +161,6 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                         children: <Widget>[
                           Spacer(flex: 1),
                           RaisedButton(
-                            color: Colors.lightBlue,
                             onPressed: () {
                               setState(() {
                                 isSaving = true;

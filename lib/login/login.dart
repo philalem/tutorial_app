@@ -25,7 +25,6 @@ class _LoginState extends State<Login> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.blueGrey,
         elevation: 0.0,
         title: Text(
           'Creaid',
