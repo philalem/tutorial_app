@@ -217,7 +217,6 @@ class _CameraScreenState extends State<CameraScreen> {
       height: 80.0,
       child: RawMaterialButton(
         shape: CircleBorder(),
-        fillColor: Colors.blueGrey,
         elevation: 0.0,
         child: AnimatedContainer(
           width: _width,

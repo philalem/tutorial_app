@@ -51,7 +51,6 @@ class _HomeState extends State<Home> {
             fontSize: 34,
           ),
         ),
-        backgroundColor: Colors.deepPurple,
         centerTitle: true,
       ),
       body: _pages[_navBarItemIndex],
@@ -59,7 +58,6 @@ class _HomeState extends State<Home> {
         showSelectedLabels: false,
         showUnselectedLabels: false,
         iconSize: 30,
-        backgroundColor: Colors.deepPurple,
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
