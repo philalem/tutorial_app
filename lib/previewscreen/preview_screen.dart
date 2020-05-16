@@ -19,28 +19,39 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   final titleTextController = TextEditingController();
   final descriptionTextController = TextEditingController();
   final databaseReference = Firestore.instance;
-  List<VideoPlayerController> _controller = [];
-  List<Future<void>> _initializeVideoPlayerFuture = [];
+  List<String> _paths;
+  int index = 0;
+  double _progress = 0;
+  bool _changeLock = false;
+  List<VideoPlayerController> _controllers = [];
   bool isSaving = false;
 
   @override
   void initState() {
     super.initState();
-    for (var i = 0; i < widget.paths.length; i++) {
-      _controller.add(VideoPlayerController.file(File(widget.paths[i])));
-      _initializeVideoPlayerFuture.add(_controller[i].initialize());
-      _controller[i].setLooping(true);
-      _controller[i].play();
-      storageReferences
-          .add(FirebaseStorage.instance.ref().child(widget.paths[i]));
+    _paths = widget.paths;
+    for (var i = 0; i < _paths.length; i++) {
+      storageReferences.add(FirebaseStorage.instance.ref().child(_paths[i]));
+    }
+    _controllers.add(null);
+
+    for (int i = 0; i < ((_paths.length > 2) ? 2 : _paths.length); i++) {
+      _controllers.add(VideoPlayerController.file(File(_paths[i])));
+    }
+
+    attachListenerAndInit(_controllers[1]).then((_) {
+      _controllers[1].play().then((_) {
+        setState(() {});
+      });
+    });
+
+    if (_controllers.length > 2) {
+      attachListenerAndInit(_controllers[2]);
     }
   }
 
   @override
   void dispose() {
-    for (var i = 0; i < _controller.length; i++) {
-      _controller[i]?.dispose();
-    }
     super.dispose();
   }
 
@@ -58,20 +69,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       resizeToAvoidBottomPadding: false,
       body: Stack(
         children: <Widget>[
-          FutureBuilder(
-            future: _initializeVideoPlayerFuture[0],
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                // If the VideoPlayerController has finished initialization, use
-                // the data it provides to limit the aspect ratio of the video.
-                return _getCamera(deviceRatio, _controller[0]);
-              } else {
-                // If the VideoPlayerController is still initializing, show a
-                // loading spinner.
-                return Center(child: CircularProgressIndicator());
-              }
-            },
-          ),
+          _getCamera(deviceRatio, _controllers[1]),
           Positioned(
             bottom: isIOS ? height * 0.05 : 0.0,
             child: Padding(
@@ -163,7 +161,6 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                         children: <Widget>[
                           Spacer(flex: 1),
                           RaisedButton(
-                            color: Colors.lightBlue,
                             onPressed: () {
                               setState(() {
                                 isSaving = true;
@@ -224,15 +221,84 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     );
   }
 
+  Future<void> attachListenerAndInit(VideoPlayerController controller) async {
+    if (!controller.hasListeners) {
+      addNewListener(controller);
+    }
+    controller.initialize().then((_) {});
+    return;
+  }
+
+  void addNewListener(VideoPlayerController controller) {
+    controller.addListener(() {
+      if (controller.value.initialized &&
+          controller.value.duration.inMilliseconds -
+                  controller.value.position.inMilliseconds <
+              1) {
+        controller.seekTo(Duration(milliseconds: 0));
+        nextVideo();
+      }
+    });
+  }
+
+  void previousVideo() {
+    _controllers[1]?.pause();
+    index--;
+    _controllers.last?.dispose();
+    _controllers.removeLast();
+
+    if (index != 0) {
+      _controllers.insert(
+          0, VideoPlayerController.file(File(_paths[index - 1])));
+      attachListenerAndInit(_controllers.first);
+    } else if (index < 0) {
+      index = _paths.length - 1;
+      _controllers.insert(0, VideoPlayerController.file(File(_paths[index])));
+      attachListenerAndInit(_controllers.first);
+    }
+
+    _controllers[1].play().then((_) {
+      setState(() {
+        _changeLock = false;
+      });
+    });
+  }
+
+  void nextVideo() {
+    if (_changeLock) {
+      return;
+    }
+    index = index + 1 == _paths.length ? 0 : index + 1;
+    _changeLock = true;
+    _controllers[1]?.pause();
+    _controllers.first?.dispose();
+    _controllers.removeAt(0);
+    if (index != _paths.length - 1) {
+      _controllers.add(VideoPlayerController.file(File(_paths[index + 1])));
+      attachListenerAndInit(_controllers.last);
+    } else if (index == _paths.length - 1) {
+      _controllers.add(VideoPlayerController.file(File(_paths[0])));
+      attachListenerAndInit(_controllers.last);
+    }
+
+    _controllers[1].play().then((_) {
+      setState(() {
+        _changeLock = false;
+      });
+    });
+  }
+
   Widget _getCamera(deviceRatio, controller) {
     if (controller == null) {
       return Container();
     }
-    return Transform.scale(
-      scale: controller.value.aspectRatio / (deviceRatio * 0.90),
-      child: AspectRatio(
-        aspectRatio: controller.value.aspectRatio,
-        child: VideoPlayer(controller),
+    return SizedBox(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      child: Center(
+        child: VideoPlayer(
+          _controllers[1],
+        ),
       ),
     );
   }
@@ -257,10 +323,10 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
 
   void _addPostToDb() async {
     print('Adding post information...');
-    //FirebaseUser uid = await getCurrentUser();
+    FirebaseUser uid = await getCurrentUser();
     DocumentReference ref = await databaseReference
         .collection("posts")
-        .document("uid.toString()")
+        .document(uid.uid.toString())
         .collection("user-posts")
         .add({
       'title': titleTextController.text,
@@ -286,7 +352,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        _controller == null
+        _controllers == null
             ? Container()
             : SafeArea(
                 child: Container(
