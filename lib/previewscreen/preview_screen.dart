@@ -53,14 +53,6 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   }
 
   @override
-  void dispose() {
-    for (var i = 0; i < _controllers.length; i++) {
-      _controllers[i]?.dispose();
-    }
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final height = size.height;
@@ -241,7 +233,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   }
 
   Future<void> attachListenerAndInit(VideoPlayerController controller) async {
-    if (!controller.hasListeners && controller.value != null) {
+    if (!controller.hasListeners) {
       addNewListener(controller);
     }
     _initializeVideoPlayerFuture.add(controller.initialize().then((_) {}));
@@ -260,29 +252,20 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   }
 
   void previousVideo() {
-    if (_changeLock) {
-      return;
-    }
-    _changeLock = true;
-
-    if (index == 0) {
-      _changeLock = false;
-      return;
-    }
     _controllers[1]?.pause();
     index--;
+    _controllers.last?.dispose();
+    _initializeVideoPlayerFuture.removeLast();
+    _controllers.removeLast();
 
-    if (index != _paths.length - 2) {
-      _controllers.last?.dispose();
-      _initializeVideoPlayerFuture.removeLast();
-      _controllers.removeLast();
-    }
     if (index != 0) {
       _controllers.insert(
           0, VideoPlayerController.file(File(_paths[index - 1])));
       attachListenerAndInit(_controllers.first);
-    } else {
-      _controllers.insert(0, null);
+    } else if (index < 0) {
+      index = _paths.length - 1;
+      _controllers.insert(0, VideoPlayerController.file(File(_paths[index])));
+      attachListenerAndInit(_controllers.first);
     }
 
     _controllers[1].play().then((_) {
@@ -296,18 +279,16 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     if (_changeLock) {
       return;
     }
+    index = index + 1 == _paths.length ? 0 : index + 1;
     _changeLock = true;
-    if (index == _paths.length - 1) {
-      _changeLock = false;
-      return;
-    }
     _controllers[1]?.pause();
-    index++;
     _controllers.first?.dispose();
     _controllers.removeAt(0);
-    _initializeVideoPlayerFuture.removeAt(0);
     if (index != _paths.length - 1) {
       _controllers.add(VideoPlayerController.file(File(_paths[index + 1])));
+      attachListenerAndInit(_controllers.last);
+    } else if (index == _paths.length - 1) {
+      _controllers.add(VideoPlayerController.file(File(_paths[0])));
       attachListenerAndInit(_controllers.last);
     }
 
