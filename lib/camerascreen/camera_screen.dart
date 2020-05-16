@@ -155,6 +155,7 @@ class _CameraScreenState extends State<CameraScreen> {
                           _height = 60;
                         });
                       }
+                      if (paths.isEmpty) return;
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) =>

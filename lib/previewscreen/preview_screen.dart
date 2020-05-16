@@ -33,7 +33,8 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     for (var i = 0; i < _paths.length; i++) {
       storageReferences.add(FirebaseStorage.instance.ref().child(_paths[i]));
     }
-    _controllers.add(null);
+    _controllers
+        .add(VideoPlayerController.file(File(_paths[_paths.length - 1])));
 
     for (int i = 0; i < ((_paths.length > 2) ? 2 : _paths.length); i++) {
       _controllers.add(VideoPlayerController.file(File(_paths[i])));
@@ -243,7 +244,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
 
   void previousVideo() {
     _controllers[1]?.pause();
-    index--;
+    index = index - 1 < 0 ? _paths.length - 1 : index - 1;
     _controllers.last?.dispose();
     _controllers.removeLast();
 
@@ -251,9 +252,9 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       _controllers.insert(
           0, VideoPlayerController.file(File(_paths[index - 1])));
       attachListenerAndInit(_controllers.first);
-    } else if (index < 0) {
-      index = _paths.length - 1;
-      _controllers.insert(0, VideoPlayerController.file(File(_paths[index])));
+    } else if (index == 0) {
+      _controllers.insert(
+          0, VideoPlayerController.file(File(_paths[_paths.length - 1])));
       attachListenerAndInit(_controllers.first);
     }
 
@@ -292,14 +293,50 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     if (controller == null) {
       return Container();
     }
-    return SizedBox(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
-      child: Center(
-        child: VideoPlayer(
-          _controllers[1],
+    return Stack(
+      children: <Widget>[
+        SizedBox(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: Center(
+            child: VideoPlayer(
+              _controllers[1],
+            ),
+          ),
         ),
-      ),
+        Positioned(
+          right: 0,
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width / 2,
+            child: GestureDetector(
+              onTap: () {
+                setState(
+                  () {
+                    nextVideo();
+                  },
+                );
+              },
+            ),
+          ),
+        ),
+        Positioned(
+          left: 0,
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width / 2,
+            child: GestureDetector(
+              onTap: () {
+                setState(
+                  () {
+                    previousVideo();
+                  },
+                );
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 
