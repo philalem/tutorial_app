@@ -201,8 +201,9 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
             child: Align(
               alignment: Alignment.topLeft,
               child: IconButton(
+                iconSize: 30,
                 icon: Icon(
-                  Icons.close,
+                  Icons.arrow_back_ios,
                   color: Colors.white,
                 ),
                 onPressed: () {

@@ -82,7 +82,7 @@ class _HomeState extends State<Home> {
           ),
         ],
         currentIndex: _navBarItemIndex,
-        selectedItemColor: Colors.amber[800],
+        selectedItemColor: Colors.indigoAccent,
         onTap: _onNavBarItemTapped,
       ),
     );
