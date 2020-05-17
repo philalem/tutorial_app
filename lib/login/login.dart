@@ -25,7 +25,7 @@ class _LoginState extends State<Login> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        elevation: 0.0,
+        centerTitle: true,
         title: Text(
           'Creaid',
           style: GoogleFonts.satisfy(
@@ -34,8 +34,16 @@ class _LoginState extends State<Login> {
         ),
         actions: <Widget>[
           FlatButton.icon(
-              icon: Icon(Icons.person),
-              label: Text('Register'),
+              icon: Icon(
+                Icons.person,
+                color: Colors.white,
+              ),
+              label: Text(
+                'Sign up',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
               onPressed: () {
                 widget.toggleView();
               })
@@ -48,12 +56,14 @@ class _LoginState extends State<Login> {
               child: Column(children: <Widget>[
                 SizedBox(height: 20.0),
                 Text(
-                  'Login to your Creaid acount:',
+                  'Login to your Creaid account',
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 18,
+                  ),
                 ),
-                SizedBox(height: 20.0),
+                SizedBox(height: 40.0),
                 CustomTextField(
                   icon: Icon(Icons.email),
                   obsecure: false,
@@ -62,7 +72,7 @@ class _LoginState extends State<Login> {
                       input.isEmpty ? "Need to enter a valid email" : null,
                   hint: "Email",
                 ),
-                SizedBox(height: 20.0),
+                SizedBox(height: 30.0),
                 CustomTextField(
                   icon: Icon(Icons.panorama_fish_eye),
                   obsecure: true,
@@ -72,31 +82,40 @@ class _LoginState extends State<Login> {
                       : null,
                   hint: "Password",
                 ),
-                SizedBox(height: 20.0),
+                SizedBox(height: 40.0),
                 RaisedButton(
-                    color: Colors.black,
-                    child: Text(
-                      'Sign in',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    onPressed: () async {
-                      if (_formKey.currentState.validate()) {
-                        _formKey.currentState.save();
-                        dynamic res = await _auth.signInWithEmailAndPassword(
-                            email, password);
+                  onPressed: () async {
+                    if (_formKey.currentState.validate()) {
+                      _formKey.currentState.save();
+                      dynamic res = await _auth.signInWithEmailAndPassword(
+                          email, password);
 
-                        if (res == null) {
-                          setState(() {
-                            error = 'Could not sign in with those credentials';
-                          });
-                        } else {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => Home()),
-                          );
-                        }
+                      if (res == null) {
+                        setState(() {
+                          error = 'Could not sign in with those credentials';
+                        });
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Home()),
+                        );
                       }
-                    }),
+                    }
+                  },
+                  textColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        "Sign in",
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ],
+                    mainAxisSize: MainAxisSize.min,
+                  ),
+                ),
                 SizedBox(height: 12.0),
                 Text(
                   error,
