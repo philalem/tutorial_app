@@ -28,7 +28,11 @@ class UserDbService {
     return UserData(
       uuid: uuid,
       email: snapshot['email'],
-      name: snapshot['name']
+      name: snapshot['name'],
+      interests: List.from(snapshot['interests']),
+      followers: List.from(snapshot['followers']),
+      following: List.from(snapshot['following']),
+      photoUrl: snapshot['photoUrl']
     );
   }
 
