@@ -1,37 +1,8 @@
-/*
- * Copyright (c) 2019 Razeware LLC
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * Notwithstanding the foregoing, you may not use, copy, modify, merge, publish,
- * distribute, sublicense, create a derivative work, and/or sell copies of the
- * Software in any work that is designed, intended, or marketed for pedagogical or
- * instructional purposes related to programming, coding, application development,
- * or information technology.  Permission for such use, copying, modification,
- * merger, publication, distribution, sublicensing, creation of derivative works,
- * or sale is expressly withheld.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
-
 import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -141,6 +112,7 @@ class _CameraScreenState extends State<CameraScreen> {
                     icon: Icon(
                       Icons.photo,
                       color: Colors.white,
+                      size: 30,
                     ),
                     onPressed: () {
                       if (_controller.value.isRecordingVideo) {
@@ -171,6 +143,7 @@ class _CameraScreenState extends State<CameraScreen> {
                     icon: Icon(
                       Icons.arrow_forward_ios,
                       color: Colors.white,
+                      size: 30,
                     ),
                     onPressed: () {
                       if (_controller.value.isRecordingVideo) {
@@ -182,6 +155,7 @@ class _CameraScreenState extends State<CameraScreen> {
                           _height = 60;
                         });
                       }
+                      if (paths.isEmpty) return;
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) =>
@@ -195,14 +169,14 @@ class _CameraScreenState extends State<CameraScreen> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 30, left: 20),
+          SafeArea(
             child: Align(
               alignment: Alignment.topLeft,
               child: IconButton(
                 icon: Icon(
                   Icons.close,
                   color: Colors.white,
+                  size: 30,
                 ),
                 onPressed: () {
                   print("disconnecting camera");
@@ -212,8 +186,7 @@ class _CameraScreenState extends State<CameraScreen> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 30, right: 20),
+          SafeArea(
             child: Align(
               alignment: Alignment.topRight,
               child: _cameraTogglesRowWidget(),
@@ -245,7 +218,6 @@ class _CameraScreenState extends State<CameraScreen> {
       height: 80.0,
       child: RawMaterialButton(
         shape: CircleBorder(),
-        fillColor: Colors.blueGrey,
         elevation: 0.0,
         child: AnimatedContainer(
           width: _width,
@@ -292,8 +264,8 @@ class _CameraScreenState extends State<CameraScreen> {
       onPressed: _onSwitchCamera,
       icon: Icon(
         _getCameraLensIcon(lensDirection),
-        size: 30,
         color: Colors.white,
+        size: 30,
       ),
     );
   }
@@ -320,8 +292,10 @@ class _CameraScreenState extends State<CameraScreen> {
     try {
       HapticFeedback.mediumImpact();
       String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
+      final FirebaseAuth _auth = FirebaseAuth.instance;
+      FirebaseUser uid = await _auth.currentUser();
       final Directory extDir = await getApplicationDocumentsDirectory();
-      final String dirPath = '${extDir.path}/Movies/flutter_test';
+      final String dirPath = '${extDir.path}/${uid.uid.toString()}/user-posts';
       await Directory(dirPath).create(recursive: true);
       final String filePath = '$dirPath/${timestamp()}.mp4';
 

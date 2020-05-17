@@ -22,32 +22,19 @@ class CustomTextField extends StatelessWidget {
         autofocus: true,
         obscureText: obsecure,
         style: TextStyle(
-          fontSize: 15,
+          fontSize: 16,
         ),
         decoration: InputDecoration(
-            hintStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            hintText: hint,
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-              borderSide: BorderSide(
-                color: Theme.of(context).primaryColor,
-                width: 2,
-              ),
+          hintStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          hintText: hint,
+          prefixIcon: Padding(
+            child: IconTheme(
+              data: IconThemeData(color: Theme.of(context).primaryColor),
+              child: icon,
             ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-              borderSide: BorderSide(
-                color: Theme.of(context).primaryColor,
-                width: 3,
-              ),
-            ),
-            prefixIcon: Padding(
-              child: IconTheme(
-                data: IconThemeData(color: Theme.of(context).primaryColor),
-                child: icon,
-              ),
-              padding: EdgeInsets.only(left: 30, right: 10),
-            )),
+            padding: EdgeInsets.only(left: 0, right: 0),
+          ),
+        ),
       ),
     );
   }
