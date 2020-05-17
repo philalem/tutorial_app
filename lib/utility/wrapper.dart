@@ -4,17 +4,17 @@ import 'package:creaid/utility/user.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
-class Wrapper extends StatefulWidget {
-  @override
-  _WrapperState createState() => _WrapperState();
-}
+class Wrapper extends StatelessWidget {
 
-class _WrapperState extends State<Wrapper> {
   @override
   Widget build(BuildContext context) {
 
     final user = Provider.of<User>(context);
 
-    return Authenticate();
+    if(user == null) {
+      return Authenticate();
+    } else {
+      return Home();
+    }
   }
 }

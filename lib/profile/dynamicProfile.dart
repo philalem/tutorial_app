@@ -13,7 +13,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
-
+    print(user.uuid);
     return StreamBuilder<UserData>(
       stream: UserDbService(uuid: user.uuid).getNames(),
       builder: (context, snapshot) {
@@ -35,7 +35,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                       image: DecorationImage(
                         fit: BoxFit.contain,
                         image:
-                            AssetImage("./assets/images/phillip_profile.jpg"),
+                            Image.network(data.photoUrl).image,
                       ),
                     ),
                   ),
@@ -84,7 +84,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                             /*...*/
                           },
                           child: Text(
-                            "Following: 10",
+                            "Following: " + data.following.length.toString(),
                           ),
                         ),
                         Spacer(),
@@ -94,7 +94,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                             /*...*/
                           },
                           child: Text(
-                            "Followers: 10",
+                            "Followers: " + data.followers.length.toString(),
                           ),
                         ),
                         Spacer(

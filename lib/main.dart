@@ -1,4 +1,3 @@
-import 'package:creaid/utility/authenticate.dart';
 import 'package:creaid/utility/firebaseAuth.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/wrapper.dart';
