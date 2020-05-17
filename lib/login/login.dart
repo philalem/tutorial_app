@@ -1,3 +1,4 @@
+import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/customTextField.dart';
 import 'package:creaid/utility/firebaseAuth.dart';
 import 'package:flutter/material.dart';
@@ -83,7 +84,8 @@ class _LoginState extends State<Login> {
                   hint: "Password",
                 ),
                 SizedBox(height: 40.0),
-                RaisedButton(
+                CreaidButton(
+                  label: 'Sign up',
                   onPressed: () async {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
@@ -102,19 +104,6 @@ class _LoginState extends State<Login> {
                       }
                     }
                   },
-                  textColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18.0),
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        "Sign in",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ],
-                    mainAxisSize: MainAxisSize.min,
-                  ),
                 ),
                 SizedBox(height: 12.0),
                 Text(
