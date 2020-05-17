@@ -58,7 +58,6 @@ class _HomeState extends State<Home> {
         showSelectedLabels: false,
         showUnselectedLabels: false,
         iconSize: 30,
-        backgroundColor: Colors.blueGrey,
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -83,7 +82,7 @@ class _HomeState extends State<Home> {
           ),
         ],
         currentIndex: _navBarItemIndex,
-        selectedItemColor: Colors.amber[800],
+        selectedItemColor: Colors.indigoAccent,
         onTap: _onNavBarItemTapped,
       ),
     );

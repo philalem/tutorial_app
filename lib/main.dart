@@ -14,7 +14,8 @@ class CreaidApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Creaid',
         theme: ThemeData(
-          primarySwatch: Colors.blueGrey,
+          primaryColor: Colors.indigo,
+          buttonColor: Colors.indigo
         ),
         home: Wrapper(),
       )
