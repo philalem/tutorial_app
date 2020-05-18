@@ -1,5 +1,4 @@
-import "./user_post_functions";
-
+const createPostToFollowersBatchJobs = require("user_post_functions");
 const functions = require("firebase-functions");
 
 // Create and Deploy Your First Cloud Functions
