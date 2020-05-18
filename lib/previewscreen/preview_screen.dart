@@ -342,6 +342,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   }
 
   void _saveVideosToDb() async {
+    _controllers[1].pause();
     for (var i = 0; i < storageReferences.length; i++) {
       final StorageUploadTask uploadTask = storageReferences[i].putFile(
         File(widget.paths[i]),
@@ -357,7 +358,6 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       }
       print('Was video upload successful: ' + successfulUpload.toString());
     }
-    _controllers[1].pause();
   }
 
   void _addPostToDb() async {
