@@ -357,6 +357,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       }
       print('Was video upload successful: ' + successfulUpload.toString());
     }
+    _controllers[1].pause();
   }
 
   void _addPostToDb() async {
