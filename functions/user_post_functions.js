@@ -21,27 +21,22 @@ exports.createPostToFollowersBatchJobs = async (
 
   const userPosts = firestoreInstance.collection("posts");
   try {
-    //Retrieve the Id's from all the followers of the post author
     const userFollowers = await getUserFollowersIds(authorId);
 
-    //Check if the user have followers
     if (userFollowers.length === 0) {
       return console.log("There are no followers to update feed.");
     }
 
-    //Generate the right amount of batches
     const batches = _.chunk(userFollowers, 500).map((userIds) => {
       const writeBatch = firestoreInstance.batch();
       if (isPostDeletion) {
         userIds.forEach((userId) => {
-          // console.log('Deleting post ', postId, ' in user ', userId, ' feed');
           writeBatch.delete(
             userPosts.doc(userId).collection("following-posts").doc(postId)
           );
         });
       } else {
         userIds.forEach((userId) => {
-          // console.log('Writing post ', postId, ' in user ', userId, ' feed');
           writeBatch.set(
             userPosts.doc(userId).collection("following-posts").doc(postId),
             event.data.data()
