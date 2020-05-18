@@ -12,5 +12,5 @@ exports.helloWorld = functions.https.onRequest((request, response) => {
 exports.sendPostToFollowers = functions.firestore
   .document("posts/{userId}/user-posts/{postId}")
   .onCreate((snap, context) => {
-    createPostToFollowersBatchJobs(snap, context);
+    return createPostToFollowersBatchJobs(snap, context, false);
   });
