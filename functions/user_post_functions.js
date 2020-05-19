@@ -1,8 +1,12 @@
-const functions = require("firebase-functions");
-const firestoreInstance = functions.firestore.firestoreInstance;
+const Firestore = require("@google-cloud/firestore");
+const _ = require("underscore");
+
+const firestore = new Firestore({
+  projectId: process.env.GCP_PROJECT,
+});
 
 exports.getUserFollowersIds = async (userId) => {
-  const followers = await firestoreInstance
+  const followers = await firestore
     .collection("userInfo")
     .doc(userId)
     .collection("followers")
@@ -15,20 +19,19 @@ exports.createPostToFollowersBatchJobs = async (
   context,
   isPostDeletion
 ) => {
-  const data = snap.data();
   const postId = context.params.postId;
   const authorId = context.params.userId;
 
-  const userPosts = firestoreInstance.collection("posts");
+  const userPosts = firestore.collection("posts");
   try {
-    const userFollowers = await getUserFollowersIds(authorId);
+    const userFollowers = await exports.getUserFollowersIds(authorId);
 
     if (userFollowers.length === 0) {
       return console.log("There are no followers to update feed.");
     }
 
     const batches = _.chunk(userFollowers, 500).map((userIds) => {
-      const writeBatch = firestoreInstance.batch();
+      const writeBatch = firestore.batch();
       if (isPostDeletion) {
         userIds.forEach((userId) => {
           writeBatch.delete(
