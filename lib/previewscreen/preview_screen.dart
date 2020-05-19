@@ -365,6 +365,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
 
   void _addPostToDb() async {
     print('Adding post information...');
+    var date = DateTime.now();
     FirebaseUser uid = await getCurrentUser();
     DocumentReference userRef = await databaseReference
         .collection("posts")
@@ -375,7 +376,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       'description': descriptionTextController.text,
       'videos': widget.paths,
       'number-likes': 0,
-      'date': DateTime.now(),
+      'date': date,
     }).catchError((e) {
       print("Got error: ${e.error}");
       return 1;
@@ -390,7 +391,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       'description': descriptionTextController.text,
       'videos': widget.paths,
       'number-likes': 0,
-      'date': DateTime.now(),
+      'date': date,
     }).catchError((e) {
       print("Got error: ${e.error}");
       return 1;
