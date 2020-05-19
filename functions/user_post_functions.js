@@ -1,5 +1,8 @@
 const Firestore = require("@google-cloud/firestore");
+const admin = require("firebase-admin");
 const _ = require("underscore");
+const path = require("path");
+const ffmpeg = require("fluent-ffmpeg");
 
 const firestore = new Firestore({
   projectId: process.env.GCP_PROJECT,
@@ -69,4 +72,28 @@ exports.createPostToFollowersBatchJobs = async (
   return 0;
 };
 
-exports.generateVideoThumbnail = async (snap, context) => {};
+exports.generateVideoThumbnail = async (object) => {
+  const fullFilePath = object.name; // File path in the bucket.
+  const fileName = path.baseName(fullFilePath);
+  const pathName = path.dirname(fullFilePath);
+  const thumbnailName = "thumbnail_" + fileName + ".png";
+  const uid = object.owner.entity.uid;
+
+  ffmpeg(fullFilePath)
+    .screenshots({
+      timestamps: [0.0],
+      filename: thumbnailName,
+      folder: pathName,
+    })
+    .on("end", () => {
+      console.log("Generated thumbnail: " + thumbnailName);
+    });
+
+  firestore
+    .collection("posts")
+    .document(uid)
+    .collection("user-posts")
+    .setData({
+      thumbnails: admin.firestore.FieldValue.arrayUnion(thumbnailName),
+    });
+};

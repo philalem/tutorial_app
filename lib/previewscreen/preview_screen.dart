@@ -374,7 +374,8 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
         .add({
       'title': titleTextController.text,
       'description': descriptionTextController.text,
-      'videos': widget.paths,
+      'videos': _paths,
+      'thumbnails': [],
       'number-likes': 0,
       'date': date,
     }).catchError((e) {
@@ -389,7 +390,8 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
         .setData({
       'title': titleTextController.text,
       'description': descriptionTextController.text,
-      'videos': widget.paths,
+      'videos': _paths,
+      'thumbnails': [],
       'number-likes': 0,
       'date': date,
     }).catchError((e) {
