@@ -14,4 +14,8 @@ exports.sendPostToFollowers = functions.firestore
     return postFunctions.createPostToFollowersBatchJobs(snap, context, false);
   });
 
-//   exports.generateThumbnailFromPost = functions.storage
+exports.generateThumbnailFromPost = functions.storage
+  .object()
+  .onFinalize(async (object) => {
+    return postFunctions.generateVideoThumbnail(object);
+  });
