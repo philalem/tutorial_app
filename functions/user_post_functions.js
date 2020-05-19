@@ -42,7 +42,7 @@ exports.createPostToFollowersBatchJobs = async (
         userIds.forEach((userId) => {
           writeBatch.set(
             userPosts.doc(userId).collection("following-posts").doc(postId),
-            event.data.data()
+            snap.data()
           );
         });
       }
@@ -50,7 +50,11 @@ exports.createPostToFollowersBatchJobs = async (
     });
 
     await Promise.all(batches);
-    console.log("The feed of ", userFollowers.length, " have been update");
+    console.log(
+      "The feed of ",
+      userFollowers.length,
+      " follower(s) has been updated"
+    );
   } catch (err) {
     console.error(
       "Failed updating the users feed after the user",
