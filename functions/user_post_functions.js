@@ -68,3 +68,5 @@ exports.createPostToFollowersBatchJobs = async (
   }
   return 0;
 };
+
+exports.generateVideoThumbnail = async (snap, context) => {};

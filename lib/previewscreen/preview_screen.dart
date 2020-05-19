@@ -366,7 +366,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   void _addPostToDb() async {
     print('Adding post information...');
     FirebaseUser uid = await getCurrentUser();
-    DocumentReference ref = await databaseReference
+    DocumentReference userRef = await databaseReference
         .collection("posts")
         .document(uid.uid.toString())
         .collection("user-posts")
@@ -380,7 +380,22 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       print("Got error: ${e.error}");
       return 1;
     });
-    print("Document ID: " + ref.documentID);
+    await databaseReference
+        .collection("posts")
+        .document(uid.uid.toString())
+        .collection("following-posts")
+        .document(userRef.documentID)
+        .setData({
+      'title': titleTextController.text,
+      'description': descriptionTextController.text,
+      'videos': widget.paths,
+      'number-likes': 0,
+      'date': DateTime.now(),
+    }).catchError((e) {
+      print("Got error: ${e.error}");
+      return 1;
+    });
+    print("Document ID: " + userRef.documentID);
     print('Done.');
   }
 

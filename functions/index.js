@@ -13,3 +13,5 @@ exports.sendPostToFollowers = functions.firestore
   .onCreate((snap, context) => {
     return postFunctions.createPostToFollowersBatchJobs(snap, context, false);
   });
+
+//   exports.generateThumbnailFromPost = functions.storage
