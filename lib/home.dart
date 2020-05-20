@@ -1,4 +1,6 @@
 import 'package:creaid/profile/dynamicProfile.dart';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:creaid/camerascreen/camera_screen.dart';
@@ -43,7 +45,10 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
@@ -92,6 +97,7 @@ class _HomeState extends State<Home> {
                 opacity: _navBarItemIndex == 1 ? 1 : 0,
                 duration: Duration(milliseconds: 200),
                 child: IconButton(
+                  iconSize: 30,
                   icon: Icon(
                     Icons.search,
                   ),
@@ -112,7 +118,21 @@ class _HomeState extends State<Home> {
         ],
         centerTitle: true,
       ),
-      body: _pages[_navBarItemIndex],
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          _pages[_navBarItemIndex],
+          AnimatedOpacity(
+            opacity: _isSearching ? 0.5 : 0,
+            duration: Duration(milliseconds: 200),
+            child: Container(
+              color: Colors.black,
+              height: screenHeight,
+              width: screenWidth,
+            ),
+          ),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: false,
         showUnselectedLabels: false,
