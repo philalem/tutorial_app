@@ -375,7 +375,6 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       'title': titleTextController.text,
       'description': descriptionTextController.text,
       'videos': _paths,
-      'thumbnails': [],
       'number-likes': 0,
       'date': date,
     }).catchError((e) {
@@ -391,7 +390,6 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       'title': titleTextController.text,
       'description': descriptionTextController.text,
       'videos': _paths,
-      'thumbnails': [],
       'number-likes': 0,
       'date': date,
     }).catchError((e) {
