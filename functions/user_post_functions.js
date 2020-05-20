@@ -1,8 +1,12 @@
 const Firestore = require("@google-cloud/firestore");
 const admin = require("firebase-admin");
+admin.initializeApp();
 const _ = require("underscore");
 const path = require("path");
+const os = require("os");
+const fs = require("fs");
 const ffmpeg = require("fluent-ffmpeg");
+const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 
 const firestore = new Firestore({
   projectId: process.env.GCP_PROJECT,
@@ -73,21 +77,35 @@ exports.createPostToFollowersBatchJobs = async (
 };
 
 exports.generateVideoThumbnail = async (object) => {
-  const fullFilePath = object.name; // File path in the bucket.
-  const fileName = path.baseName(fullFilePath);
+  const fullFilePath = object.name;
+  const fileBucket = object.fileBucket;
+  const contentType = object.contentType;
+  const fileName = path.basename(fullFilePath);
   const pathName = path.dirname(fullFilePath);
   const thumbnailName = "thumbnail_" + fileName + ".png";
-  const uid = object.owner.entity.uid;
+  const directories = fullFilePath.split("/");
+  const uid = directories[directories.length - 2];
+  const bucket = admin.storage().bucket(fileBucket);
+  const tempDirectory = path.join(os.tmpdir(), fileName);
+  const metadata = {
+    contentType: contentType,
+  };
 
-  ffmpeg(fullFilePath)
+  await ffmpeg(fullFilePath)
+    .setFfmpegPath(ffmpegPath)
     .screenshots({
       timestamps: [0.0],
       filename: thumbnailName,
-      folder: pathName,
+      folder: tempDirectory,
     })
     .on("end", () => {
       console.log("Generated thumbnail: " + thumbnailName);
     });
+
+  await bucket.upload(tempDirectory, {
+    destination: pathName,
+    metadata: metadata,
+  });
 
   firestore
     .collection("posts")
@@ -96,4 +114,5 @@ exports.generateVideoThumbnail = async (object) => {
     .setData({
       thumbnails: admin.firestore.FieldValue.arrayUnion(thumbnailName),
     });
+  return fs.unlinkSync(tempDirectory);
 };
