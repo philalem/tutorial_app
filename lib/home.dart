@@ -13,7 +13,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool isSearching = false;
+  bool _isSearching = false;
   var _navBarItemIndex = 1;
   final List<Widget> _pages = [
     VideoPlayerScreen(),
@@ -35,6 +35,7 @@ class _HomeState extends State<Home> {
       );
     } else {
       setState(() {
+        _isSearching = false;
         _navBarItemIndex = index;
       });
     }
@@ -46,44 +47,69 @@ class _HomeState extends State<Home> {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: isSearching
-            ? TextField(
-                decoration: InputDecoration(
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
+        title: Stack(
+          children: <Widget>[
+            AnimatedOpacity(
+                opacity: _isSearching ? 1 : 0,
+                duration: Duration(milliseconds: 200),
+                child: TextField(
+                  decoration: InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    hintText: 'Search...',
+                    hintStyle: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
-                  border: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  hintText: 'Search...',
-                  hintStyle: TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
                   ),
-                ),
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              )
-            : Text(
-                "Creaid",
-                style: GoogleFonts.satisfy(
-                  fontSize: 34,
+                )),
+            Align(
+              alignment: Alignment.center,
+              child: AnimatedOpacity(
+                opacity: _isSearching ? 0 : 1,
+                duration: Duration(milliseconds: 200),
+                child: Text(
+                  "Creaid",
+                  style: GoogleFonts.satisfy(
+                    fontSize: 34,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
-        actions: _navBarItemIndex == 1
-            ? <Widget>[
-                IconButton(
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          Stack(
+            children: <Widget>[
+              AnimatedOpacity(
+                opacity: _navBarItemIndex == 1 ? 1 : 0,
+                duration: Duration(milliseconds: 200),
+                child: IconButton(
                   icon: Icon(
                     Icons.search,
                   ),
                   onPressed: () => {
                     setState(() {
-                      isSearching = !isSearching;
+                      _isSearching = !_isSearching;
                     })
                   },
                 ),
-              ]
-            : [],
+              ),
+              AnimatedOpacity(
+                opacity: _navBarItemIndex == 1 ? 0 : 1,
+                duration: Duration(milliseconds: 200),
+                child: SizedBox(),
+              ),
+            ],
+          ),
+        ],
         centerTitle: true,
       ),
       body: _pages[_navBarItemIndex],
