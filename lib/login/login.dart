@@ -50,67 +50,78 @@ class _LoginState extends State<Login> {
               })
         ],
       ),
-      body: Container(
-          padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
-          child: Form(
-              key: _formKey,
-              child: Column(children: <Widget>[
-                SizedBox(height: 20.0),
-                Text(
-                  'Login to your Creaid account',
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 18,
-                  ),
-                ),
-                SizedBox(height: 40.0),
-                CustomTextField(
-                  icon: Icon(Icons.email),
-                  obsecure: false,
-                  onChanged: (input) => email = input,
-                  validator: (input) =>
-                      input.isEmpty ? "Need to enter a valid email" : null,
-                  hint: "Email",
-                ),
-                SizedBox(height: 30.0),
-                CustomTextField(
-                  icon: Icon(Icons.panorama_fish_eye),
-                  obsecure: true,
-                  onChanged: (input) => password = input,
-                  validator: (input) => input.length < 6
-                      ? "Need to enter a password with length greater then 6"
-                      : null,
-                  hint: "Password",
-                ),
-                SizedBox(height: 40.0),
-                CreaidButton(
-                  label: 'Sign up',
-                  onPressed: () async {
-                    if (_formKey.currentState.validate()) {
-                      _formKey.currentState.save();
-                      dynamic res = await _auth.signInWithEmailAndPassword(
-                          email, password);
+      body: Center(
+        child: ListView(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: 20.0),
+                    Text(
+                      'Login to your Creaid account',
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                    SizedBox(height: 40.0),
+                    CustomTextField(
+                      icon: Icon(Icons.email),
+                      obsecure: false,
+                      onChanged: (input) => email = input,
+                      validator: (input) =>
+                          input.isEmpty ? "Need to enter a valid email" : null,
+                      hint: "Email",
+                    ),
+                    SizedBox(height: 30.0),
+                    CustomTextField(
+                      icon: Icon(Icons.panorama_fish_eye),
+                      obsecure: true,
+                      onChanged: (input) => password = input,
+                      validator: (input) => input.length < 6
+                          ? "Need to enter a password with length greater then 6"
+                          : null,
+                      hint: "Password",
+                    ),
+                    SizedBox(height: 40.0),
+                    CreaidButton(
+                      label: 'Sign up',
+                      onPressed: () async {
+                        if (_formKey.currentState.validate()) {
+                          _formKey.currentState.save();
+                          dynamic res = await _auth.signInWithEmailAndPassword(
+                              email, password);
 
-                      if (res == null) {
-                        setState(() {
-                          error = 'Could not sign in with those credentials';
-                        });
-                      } else {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Home()),
-                        );
-                      }
-                    }
-                  },
+                          if (res == null) {
+                            setState(() {
+                              error =
+                                  'Could not sign in with those credentials';
+                            });
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Home()),
+                            );
+                          }
+                        }
+                      },
+                    ),
+                    SizedBox(height: 12.0),
+                    Text(
+                      error,
+                      style: TextStyle(color: Colors.red, fontSize: 14.0),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 12.0),
-                Text(
-                  error,
-                  style: TextStyle(color: Colors.red, fontSize: 14.0),
-                ),
-              ]))),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
