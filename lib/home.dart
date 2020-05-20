@@ -13,11 +13,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  bool isSearching = false;
   var _navBarItemIndex = 1;
   final List<Widget> _pages = [
     VideoPlayerScreen(),
     Explore(),
-    Explore(),
+    VideoPlayerScreen(),
     Notifications(),
     DynamicProfile()
   ];
@@ -45,12 +46,44 @@ class _HomeState extends State<Home> {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Text(
-          "Creaid",
-          style: GoogleFonts.satisfy(
-            fontSize: 34,
-          ),
-        ),
+        title: isSearching
+            ? TextField(
+                decoration: InputDecoration(
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                  hintText: 'Search...',
+                  hintStyle: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              )
+            : Text(
+                "Creaid",
+                style: GoogleFonts.satisfy(
+                  fontSize: 34,
+                ),
+              ),
+        actions: _navBarItemIndex == 1
+            ? <Widget>[
+                IconButton(
+                  icon: Icon(
+                    Icons.search,
+                  ),
+                  onPressed: () => {
+                    setState(() {
+                      isSearching = !isSearching;
+                    })
+                  },
+                ),
+              ]
+            : [],
         centerTitle: true,
       ),
       body: _pages[_navBarItemIndex],
