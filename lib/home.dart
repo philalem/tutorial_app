@@ -124,7 +124,7 @@ class _HomeState extends State<Home> {
             title: Text('Feed'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
+            icon: Icon(Icons.explore),
             title: Text('Explore'),
           ),
           BottomNavigationBarItem(
