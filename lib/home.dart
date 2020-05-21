@@ -26,7 +26,7 @@ class _HomeState extends State<Home> {
   final List<Widget> _pages = [
     VideoPlayerScreen(),
     Explore(),
-    VideoPlayerScreen(),
+    null,
     Notifications(),
     DynamicProfile()
   ];
@@ -156,7 +156,6 @@ class _HomeState extends State<Home> {
       body: Navigator(
           key: _navigatorGlobalKey,
           onGenerateRoute: (RouteSettings settings) {
-            print(settings.name);
             return MaterialPageRoute(builder: (BuildContext context) {
               switch (settings.name) {
                 case '/':
