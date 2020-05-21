@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:creaid/video-player.dart';
 
 class SearchDisplay extends StatefulWidget {
+  GlobalKey<NavigatorState> navigatorKey;
+  SearchDisplay({this.navigatorKey});
   @override
   createState() => _SearchDisplayState();
 }
@@ -20,13 +22,7 @@ class _SearchDisplayState extends State<SearchDisplay> {
               'Item $index',
             ),
             onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) {
-                    return VideoPlayerScreen();
-                  },
-                ),
-              );
+              widget.navigatorKey.currentState.pushNamed('/profile');
             },
           ),
         ),

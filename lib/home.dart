@@ -15,6 +15,8 @@ class Home extends StatefulWidget {
   createState() => _HomeState();
 }
 
+GlobalKey<NavigatorState> _navigatorGlobalKey = GlobalKey<NavigatorState>();
+
 class _HomeState extends State<Home> {
   bool _isSearching = false;
   var _navBarItemIndex = 1;
@@ -42,6 +44,27 @@ class _HomeState extends State<Home> {
         _navBarItemIndex = index;
       });
     }
+  }
+
+  Widget _homeTabs(screenHeight, screenWidth) {
+    return Stack(
+      fit: StackFit.expand,
+      children: <Widget>[
+        AnimatedOpacity(
+          opacity: _isSearching ? 0.5 : 0,
+          duration: Duration(milliseconds: 200),
+          child: Container(
+            color: Colors.black,
+            height: screenHeight,
+            width: screenWidth,
+          ),
+        ),
+        _pages[_navBarItemIndex],
+        _isSearching
+            ? SearchDisplay(navigatorKey: _navigatorGlobalKey)
+            : SizedBox(),
+      ],
+    );
   }
 
   @override
@@ -122,22 +145,21 @@ class _HomeState extends State<Home> {
         ],
         centerTitle: true,
       ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          AnimatedOpacity(
-            opacity: _isSearching ? 0.5 : 0,
-            duration: Duration(milliseconds: 200),
-            child: Container(
-              color: Colors.black,
-              height: screenHeight,
-              width: screenWidth,
-            ),
-          ),
-          _pages[_navBarItemIndex],
-          _isSearching ? SearchDisplay() : SizedBox(),
-        ],
-      ),
+      body: Navigator(
+          key: _navigatorGlobalKey,
+          onGenerateRoute: (RouteSettings settings) {
+            print(settings.name);
+            return MaterialPageRoute(builder: (BuildContext context) {
+              switch (settings.name) {
+                case '/':
+                  return _homeTabs(screenHeight, screenWidth);
+                case '/profile':
+                  return Profile();
+                default:
+                  throw UnimplementedError();
+              }
+            });
+          }),
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: false,
         showUnselectedLabels: false,
