@@ -162,7 +162,9 @@ class _HomeState extends State<Home> {
                 case '/':
                   return _homeTabs(screenHeight, screenWidth);
                 case '/profile':
-                  return Profile();
+                  print('profile');
+                  break;
+                //return Profile();
                 default:
                   throw UnimplementedError();
               }
