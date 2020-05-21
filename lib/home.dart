@@ -19,6 +19,9 @@ GlobalKey<NavigatorState> _navigatorGlobalKey = GlobalKey<NavigatorState>();
 
 class _HomeState extends State<Home> {
   bool _isSearching = false;
+  TextEditingController _searchController = TextEditingController();
+  SearchDisplay _searchDisplay = SearchDisplay();
+
   var _navBarItemIndex = 1;
   final List<Widget> _pages = [
     VideoPlayerScreen(),
@@ -46,6 +49,12 @@ class _HomeState extends State<Home> {
     }
   }
 
+  Widget _displaySearchScreen() {
+    _searchDisplay.navigatorKey = _navigatorGlobalKey;
+    _searchDisplay.searchTextController = _searchController;
+    return _searchDisplay;
+  }
+
   Widget _homeTabs(screenHeight, screenWidth) {
     return Stack(
       fit: StackFit.expand,
@@ -60,9 +69,7 @@ class _HomeState extends State<Home> {
           ),
         ),
         _pages[_navBarItemIndex],
-        _isSearching
-            ? SearchDisplay(navigatorKey: _navigatorGlobalKey)
-            : SizedBox(),
+        _isSearching ? _displaySearchScreen() : SizedBox(),
       ],
     );
   }
@@ -83,6 +90,7 @@ class _HomeState extends State<Home> {
                 opacity: _isSearching ? 1 : 0,
                 duration: Duration(milliseconds: 200),
                 child: TextField(
+                  controller: _searchController,
                   focusNode: focusNode,
                   decoration: InputDecoration(
                     focusedBorder: UnderlineInputBorder(
