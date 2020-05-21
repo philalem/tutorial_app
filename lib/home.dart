@@ -1,6 +1,7 @@
 import 'package:creaid/profile/dynamicProfile.dart';
 import 'dart:ui';
 
+import 'package:creaid/searchDisplay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:creaid/camerascreen/camera_screen.dart';
@@ -45,6 +46,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    var focusNode = new FocusNode();
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
@@ -58,6 +60,7 @@ class _HomeState extends State<Home> {
                 opacity: _isSearching ? 1 : 0,
                 duration: Duration(milliseconds: 200),
                 child: TextField(
+                  focusNode: focusNode,
                   decoration: InputDecoration(
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
@@ -101,10 +104,11 @@ class _HomeState extends State<Home> {
                   icon: Icon(
                     Icons.search,
                   ),
-                  onPressed: () => {
+                  onPressed: () {
+                    focusNode.requestFocus();
                     setState(() {
                       _isSearching = !_isSearching;
-                    })
+                    });
                   },
                 ),
               ),
@@ -121,7 +125,6 @@ class _HomeState extends State<Home> {
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          _pages[_navBarItemIndex],
           AnimatedOpacity(
             opacity: _isSearching ? 0.5 : 0,
             duration: Duration(milliseconds: 200),
@@ -131,6 +134,8 @@ class _HomeState extends State<Home> {
               width: screenWidth,
             ),
           ),
+          _pages[_navBarItemIndex],
+          _isSearching ? SearchDisplay() : SizedBox(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
