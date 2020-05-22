@@ -1,3 +1,5 @@
+import 'package:creaid/DisplayFollow.dart';
+import 'package:creaid/profile/UploadProfile.dart';
 import 'package:creaid/utility/UserData.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/userDBService.dart';
@@ -13,7 +15,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
-    print(user.uuid);
+
     return StreamBuilder<UserData>(
       stream: UserDbService(uuid: user.uuid).getNames(),
       builder: (context, snapshot) {
@@ -38,6 +40,22 @@ class _DynamicProfileState extends State<DynamicProfile> {
                             Image.network(data.photoUrl).image,
                       ),
                     ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      top: 5,
+                      right: 15
+                   ),
+                   child: Container(
+                     child:IconButton(
+                        icon: Icon(Icons.people_outline),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => new UploadProfile())
+                          );
+                        }
+                      ),
+                    )
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 15),
@@ -81,7 +99,9 @@ class _DynamicProfileState extends State<DynamicProfile> {
                         FlatButton(
                           textColor: Colors.black,
                           onPressed: () {
-                            /*...*/
+                              Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (_) => new DisplayFollow(people: data.following.asMap()))
+                              );
                           },
                           child: Text(
                             "Following: " + data.following.length.toString(),
@@ -91,7 +111,9 @@ class _DynamicProfileState extends State<DynamicProfile> {
                         FlatButton(
                           textColor: Colors.black,
                           onPressed: () {
-                            /*...*/
+                              Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (_) => new DisplayFollow(people: data.followers.asMap()))
+                              );
                           },
                           child: Text(
                             "Followers: " + data.followers.length.toString(),

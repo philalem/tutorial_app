@@ -18,6 +18,11 @@ class UserDbService {
     });
   }
 
+  Future<void> updatePhotoUrl(String photoUrl) async {
+    DocumentReference ref =creaidCollection.document(uuid);
+    ref.updateData({"photoUrl" : photoUrl});
+  }
+
   List<String> _nameFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.documents.map((doc){
       return doc.data['name'] ?? '';
