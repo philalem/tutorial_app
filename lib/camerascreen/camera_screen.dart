@@ -1,38 +1,13 @@
-/*
- * Copyright (c) 2019 Razeware LLC
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * Notwithstanding the foregoing, you may not use, copy, modify, merge, publish,
- * distribute, sublicense, create a derivative work, and/or sell copies of the
- * Software in any work that is designed, intended, or marketed for pedagogical or
- * instructional purposes related to programming, coding, application development,
- * or information technology.  Permission for such use, copying, modification,
- * merger, publication, distribution, sublicensing, creation of derivative works,
- * or sale is expressly withheld.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
+import 'dart:async';
+import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+
 import '../previewscreen/preview_screen.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -44,11 +19,17 @@ class CameraScreen extends StatefulWidget {
 
 class _CameraScreenState extends State<CameraScreen> {
   CameraController _controller;
-  bool _overlaysOn = false;
   List cameras;
   int selectedCameraIdx;
   String imagePath;
   Future<void> _initializeVideoFuture;
+  List<String> paths = [];
+  bool isRecording = false;
+  double _width = 60;
+  double _height = 60;
+  bool _pause = false;
+  bool _chooseColor = true;
+  var _color = Colors.white;
 
   @override
   void initState() {
@@ -101,9 +82,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   void dispose() {
-    // Ensure disposing of the VideoPlayerController to free up resources.
-    _controller.dispose();
-
+    _controller?.dispose();
     super.dispose();
   }
 
@@ -116,116 +95,166 @@ class _CameraScreenState extends State<CameraScreen> {
     bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
 
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          child: Stack(
-            children: <Widget>[
-              FutureBuilder(
-                future: _initializeVideoFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    // If the VideoPlayerController has finished initialization, use
-                    // the data it provides to limit the aspect ratio of the video.
-                    return Transform.scale(
-                      scale:
-                          _controller.value.aspectRatio / (deviceRatio * 0.95),
-                      child: AspectRatio(
-                        aspectRatio: _controller.value.aspectRatio,
-                        child: _cameraPreviewWidget(),
-                      ),
-                    );
-                  } else {
-                    // If the VideoPlayerController is still initializing, show a
-                    // loading spinner.
-                    return Center(child: CircularProgressIndicator());
-                  }
-                },
-              ),
-              Positioned(
-                bottom: (isIOS) ? (height * 0.05) : 0.0,
-                child: Container(
-                  width: width,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Spacer(),
-                      _cameraTogglesRowWidget(),
-                      Spacer(
-                        flex: 3,
-                      ),
-                      _captureControlRowWidget(context),
-                      Spacer(
-                        flex: 3,
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.arrow_forward,
-                          color: Colors.grey,
-                        ),
-                        onPressed: () {},
-                      ),
-                      Spacer(),
-                    ],
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.topLeft,
-                child: SafeArea(
-                  child: IconButton(
+      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomPadding: false,
+      body: Stack(
+        children: <Widget>[
+          _getCamera(deviceRatio, isIOS),
+          Positioned(
+            bottom: height * 0.05,
+            child: Container(
+              width: width,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Spacer(),
+                  IconButton(
                     icon: Icon(
-                      Icons.close,
+                      Icons.photo,
                       color: Colors.white,
+                      size: 30,
                     ),
                     onPressed: () {
-                      print("disconnecting camera");
-                      _controller.dispose();
-                      Navigator.of(context).pop();
+                      if (_controller.value.isRecordingVideo) {
+                        _controller.stopVideoRecording();
+                        setState(() {
+                          _color = Colors.white;
+                          _pause = true;
+                          _width = 60;
+                          _height = 60;
+                        });
+                      }
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PreviewImageScreen(paths: paths),
+                        ),
+                      );
                     },
                   ),
-                ),
+                  Spacer(
+                    flex: 3,
+                  ),
+                  _captureControlRowWidget(context, paths),
+                  Spacer(
+                    flex: 3,
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.white,
+                      size: 30,
+                    ),
+                    onPressed: () {
+                      if (_controller.value.isRecordingVideo) {
+                        _controller.stopVideoRecording();
+                        setState(() {
+                          _color = Colors.white;
+                          _pause = true;
+                          _width = 60;
+                          _height = 60;
+                        });
+                      }
+                      if (paths.isEmpty) return;
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              PreviewImageScreen(paths: paths),
+                        ),
+                      );
+                    },
+                  ),
+                  Spacer(),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: IconButton(
+                icon: Icon(
+                  Icons.close,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                onPressed: () {
+                  print("disconnecting camera");
+                  _controller.dispose();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ),
+          SafeArea(
+            child: Align(
+              alignment: Alignment.topRight,
+              child: _cameraTogglesRowWidget(),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  /// Display Camera preview.
-  Widget _cameraPreviewWidget() {
+  Widget _getCamera(deviceRatio, isIOS) {
     if (_controller == null || !_controller.value.isInitialized) {
-      return const Text(
-        'Loading',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 20.0,
-          fontWeight: FontWeight.w900,
-        ),
-      );
+      return Container();
     }
-
-    return AspectRatio(
-      aspectRatio: _controller.value.aspectRatio,
-      child: CameraPreview(_controller),
+    return Transform.scale(
+      scale:
+          _controller.value.aspectRatio / (deviceRatio * (isIOS ? 0.95 : 0.90)),
+      child: AspectRatio(
+        aspectRatio: _controller.value.aspectRatio,
+        child: CameraPreview(_controller),
+      ),
     );
   }
 
   /// Display the control bar with buttons to take pictures
-  Widget _captureControlRowWidget(context) {
-    return FloatingActionButton(
-      child: Icon(Icons.add),
-      backgroundColor: Colors.grey,
-      onPressed: () {
-        _onCapturePressed(context);
-      },
+  Widget _captureControlRowWidget(context, List<String> paths) {
+    return Container(
+      width: 80.0,
+      height: 80.0,
+      child: RawMaterialButton(
+        shape: CircleBorder(),
+        elevation: 0.0,
+        child: AnimatedContainer(
+          width: _width,
+          height: _height,
+          duration: Duration(seconds: 1),
+          curve: Curves.easeInOut,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(isRecording ? 10 : 60),
+            shape: BoxShape.rectangle,
+            color: _color,
+          ),
+        ),
+        onPressed: () {
+          setState(() {
+            if (isRecording) {
+              _color = Colors.white;
+              _pause = true;
+              _width = 60;
+              _height = 60;
+            } else {
+              _pause = false;
+              _color = Colors.red;
+              _width = 50;
+              _height = 50;
+              _startOneSecondTimer();
+            }
+          });
+          _onCapturePressed(context, paths);
+        },
+      ),
     );
   }
 
   /// Display a row of toggle to select the camera (or a message if no camera is available).
   Widget _cameraTogglesRowWidget() {
     if (cameras == null || cameras.isEmpty) {
-      return Spacer();
+      return Container();
     }
 
     CameraDescription selectedCamera = cameras[selectedCameraIdx];
@@ -235,7 +264,8 @@ class _CameraScreenState extends State<CameraScreen> {
       onPressed: _onSwitchCamera,
       icon: Icon(
         _getCameraLensIcon(lensDirection),
-        color: Colors.grey[200],
+        color: Colors.white,
+        size: 30,
       ),
     );
   }
@@ -243,11 +273,7 @@ class _CameraScreenState extends State<CameraScreen> {
   IconData _getCameraLensIcon(CameraLensDirection direction) {
     switch (direction) {
       case CameraLensDirection.back:
-        return Icons.flip_to_front;
-      case CameraLensDirection.front:
-        return Icons.flip_to_back;
-      case CameraLensDirection.external:
-        return Icons.camera;
+        return CupertinoIcons.switch_camera_solid;
       default:
         return Icons.device_unknown;
     }
@@ -260,29 +286,35 @@ class _CameraScreenState extends State<CameraScreen> {
     _initCameraController(selectedCamera);
   }
 
-  void _onCapturePressed(context) async {
+  void _onCapturePressed(context, List<String> paths) async {
     // Take the Picture in a try / catch block. If anything goes wrong,
     // catch the error.
     try {
-      // Attempt to take a picture and log where it's been saved
-      final path = join(
-        // In this example, store the picture in the temp directory. Find
-        // the temp directory using the `path_provider` plugin.
-        (await getTemporaryDirectory()).path,
-        '${DateTime.now()}.png',
-      );
-      print(path);
-      await _controller.takePicture(path);
+      HapticFeedback.mediumImpact();
+      String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
+      final FirebaseAuth _auth = FirebaseAuth.instance;
+      FirebaseUser uid = await _auth.currentUser();
+      final Directory extDir = await getApplicationDocumentsDirectory();
+      final String dirPath = '${extDir.path}/${uid.uid.toString()}/user-posts';
+      await Directory(dirPath).create(recursive: true);
+      final String filePath = '$dirPath/${timestamp()}.mp4';
 
-      // If the picture was taken, display it on a new screen
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PreviewImageScreen(imagePath: path),
-        ),
-      );
+      if (_controller.value.isRecordingVideo) {
+        print("stopping the recording");
+        setState(() {
+          isRecording = false;
+        });
+        await _controller.stopVideoRecording();
+      } else {
+        print("path to recording: " + filePath);
+        print("starting the recording");
+        setState(() {
+          paths.add(filePath);
+          isRecording = true;
+        });
+        await _controller.startVideoRecording(filePath);
+      }
     } catch (e) {
-      // If an error occurs, log the error to the console.
       print(e);
     }
   }
@@ -292,5 +324,26 @@ class _CameraScreenState extends State<CameraScreen> {
     print(errorText);
 
     print('Error: ${e.code}\n${e.description}');
+  }
+
+  void _startOneSecondTimer() {
+    const oneSec = const Duration(seconds: 1);
+    Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        if (_pause) {
+          timer.cancel();
+          setState(() {
+            _color = Colors.white;
+            _chooseColor = true;
+          });
+        } else {
+          setState(() {
+            _color = _chooseColor ? Colors.red[200] : Colors.red;
+            _chooseColor = !_chooseColor;
+          });
+        }
+      },
+    );
   }
 }

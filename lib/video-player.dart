@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 
 void main() => runApp(VideoPlayerApp());
@@ -80,10 +79,21 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                     // the data it provides to limit the aspect ratio of the video.
                     return Container(
                       height: 450,
-                      child: AspectRatio(
-                        aspectRatio: _controller.value.aspectRatio,
-                        // Use the VideoPlayer widget to display the video.
-                        child: VideoPlayer(_controller),
+                      child: GestureDetector(
+                        onTap: () async {
+                          setState(
+                            () {
+                              (_controller.value.isPlaying)
+                                  ? _controller.pause()
+                                  : _controller.play();
+                            },
+                          );
+                        },
+                        child: AspectRatio(
+                          aspectRatio: _controller.value.aspectRatio,
+                          // Use the VideoPlayer widget to display the video.
+                          child: VideoPlayer(_controller),
+                        ),
                       ),
                     );
                   } else {
@@ -92,27 +102,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                     return Center(child: CircularProgressIndicator());
                   }
                 },
-              ),
-              FloatingActionButton(
-                onPressed: () {
-                  // Wrap the play or pause in a call to `setState`. This ensures the
-                  // correct icon is shown.
-                  setState(
-                    () {
-                      // If the video is playing, pause it.
-                      if (_controller.value.isPlaying) {
-                        _controller.pause();
-                      } else {
-                        // If the video is paused, play it.
-                        _controller.play();
-                      }
-                    },
-                  );
-                },
-                // Display the correct icon depending on the state of the player.
-                child: Icon(
-                  _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-                ),
               ),
               ListTile(
                 title: Text("Creator Name"),
