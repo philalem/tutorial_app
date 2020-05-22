@@ -1,4 +1,7 @@
 import 'package:creaid/profile/dynamicProfile.dart';
+import 'dart:ui';
+
+import 'package:creaid/searchDisplay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:creaid/camerascreen/camera_screen.dart';
@@ -12,12 +15,18 @@ class Home extends StatefulWidget {
   createState() => _HomeState();
 }
 
+GlobalKey<NavigatorState> _navigatorGlobalKey = GlobalKey<NavigatorState>();
+
 class _HomeState extends State<Home> {
+  bool _isSearching = false;
+  TextEditingController _searchController = TextEditingController();
+  SearchDisplay _searchDisplay = SearchDisplay();
+
   var _navBarItemIndex = 1;
   final List<Widget> _pages = [
     VideoPlayerScreen(),
     Explore(),
-    Explore(),
+    null,
     Notifications(),
     DynamicProfile()
   ];
@@ -34,26 +43,132 @@ class _HomeState extends State<Home> {
       );
     } else {
       setState(() {
+        _isSearching = false;
         _navBarItemIndex = index;
       });
     }
   }
 
+  Widget _displaySearchScreen() {
+    _searchDisplay.navigatorKey = _navigatorGlobalKey;
+    _searchDisplay.searchTextController = _searchController;
+    return _searchDisplay;
+  }
+
+  Widget _homeTabs(screenHeight, screenWidth) {
+    return Stack(
+      fit: StackFit.expand,
+      children: <Widget>[
+        AnimatedOpacity(
+          opacity: _isSearching ? 0.5 : 0,
+          duration: Duration(milliseconds: 200),
+          child: Container(
+            color: Colors.black,
+            height: screenHeight,
+            width: screenWidth,
+          ),
+        ),
+        _pages[_navBarItemIndex],
+        _isSearching ? _displaySearchScreen() : SizedBox(),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    var focusNode = new FocusNode();
+    var screenHeight = MediaQuery.of(context).size.height;
+    var screenWidth = MediaQuery.of(context).size.width;
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Text(
-          "Creaid",
-          style: GoogleFonts.satisfy(
-            fontSize: 34,
-          ),
+        title: Stack(
+          children: <Widget>[
+            AnimatedOpacity(
+                opacity: _isSearching ? 1 : 0,
+                duration: Duration(milliseconds: 200),
+                child: TextField(
+                  controller: _searchController,
+                  focusNode: focusNode,
+                  decoration: InputDecoration(
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    hintText: 'Search...',
+                    hintStyle: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                )),
+            Align(
+              alignment: Alignment.center,
+              child: AnimatedOpacity(
+                opacity: _isSearching ? 0 : 1,
+                duration: Duration(milliseconds: 200),
+                child: Text(
+                  "Creaid",
+                  style: GoogleFonts.satisfy(
+                    fontSize: 34,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ],
         ),
+        actions: <Widget>[
+          Stack(
+            children: <Widget>[
+              AnimatedOpacity(
+                opacity: _navBarItemIndex == 1 ? 1 : 0,
+                duration: Duration(milliseconds: 200),
+                child: IconButton(
+                  iconSize: 30,
+                  icon: Icon(
+                    Icons.search,
+                  ),
+                  onPressed: () {
+                    focusNode.requestFocus();
+                    setState(() {
+                      _isSearching = !_isSearching;
+                    });
+                  },
+                ),
+              ),
+              AnimatedOpacity(
+                opacity: _navBarItemIndex == 1 ? 0 : 1,
+                duration: Duration(milliseconds: 200),
+                child: SizedBox(),
+              ),
+            ],
+          ),
+        ],
         centerTitle: true,
       ),
-      body: _pages[_navBarItemIndex],
+      body: Navigator(
+          key: _navigatorGlobalKey,
+          onGenerateRoute: (RouteSettings settings) {
+            return MaterialPageRoute(builder: (BuildContext context) {
+              switch (settings.name) {
+                case '/':
+                  return _homeTabs(screenHeight, screenWidth);
+                case '/profile':
+                  print('profile');
+                  break;
+                //return Profile();
+                default:
+                  throw UnimplementedError();
+              }
+            });
+          }),
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: false,
         showUnselectedLabels: false,
@@ -65,7 +180,7 @@ class _HomeState extends State<Home> {
             title: Text('Feed'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
+            icon: Icon(Icons.explore),
             title: Text('Explore'),
           ),
           BottomNavigationBarItem(
