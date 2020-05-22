@@ -1,5 +1,5 @@
+import 'package:creaid/utility/authenticate.dart';
 import 'package:flutter/material.dart';
-import 'package:creaid/home.dart';
 
 void main() => runApp(CreaidApp());
 
@@ -9,9 +9,10 @@ class CreaidApp extends StatelessWidget {
     return MaterialApp(
       title: 'Creaid',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: Colors.indigo,
+        buttonColor: Colors.indigo,
       ),
-      home: Home(),
+      home: Authenticate(),
     );
   }
 }

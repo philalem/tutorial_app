@@ -41,26 +41,12 @@ class _ProfileState extends State<Profile> {
               padding: EdgeInsets.only(top: 10),
               child: RaisedButton(
                 color: Colors.white,
-                onPressed: () {
-                  if (_overlaysOn) {
-                    print(_overlaysOn);
-                    SystemChrome.setEnabledSystemUIOverlays([]);
-                    setState(() {
-                      _overlaysOn = !_overlaysOn;
-                    });
-                  } else {
-                    print(_overlaysOn);
-                    SystemChrome.setEnabledSystemUIOverlays(
-                        [SystemUiOverlay.top]);
-                    setState(() {
-                      _overlaysOn = !_overlaysOn;
-                    });
-                  }
-                },
+                onPressed: () {},
                 textColor: Colors.lightBlue,
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18.0),
-                    side: BorderSide(color: Colors.lightBlue)),
+                  borderRadius: BorderRadius.circular(18.0),
+                  side: BorderSide(color: Colors.lightBlue),
+                ),
                 child: Row(
                   children: <Widget>[
                     Text(
