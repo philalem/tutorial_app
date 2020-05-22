@@ -32,7 +32,14 @@ dependencies:
   cupertino_icons: ^0.1.2
   intl: ^0.16.1
   provider: ^3.1.0
-  image_picker: ^0.6.6+1 
+  image_picker: ^0.6.6+1
+  flutter_launcher_icons: ^0.7.5
+
+flutter_icons:
+  image_path_android: "assets/icon/creaid_app_icon_android.png"
+  image_path_ios: "assets/icon/creaid_app_icon.png"
+  android: "launcher_icon"
+  ios: true
 
 dev_dependencies:
   flutter_test:

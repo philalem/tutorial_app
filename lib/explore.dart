@@ -13,7 +13,7 @@ class _ExploreState extends State<Explore> {
       separatorBuilder: (context, index) => Divider(
         color: Colors.grey[400],
       ),
-      itemCount: 10,
+      itemCount: 20,
       itemBuilder: (context, index) => InkWell(
         child: ListTile(
           title: Padding(
