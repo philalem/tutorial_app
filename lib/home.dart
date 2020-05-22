@@ -1,9 +1,9 @@
+import 'package:creaid/profile/dynamicProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:creaid/camerascreen/camera_screen.dart';
 import 'package:creaid/explore.dart';
 import 'package:creaid/notifications.dart';
-import 'package:creaid/profile.dart';
 import 'package:creaid/video-player.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -19,7 +19,7 @@ class _HomeState extends State<Home> {
     Explore(),
     Explore(),
     Notifications(),
-    Profile(),
+    DynamicProfile()
   ];
 
   void _onNavBarItemTapped(int index) {
