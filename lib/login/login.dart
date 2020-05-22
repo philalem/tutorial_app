@@ -103,12 +103,6 @@ class _LoginState extends State<Login> {
                                   'Could not sign in with those credentials';
                             });
                           }
-                          // else {
-                          //   Navigator.pushReplacement(
-                          //     context,
-                          //     MaterialPageRoute(builder: (context) => Home()),
-                          //   );
-                          // }
                         }
                       },
                     ),
