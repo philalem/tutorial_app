@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class Profile extends StatefulWidget {
+  final String name;
+
+  Profile({this.name});
+
   @override
   createState() => _ProfileState();
 }
@@ -31,7 +34,7 @@ class _ProfileState extends State<Profile> {
             Padding(
               padding: EdgeInsets.only(top: 15),
               child: Text(
-                "Phillip LeMaster",
+                widget.name,
                 style: TextStyle(
                   fontSize: 20,
                 ),
