@@ -102,11 +102,6 @@ class _LoginState extends State<Login> {
                               error =
                                   'Could not sign in with those credentials';
                             });
-                          } else {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Home()),
-                            );
                           }
                         }
                       },
