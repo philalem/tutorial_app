@@ -1,4 +1,4 @@
-import 'package:creaid/DisplayFollow.dart';
+import 'package:creaid/profile/DisplayFollow.dart';
 import 'package:creaid/profile/UploadProfile.dart';
 import 'package:creaid/utility/UserData.dart';
 import 'package:creaid/utility/user.dart';
