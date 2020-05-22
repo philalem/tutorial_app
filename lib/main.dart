@@ -1,10 +1,13 @@
+import 'package:creaid/home.dart';
 import 'package:creaid/utility/firebaseAuth.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(CreaidApp());
+void main() => runApp(
+      CreaidApp(),
+    );
 
 class CreaidApp extends StatelessWidget {
   @override
@@ -13,12 +16,10 @@ class CreaidApp extends StatelessWidget {
       value: FireBaseAuthorization().user,
       child: MaterialApp(
         title: 'Creaid',
-        theme: ThemeData(
-          primaryColor: Colors.indigo,
-          buttonColor: Colors.indigo
-        ),
+        theme:
+            ThemeData(primaryColor: Colors.indigo, buttonColor: Colors.indigo),
         home: Wrapper(),
-      )
+      ),
     );
   }
 }
