@@ -31,12 +31,13 @@ class _SearchDisplayState extends State<SearchDisplay> {
     "Pomegranate",
     "Starfruit"
   ];
-  List<String> filteredList = List.from(mainDataList);
+  List<String> filteredList = [];
 
   @override
   void initState() {
     widget.searchTextController.addListener(() {
-      searchList(widget.searchTextController.text);
+      var text = widget.searchTextController.text;
+      text != '' ? searchList(text) : filteredList = [];
       setState(() {});
     });
     super.initState();
@@ -46,6 +47,7 @@ class _SearchDisplayState extends State<SearchDisplay> {
     setState(() {
       filteredList = mainDataList
           .where((element) => element.toLowerCase().contains(text))
+          .take(5)
           .toList();
     });
   }
