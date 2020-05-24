@@ -3,48 +3,45 @@ import 'package:creaid/utility/UserData.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UserDbService {
-  final String uuid;
-  final CollectionReference creaidCollection = Firestore.instance.collection('userInfo');
+  final String uid;
+  final CollectionReference creaidCollection =
+      Firestore.instance.collection('user-info');
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  UserDbService({this.uuid});
+  UserDbService({this.uid});
 
-  Future<void> updateUserInfo(String name, String email, String password, List<String> interests) async {
-    return await creaidCollection.document(uuid).setData({
+  Future<void> updateUserInfo(String name, String email, String password,
+      List<String> interests) async {
+    return await creaidCollection.document(uid).setData({
       'name': name,
       'email': email,
-      'password': password,
       'interests': interests,
+      'photo-url': '',
     });
   }
 
   Future<void> updatePhotoUrl(String photoUrl) async {
-    DocumentReference ref =creaidCollection.document(uuid);
-    ref.updateData({"photoUrl" : photoUrl});
+    DocumentReference ref = creaidCollection.document(uid);
+    ref.updateData({"photo-url": photoUrl});
   }
 
   List<String> _nameFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.documents.map((doc){
+    return snapshot.documents.map((doc) {
       return doc.data['name'] ?? '';
     });
   }
 
-  UserData _mapUserData(DocumentSnapshot snapshot){
+  UserData _mapUserData(DocumentSnapshot snapshot) {
     return UserData(
-      uuid: uuid,
-      email: snapshot['email'],
-      name: snapshot['name'],
-      interests: List.from(snapshot['interests']),
-      followers: List.from(snapshot['followers']),
-      following: List.from(snapshot['following']),
-      photoUrl: snapshot['photoUrl']
-    );
+        email: snapshot['email'],
+        name: snapshot['name'],
+        interests: List.from(snapshot['interests']),
+        photoUrl: snapshot['photo-url']);
   }
 
   Future<List<DocumentSnapshot>> getUsername() async {
     final FirebaseUser user = await _auth.currentUser();
     return creaidCollection.document(user.uid).snapshots().toList();
-    
   }
 
   Stream<QuerySnapshot> get name {
@@ -52,8 +49,6 @@ class UserDbService {
   }
 
   Stream<UserData> getNames() {
-    return creaidCollection.document(uuid).snapshots()
-      .map(_mapUserData);
+    return creaidCollection.document(uid).snapshots().map(_mapUserData);
   }
-
 }
