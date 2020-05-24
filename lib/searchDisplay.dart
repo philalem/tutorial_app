@@ -1,3 +1,4 @@
+import 'package:creaid/notifications.dart';
 import 'package:flutter/material.dart';
 
 class SearchDisplay extends StatefulWidget {
@@ -59,7 +60,11 @@ class _SearchDisplayState extends State<SearchDisplay> {
             child: ListTile(
               title: Text(data),
               onTap: () {
-                widget.navigatorKey.currentState.pushNamed('/profile');
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => Notifications(),
+                  ),
+                );
               },
             ),
           ),
