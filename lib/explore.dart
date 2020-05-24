@@ -1,7 +1,6 @@
 import 'package:creaid/searchDisplay.dart';
-import 'package:flutter/material.dart';
 import 'package:creaid/video-player.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/material.dart';
 
 class Explore extends StatefulWidget {
   GlobalKey<NavigatorState> navigatorKey;
@@ -15,6 +14,19 @@ class _ExploreState extends State<Explore> {
   bool _isSearching = false;
   TextEditingController _searchController = TextEditingController();
   SearchDisplay _searchDisplay = SearchDisplay();
+  FocusNode focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    focusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    super.dispose();
+  }
 
   Widget _getSearchOrExplore(screenHeight, screenWidth) {
     return Stack(
@@ -54,11 +66,13 @@ class _ExploreState extends State<Explore> {
             ),
           ),
         ),
-        AnimatedOpacity(
-          opacity: _isSearching ? 1 : 0,
-          duration: Duration(milliseconds: 200),
-          child: _displaySearchScreen(),
-        ),
+        _isSearching
+            ? AnimatedOpacity(
+                opacity: _isSearching ? 1 : 0,
+                duration: Duration(milliseconds: 200),
+                child: _displaySearchScreen(),
+              )
+            : Container(),
       ],
     );
   }
@@ -73,66 +87,66 @@ class _ExploreState extends State<Explore> {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    var focusNode = new FocusNode();
 
     return Scaffold(
       appBar: AppBar(
-        title: Stack(
-          children: <Widget>[
-            AnimatedOpacity(
-              opacity: _isSearching ? 1 : 0,
-              duration: Duration(milliseconds: 200),
-              child: TextField(
-                controller: _searchController,
-                focusNode: focusNode,
-                decoration: InputDecoration(
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  border: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.white),
-                  ),
-                  hintText: 'Search...',
-                  hintStyle: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+        title: TextField(
+          onTap: () {
+            setState(() {
+              _isSearching = true;
+            });
+          },
+          showCursor: _isSearching,
+          autofocus: false,
+          controller: _searchController,
+          focusNode: focusNode,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.indigo[400],
+            prefixIcon: Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                width: 0,
+                style: BorderStyle.none,
               ),
             ),
-            Align(
-              alignment: Alignment.center,
-              child: AnimatedOpacity(
-                opacity: _isSearching ? 0 : 1,
-                duration: Duration(milliseconds: 200),
-                child: Text(
-                  "Creaid",
-                  style: GoogleFonts.satisfy(
-                    fontSize: 34,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                width: 0,
+                style: BorderStyle.none,
               ),
             ),
-          ],
+            hintText: 'Search...',
+            hintStyle: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+        leading: IconButton(
+          iconSize: 30,
+          icon: Icon((_isSearching ? Icons.close : Icons.search)),
+          onPressed: () {
+            focusNode.requestFocus();
+            setState(() {
+              _isSearching = !_isSearching;
+            });
+          },
         ),
         actions: <Widget>[
           IconButton(
             iconSize: 30,
-            icon: Icon(
-              Icons.search,
-            ),
-            onPressed: () {
-              focusNode.requestFocus();
-              setState(() {
-                _isSearching = !_isSearching;
-              });
-            },
+            icon: Icon(Icons.message),
+            onPressed: () {},
           ),
         ],
-        centerTitle: true,
       ),
       body: _getSearchOrExplore(screenHeight, screenWidth),
     );
