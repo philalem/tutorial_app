@@ -1,5 +1,5 @@
 class UserData {
-  final String uuid;
+  final String uid;
   String email;
   String name;
   String photoUrl;
@@ -7,5 +7,12 @@ class UserData {
   List<String> followers;
   List<String> following;
 
-  UserData({this.uuid, this.email, this.name, this.interests, this.followers, this.following, this.photoUrl});
+  UserData(
+      {this.uid,
+      this.email,
+      this.name,
+      this.interests,
+      this.followers,
+      this.following,
+      this.photoUrl});
 }

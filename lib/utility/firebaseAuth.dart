@@ -6,7 +6,7 @@ class FireBaseAuthorization {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   User _userFromFireBaseUser(FirebaseUser user) {
-    return user != null ? User(uuid: user.uid) : null;
+    return user != null ? User(uid: user.uid) : null;
   }
 
   Stream<User> get user {
@@ -19,7 +19,8 @@ class FireBaseAuthorization {
 
   Future signInWithEmailAndPassword(String email, String password) async {
     try {
-      AuthResult res = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      AuthResult res = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
       FirebaseUser user = res.user;
       return user;
     } catch (error) {
@@ -35,17 +36,20 @@ class FireBaseAuthorization {
     await user.reload();
   }
 
-  Future registerWithEmailAndPassword(String email, String password, String name, List<String> interests) async {
+  Future registerWithEmailAndPassword(String email, String password,
+      String name, List<String> interests) async {
     try {
-      AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      AuthResult result = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
       FirebaseUser user = result.user;
       updateUserName(name, user);
-      UserDbService(uuid: user.uid).updateUserInfo(name, email, password, interests);
+      UserDbService(uid: user.uid)
+          .updateUserInfo(name, email, password, interests);
       return _userFromFireBaseUser(user);
     } catch (error) {
       print(error.toString());
       return null;
-    } 
+    }
   }
 
   Future signOut() async {

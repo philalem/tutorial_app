@@ -1,3 +1,4 @@
+import 'package:creaid/utility/creaidButton.dart';
 import 'package:flutter/material.dart';
 import 'package:creaid/home.dart';
 import 'package:creaid/utility/firebaseAuth.dart';
@@ -45,10 +46,6 @@ class _InterestsSignUpState extends State<InterestsSignUp> {
                 validator: (val) =>
                     val.isEmpty ? 'Enter a valid interest' : null,
                 controller: interestHolder,
-                onFieldSubmitted: (val) {
-                  interests.add(val);
-                  clearTextInput();
-                },
                 decoration: InputDecoration(
                   hintStyle:
                       TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
@@ -77,24 +74,20 @@ class _InterestsSignUpState extends State<InterestsSignUp> {
                   ),
                 )),
             SizedBox(height: 40.0),
-            RaisedButton(
-                color: Colors.black,
-                child: Text(
-                  'Done',
-                  style: TextStyle(color: Colors.white),
-                ),
+            CreaidButton(
+                label: 'Done',
                 onPressed: () async {
+                  interests.add(interestHolder.text);
+                  clearTextInput();
                   dynamic res = await _auth.registerWithEmailAndPassword(
                       widget.email, widget.password, widget.name, interests);
+                  res = await _auth.signInWithEmailAndPassword(
+                      widget.email, widget.password);
+                  Navigator.of(context).pop();
                   if (res == null) {
                     setState(() {
                       error = 'Can not register this user';
                     });
-                  } else {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Home()),
-                    );
                   }
                 }),
             SizedBox(height: 12.0),

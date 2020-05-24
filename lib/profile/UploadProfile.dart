@@ -1,12 +1,12 @@
-import 'package:creaid/profile/dynamicProfile.dart';
+import 'dart:io';
+
 import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/userDBService.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class UploadProfile extends StatefulWidget {
   @override
@@ -25,15 +25,6 @@ class _UploadProfileState extends State<UploadProfile> {
     return Scaffold(
         backgroundColor: Colors.white,
         key: _scaffoldKey,
-        appBar: AppBar(
-          elevation: 0.0,
-          title: Text(
-            'Creaid',
-            style: GoogleFonts.satisfy(
-              fontSize: 34,
-            ),
-          ),
-        ),
         body: Container(
           padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
           child: Column(children: <Widget>[
@@ -56,26 +47,25 @@ class _UploadProfileState extends State<UploadProfile> {
                     onPressed: () async {
                       uploadFile();
                       print(_uploadedFileURL);
-                      if(_uploadedFileURL != null){
-                        UserDbService(uuid: user.uuid).updatePhotoUrl(_uploadedFileURL);
+                      if (_uploadedFileURL != null) {
+                        UserDbService(uid: user.uid)
+                            .updatePhotoUrl(_uploadedFileURL);
                         Navigator.pop(context, true);
-                      }
-                      else{
+                      } else {
                         _showDialog();
                       }
                     })
                 : new Container(),
             SizedBox(height: 20.0),
-            _uploadedFileURL == null ? RaisedButton(
-              color: Colors.black,
-              child: Text(
-                'Return to Profile',
-                style: TextStyle(color: Colors.white)
-              ),
-              onPressed: () {
-                Navigator.pop(context, true);
-              }
-            ) : new Container()
+            _uploadedFileURL == null
+                ? RaisedButton(
+                    color: Colors.black,
+                    child: Text('Return to Profile',
+                        style: TextStyle(color: Colors.white)),
+                    onPressed: () {
+                      Navigator.pop(context, true);
+                    })
+                : new Container()
           ]),
         ));
   }
@@ -98,8 +88,8 @@ class _UploadProfileState extends State<UploadProfile> {
     _uploadedFileURL = fileUrl;
   }
 
- void _showDialog() {
-   showDialog(
+  void _showDialog() {
+    showDialog(
       context: _scaffoldKey.currentContext,
       builder: (BuildContext context) {
         // return object of type Dialog
@@ -118,5 +108,5 @@ class _UploadProfileState extends State<UploadProfile> {
         );
       },
     );
- }
+  }
 }
