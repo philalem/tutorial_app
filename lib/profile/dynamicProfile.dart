@@ -17,7 +17,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
     final user = Provider.of<User>(context);
 
     return StreamBuilder<UserData>(
-      stream: UserDbService(uuid: user.uuid).getNames(),
+      stream: UserDbService(uid: user.uid).getNames(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           UserData data = snapshot.data;
@@ -36,27 +36,20 @@ class _DynamicProfileState extends State<DynamicProfile> {
                       shape: BoxShape.circle,
                       image: DecorationImage(
                         fit: BoxFit.contain,
-                        image:
-                            Image.network(data.photoUrl).image,
+                        image: Image.network(data.photoUrl).image,
                       ),
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(
-                      top: 5,
-                      right: 15
-                   ),
-                   child: Container(
-                     child:IconButton(
-                        icon: Icon(Icons.people_outline),
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => new UploadProfile())
-                          );
-                        }
-                      ),
-                    )
-                  ),
+                      padding: EdgeInsets.only(top: 5, right: 15),
+                      child: Container(
+                        child: IconButton(
+                            icon: Icon(Icons.people_outline),
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (_) => new UploadProfile()));
+                            }),
+                      )),
                   Padding(
                     padding: EdgeInsets.only(top: 15),
                     child: Text(
@@ -99,24 +92,34 @@ class _DynamicProfileState extends State<DynamicProfile> {
                         FlatButton(
                           textColor: Colors.black,
                           onPressed: () {
-                              Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (_) => new DisplayFollow(people: data.following.asMap()))
-                              );
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (_) => new DisplayFollow(
+                                    people: (data.following != null
+                                        ? data.following.asMap()
+                                        : {}))));
                           },
                           child: Text(
-                            "Following: " + data.following.length.toString(),
+                            "Following: " +
+                                (data.following != null
+                                    ? data.following.length.toString()
+                                    : '0'),
                           ),
                         ),
                         Spacer(),
                         FlatButton(
                           textColor: Colors.black,
                           onPressed: () {
-                              Navigator.of(context).push(
-                                  MaterialPageRoute(builder: (_) => new DisplayFollow(people: data.followers.asMap()))
-                              );
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (_) => new DisplayFollow(
+                                    people: (data.followers != null
+                                        ? data.followers.asMap()
+                                        : {}))));
                           },
                           child: Text(
-                            "Followers: " + data.followers.length.toString(),
+                            "Followers: " +
+                                (data.followers != null
+                                    ? data.followers.length.toString()
+                                    : '0'),
                           ),
                         ),
                         Spacer(
