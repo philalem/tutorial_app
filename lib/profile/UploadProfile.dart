@@ -25,15 +25,6 @@ class _UploadProfileState extends State<UploadProfile> {
     return Scaffold(
         backgroundColor: Colors.white,
         key: _scaffoldKey,
-        appBar: AppBar(
-          elevation: 0.0,
-          title: Text(
-            'Creaid',
-            style: GoogleFonts.satisfy(
-              fontSize: 34,
-            ),
-          ),
-        ),
         body: Container(
           padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
           child: Column(children: <Widget>[
