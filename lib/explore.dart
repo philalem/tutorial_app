@@ -1,3 +1,5 @@
+import 'package:algolia/algolia.dart';
+import 'package:creaid/notifications.dart';
 import 'package:creaid/searchDisplay.dart';
 import 'package:creaid/video-player.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +15,8 @@ class Explore extends StatefulWidget {
 class _ExploreState extends State<Explore> {
   bool _isSearching = false;
   TextEditingController _searchController = TextEditingController();
-  SearchDisplay _searchDisplay = SearchDisplay();
   FocusNode focusNode;
+  var _searchResults = [];
 
   @override
   void initState() {
@@ -30,52 +32,89 @@ class _ExploreState extends State<Explore> {
   }
 
   Widget _getSearchOrExplore(screenHeight, screenWidth) {
+    var children2 = <Widget>[
+      AnimatedOpacity(
+        opacity: _isSearching ? 0.5 : 0,
+        duration: Duration(milliseconds: 200),
+        child: Container(
+          color: Colors.black,
+          height: screenHeight,
+          width: screenWidth,
+        ),
+      ),
+      _displayExploreScreen(),
+      _isSearching ? _displaySearchScreen() : Container(),
+    ];
     return Stack(
       fit: StackFit.expand,
-      children: <Widget>[
-        AnimatedOpacity(
-          opacity: _isSearching ? 0.5 : 0,
-          duration: Duration(milliseconds: 200),
-          child: Container(
-            color: Colors.black,
-            height: screenHeight,
-            width: screenWidth,
+      children: children2,
+    );
+  }
+
+  Widget _displayExploreScreen() {
+    return ListView.separated(
+      separatorBuilder: (context, index) => Divider(
+        color: Colors.grey[400],
+      ),
+      itemCount: 20,
+      itemBuilder: (context, index) => InkWell(
+        child: ListTile(
+          title: Padding(
+            padding: EdgeInsets.all(5),
+            child: Text(
+              'Item $index',
+            ),
           ),
-        ),
-        ListView.separated(
-          separatorBuilder: (context, index) => Divider(
-            color: Colors.grey[400],
-          ),
-          itemCount: 20,
-          itemBuilder: (context, index) => InkWell(
-            child: ListTile(
-              title: Padding(
-                padding: EdgeInsets.all(5),
-                child: Text(
-                  'Item $index',
-                ),
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) {
+                  return VideoPlayerScreen();
+                },
               ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _displaySearchScreen() {
+    return ListView.builder(
+      itemCount: _searchResults.length,
+      itemBuilder: (context, index) {
+        AlgoliaObjectSnapshot snap = _searchResults[index];
+
+        return InkWell(
+          child: Card(
+            color: Colors.white,
+            child: ListTile(
+              title: Text(snap.data['name']),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) {
-                      return VideoPlayerScreen();
-                    },
+                    builder: (context) => Notifications(),
                   ),
                 );
               },
             ),
           ),
-        ),
-        _isSearching ? _displaySearchScreen() : Container(),
-      ],
+        );
+      },
     );
   }
 
-  Widget _displaySearchScreen() {
-    _searchDisplay.navigatorKey = widget.navigatorKey;
-    _searchDisplay.searchTextController = _searchController;
-    return _searchDisplay;
+  void _searchForUsers() async {
+    Algolia algolia = Algolia.init(
+      applicationId: 'JRNVNTRH9V',
+      apiKey: '409b8ed6d2483d5d25b3d738bd9a48ed',
+    );
+
+    AlgoliaQuery query = algolia.instance.index('users').setLength(1);
+    query = query.search(_searchController.text);
+
+    _searchResults = (await query.getObjects()).hits;
+    setState(() {});
   }
 
   @override
@@ -86,6 +125,7 @@ class _ExploreState extends State<Explore> {
     return Scaffold(
       appBar: AppBar(
         title: TextField(
+          onChanged: (value) => _searchForUsers(),
           onTap: () {
             setState(() {
               _isSearching = true;

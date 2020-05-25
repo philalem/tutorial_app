@@ -34,6 +34,7 @@ dependencies:
   provider: ^4.1.2
   image_picker: ^0.6.6+1
   flutter_launcher_icons: ^0.7.5
+  algolia: ^0.1.7+1
 
 flutter_icons:
   image_path_android: "assets/icon/creaid_app_icon_android.png"
