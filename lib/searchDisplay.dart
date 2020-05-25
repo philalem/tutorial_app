@@ -1,3 +1,4 @@
+import 'package:creaid/notifications.dart';
 import 'package:flutter/material.dart';
 
 class SearchDisplay extends StatefulWidget {
@@ -30,21 +31,31 @@ class _SearchDisplayState extends State<SearchDisplay> {
     "Pomegranate",
     "Starfruit"
   ];
-  List<String> filteredList = List.from(mainDataList);
+  List<String> filteredList = [];
 
   @override
   void initState() {
     widget.searchTextController.addListener(() {
-      searchList(widget.searchTextController.text);
+      widget.searchTextController.text != ''
+          ? searchList(widget.searchTextController.text)
+          : filteredList = [];
       setState(() {});
     });
     super.initState();
+  }
+
+  @override
+  void setState(func) {
+    if (this.mounted) {
+      super.setState(func);
+    }
   }
 
   void searchList(text) {
     setState(() {
       filteredList = mainDataList
           .where((element) => element.toLowerCase().contains(text))
+          .take(5)
           .toList();
     });
   }
@@ -59,7 +70,11 @@ class _SearchDisplayState extends State<SearchDisplay> {
             child: ListTile(
               title: Text(data),
               onTap: () {
-                widget.navigatorKey.currentState.pushNamed('/profile');
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => Notifications(),
+                  ),
+                );
               },
             ),
           ),
