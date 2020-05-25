@@ -36,7 +36,9 @@ exports.sendDataToAgolia = async (req, res, db) => {
   });
 
   // After all records are created, we save them to
-  collectionIndex.saveObjects(algoliaRecords, (_error, content) => {
+  await collectionIndex.saveObjects(algoliaRecords, (_error, content) => {
     res.status(200).send("COLLECTION was indexed to Algolia successfully.");
   });
+
+  return res.status(200).send("Success");
 };
