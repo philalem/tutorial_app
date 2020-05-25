@@ -24,6 +24,7 @@ class _ExploreState extends State<Explore> {
 
   @override
   void dispose() {
+    _searchController.dispose();
     focusNode.dispose();
     super.dispose();
   }
@@ -90,6 +91,7 @@ class _ExploreState extends State<Explore> {
               _isSearching = true;
             });
           },
+          cursorColor: Colors.white,
           showCursor: _isSearching,
           autofocus: false,
           controller: _searchController,

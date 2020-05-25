@@ -36,11 +36,19 @@ class _SearchDisplayState extends State<SearchDisplay> {
   @override
   void initState() {
     widget.searchTextController.addListener(() {
-      var text = widget.searchTextController.text;
-      text != '' ? searchList(text) : filteredList = [];
+      widget.searchTextController.text != ''
+          ? searchList(widget.searchTextController.text)
+          : filteredList = [];
       setState(() {});
     });
     super.initState();
+  }
+
+  @override
+  void setState(func) {
+    if (this.mounted) {
+      super.setState(func);
+    }
   }
 
   void searchList(text) {
