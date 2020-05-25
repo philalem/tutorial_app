@@ -1,5 +1,5 @@
 const postFunctions = require("./userPostFunctions");
-const agoliaFunctions = require("./agoliaFunctions");
+const algoliaFunctions = require("./algoliaFunctions");
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 admin.initializeApp();
@@ -23,26 +23,26 @@ exports.sendPostToFollowers = functions
 exports.sendUsersToAlgolia = functions
   .region("us-east4")
   .https.onRequest((req, res) => {
-    return agoliaFunctions.sendDataToAgolia(req, res, db);
+    return algoliaFunctions.sendDataToAgolia(req, res, db);
   });
 
 exports.collectionOnCreate = functions
   .region("us-east4")
   .firestore.document("user-info/{uid}")
   .onCreate(async (snapshot, context) => {
-    await agoliaFunctions.saveDocumentInAlgolia(snapshot);
+    await algoliaFunctions.saveDocumentInAlgolia(snapshot);
   });
 
 exports.collectionOnUpdate = functions
   .region("us-east4")
   .firestore.document("user-info/{uid}")
   .onUpdate(async (change, context) => {
-    await agoliaFunctions.updateDocumentInAlgolia(change);
+    await algoliaFunctions.updateDocumentInAlgolia(change);
   });
 
 exports.collectionOnDelete = functions
   .region("us-east4")
   .firestore.document("user-info/{uid}")
   .onDelete(async (snapshot, context) => {
-    await agoliaFunctions.deleteDocumentFromAlgolia(snapshot);
+    await algoliaFunctions.deleteDocumentFromAlgolia(snapshot);
   });

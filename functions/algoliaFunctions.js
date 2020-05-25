@@ -42,3 +42,43 @@ exports.sendDataToAgolia = async (req, res, db) => {
 
   return res.status(200).send("Success");
 };
+
+exports.saveDocumentInAlgolia = async (snapshot) => {
+  if (snapshot.exists) {
+    const record = snapshot.data();
+    if (record) {
+      // Removes the possibility of snapshot.data() being undefined.
+      if (record.isIncomplete === false) {
+        // We only index products that are complete.
+        record.objectID = snapshot.id;
+
+        // In this example, we are including all properties of the Firestore document
+        // in the Algolia record, but do remember to evaluate if they are all necessary.
+        // More on that in Part 2, Step 2 above.
+
+        await collectionIndex.saveObject(record); // Adds or replaces a specific object.
+      }
+    }
+  }
+};
+
+exports.collectionOnUpdate = async (change) => {
+  const docBeforeChange = change.before.data();
+  const docAfterChange = change.after.data();
+  if (docBeforeChange && docAfterChange) {
+    if (docAfterChange.isIncomplete && !docBeforeChange.isIncomplete) {
+      // If the doc was COMPLETE and is now INCOMPLETE, it was
+      // previously indexed in algolia and must now be removed.
+      await deleteDocumentFromAlgolia(change.after);
+    } else if (docAfterChange.isIncomplete === false) {
+      await saveDocumentInAlgolia(change.after);
+    }
+  }
+};
+
+exports.collectionOnDelete = async (snapshot) => {
+  if (snapshot.exists) {
+    const objectID = snapshot.id;
+    await collectionIndex.deleteObject(objectID);
+  }
+};
