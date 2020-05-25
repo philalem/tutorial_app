@@ -110,9 +110,8 @@ class _ExploreState extends State<Explore> {
       apiKey: '409b8ed6d2483d5d25b3d738bd9a48ed',
     );
 
-    AlgoliaQuery query = algolia.instance.index('users').setLength(1);
+    AlgoliaQuery query = algolia.instance.index('users').setHitsPerPage(5);
     query = query.search(_searchController.text);
-
     _searchResults = (await query.getObjects()).hits;
     setState(() {});
   }
