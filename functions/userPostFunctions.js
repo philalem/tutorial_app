@@ -1,6 +1,4 @@
 const Firestore = require("@google-cloud/firestore");
-const admin = require("firebase-admin");
-admin.initializeApp();
 const _ = require("underscore");
 const path = require("path");
 const os = require("os");
@@ -76,7 +74,7 @@ exports.createPostToFollowersBatchJobs = async (
   return 0;
 };
 
-exports.generateVideoThumbnail = async (object) => {
+exports.generateVideoThumbnail = async (object, admin) => {
   const fullFilePath = object.name;
   const fileBucket = object.fileBucket;
   const contentType = object.contentType;
