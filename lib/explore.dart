@@ -66,13 +66,7 @@ class _ExploreState extends State<Explore> {
             ),
           ),
         ),
-        _isSearching
-            ? AnimatedOpacity(
-                opacity: _isSearching ? 1 : 0,
-                duration: Duration(milliseconds: 200),
-                child: _displaySearchScreen(),
-              )
-            : Container(),
+        _isSearching ? _displaySearchScreen() : Container(),
       ],
     );
   }
@@ -101,6 +95,9 @@ class _ExploreState extends State<Explore> {
           controller: _searchController,
           focusNode: focusNode,
           decoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(
+              vertical: 0,
+            ),
             filled: true,
             fillColor: Colors.indigo[400],
             prefixIcon: Icon(
