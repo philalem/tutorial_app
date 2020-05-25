@@ -142,7 +142,7 @@ class _ExploreState extends State<Explore> {
         actions: <Widget>[
           IconButton(
             iconSize: 30,
-            icon: Icon(Icons.message),
+            icon: Icon(Icons.add),
             onPressed: () {},
           ),
         ],
