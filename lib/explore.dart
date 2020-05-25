@@ -1,6 +1,5 @@
 import 'package:algolia/algolia.dart';
 import 'package:creaid/notifications.dart';
-import 'package:creaid/searchDisplay.dart';
 import 'package:creaid/video-player.dart';
 import 'package:flutter/material.dart';
 
