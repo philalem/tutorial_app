@@ -1,5 +1,6 @@
 import 'package:algolia/algolia.dart';
 import 'package:creaid/notifications.dart';
+import 'package:creaid/profile/dynamicProfile.dart';
 import 'package:creaid/video-player.dart';
 import 'package:flutter/material.dart';
 
@@ -92,7 +93,9 @@ class _ExploreState extends State<Explore> {
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => Notifications(),
+                    builder: (context) => DynamicProfile(
+                      uid: snap.data['objectID'],
+                    ),
                   ),
                 );
               },
