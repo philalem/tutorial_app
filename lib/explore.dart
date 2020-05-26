@@ -1,13 +1,9 @@
 import 'package:algolia/algolia.dart';
-import 'package:creaid/notifications.dart';
 import 'package:creaid/profile/dynamicProfile.dart';
 import 'package:creaid/video-player.dart';
 import 'package:flutter/material.dart';
 
 class Explore extends StatefulWidget {
-  GlobalKey<NavigatorState> navigatorKey;
-  Explore({this.navigatorKey});
-
   @override
   createState() => _ExploreState();
 }
@@ -95,6 +91,7 @@ class _ExploreState extends State<Explore> {
                   MaterialPageRoute(
                     builder: (context) => DynamicProfile(
                       uid: snap.data['objectID'],
+                      name: snap.data['name'],
                     ),
                   ),
                 );
