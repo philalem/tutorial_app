@@ -95,6 +95,7 @@ class _ExploreState extends State<Explore> {
                   MaterialPageRoute(
                     builder: (context) => DynamicProfile(
                       uid: snap.data['objectID'],
+                      name: snap.data['name'],
                     ),
                   ),
                 );

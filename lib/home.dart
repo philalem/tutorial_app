@@ -21,7 +21,7 @@ class _HomeState extends State<Home> {
     Explore(navigatorKey: _navigatorGlobalKey),
     null,
     Notifications(),
-    DynamicProfile()
+    DynamicProfile(),
   ];
 
   void _onNavBarItemTapped(int index) {
