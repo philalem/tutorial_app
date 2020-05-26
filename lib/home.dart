@@ -17,11 +17,88 @@ class _HomeState extends State<Home> {
   var _navBarItemIndex = 1;
 
   final List<Widget> _pages = [
-    VideoPlayerScreen(),
-    Explore(navigatorKey: _navigatorGlobalKey),
-    null,
-    Notifications(),
-    DynamicProfile(),
+    Navigator(
+      onGenerateRoute: (RouteSettings settings) {
+        print("hey");
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (BuildContext context) {
+            print(settings.name);
+            switch (settings.name) {
+              case '/':
+                return VideoPlayerScreen();
+              default:
+                throw UnimplementedError();
+            }
+          },
+        );
+      },
+    ),
+    Navigator(
+      onGenerateRoute: (RouteSettings settings) {
+        print('hey1');
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (BuildContext context) {
+            print(settings.name);
+            switch (settings.name) {
+              case '/':
+                return Explore();
+              default:
+                throw UnimplementedError();
+            }
+          },
+        );
+      },
+    ),
+    Navigator(
+      onGenerateRoute: (RouteSettings settings) {
+        print('hey1');
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (BuildContext context) {
+            print(settings.name);
+            switch (settings.name) {
+              case '/':
+                return Explore();
+              default:
+                throw UnimplementedError();
+            }
+          },
+        );
+      },
+    ),
+    Navigator(
+      onGenerateRoute: (RouteSettings settings) {
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (BuildContext context) {
+            switch (settings.name) {
+              case '/':
+                return Notifications();
+              default:
+                throw UnimplementedError();
+            }
+          },
+        );
+      },
+    ),
+    Navigator(
+      onGenerateRoute: (RouteSettings settings) {
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (BuildContext context) {
+            print(settings.name);
+            switch (settings.name) {
+              case '/':
+                return DynamicProfile();
+              default:
+                throw UnimplementedError();
+            }
+          },
+        );
+      },
+    ),
   ];
 
   void _onNavBarItemTapped(int index) {
@@ -47,22 +124,9 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-      body: Navigator(
-        key: _navigatorGlobalKey,
-        onGenerateRoute: (RouteSettings settings) {
-          return MaterialPageRoute(
-            builder: (BuildContext context) {
-              switch (settings.name) {
-                case '/':
-                  return _pages[_navBarItemIndex];
-                case '/profile':
-                  return Notifications();
-                default:
-                  throw UnimplementedError();
-              }
-            },
-          );
-        },
+      body: IndexedStack(
+        index: _navBarItemIndex,
+        children: _pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: false,
