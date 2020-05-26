@@ -3,33 +3,64 @@ import 'package:creaid/profile/UploadProfile.dart';
 import 'package:creaid/utility/UserData.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/userDBService.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DynamicProfile extends StatefulWidget {
   String uid;
-  DynamicProfile({this.uid});
+  String name;
+  DynamicProfile({this.uid, this.name});
+
   @override
   _DynamicProfileState createState() => _DynamicProfileState();
 }
 
 class _DynamicProfileState extends State<DynamicProfile> {
+  FirebaseUser userName;
+  UserDbService dbService = UserDbService();
+
   @override
+  void initState() {
+    _loadCurrentUser();
+    super.initState();
+  }
+
+  void _loadCurrentUser() async {
+    FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
+      setState(() {
+        // call setState to rebuild the view
+        this.userName = user;
+      });
+    });
+  }
+
+  String _getLoadedName() {
+    if (widget.name != null) {
+      return widget.name;
+    }
+    if (userName != null) {
+      return userName.displayName;
+    }
+
+    return '';
+  }
+
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
     var uid = widget.uid != null ? widget.uid : user.uid;
 
-    return StreamBuilder<UserData>(
-      stream: UserDbService(uid: uid).getNames(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          UserData data = snapshot.data;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(_getLoadedName()),
+      ),
+      body: StreamBuilder<UserData>(
+        stream: UserDbService(uid: uid).getNames(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            UserData data = snapshot.data;
 
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(data.name),
-            ),
-            body: ListView(
+            return ListView(
               children: <Widget>[
                 Column(
                   children: <Widget>[
@@ -43,9 +74,9 @@ class _DynamicProfileState extends State<DynamicProfile> {
                         shape: BoxShape.circle,
                         image: DecorationImage(
                           fit: BoxFit.contain,
-                          image: data.photoUrl != null || data.photoUrl != ''
+                          image: data.photoUrl != null && data.photoUrl != ''
                               ? Image.network(data.photoUrl).image
-                              : Container(),
+                              : AssetImage('assets/images/phillip_profile.jpg'),
                         ),
                       ),
                     ),
@@ -156,12 +187,14 @@ class _DynamicProfileState extends State<DynamicProfile> {
                   },
                 ),
               ],
-            ),
-          );
-        } else {
-          return new CircularProgressIndicator();
-        }
-      },
+            );
+          } else {
+            return Align(
+                alignment: Alignment.center,
+                child: CircularProgressIndicator());
+          }
+        },
+      ),
     );
   }
 }

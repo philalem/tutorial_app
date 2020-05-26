@@ -39,9 +39,14 @@ class UserDbService {
         photoUrl: snapshot['photo-url']);
   }
 
-  Future<List<DocumentSnapshot>> getUsername() async {
+  Future<String> getUsersName() async {
+    String userName;
     final FirebaseUser user = await _auth.currentUser();
-    return creaidCollection.document(user.uid).snapshots().toList();
+    creaidCollection.document(user.uid).snapshots().map((snapshot) {
+      userName = snapshot['name'];
+    });
+
+    return userName;
   }
 
   Stream<QuerySnapshot> get name {
