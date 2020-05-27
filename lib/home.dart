@@ -11,8 +11,6 @@ class Home extends StatefulWidget {
   createState() => _HomeState();
 }
 
-GlobalKey<NavigatorState> _navigatorGlobalKey = GlobalKey<NavigatorState>();
-
 class _HomeState extends State<Home> {
   var _navBarItemIndex = 1;
 

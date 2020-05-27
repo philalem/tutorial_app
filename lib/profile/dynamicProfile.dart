@@ -29,7 +29,6 @@ class _DynamicProfileState extends State<DynamicProfile> {
   void _loadCurrentUser() async {
     FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
       setState(() {
-        // call setState to rebuild the view
         this.userName = user;
       });
     });

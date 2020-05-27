@@ -64,11 +64,16 @@ class _ExploreState extends State<Explore> {
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(bottom: 1.0),
-          child: Container(
-            height: screenWidth,
-            width: screenWidth,
-            color: Colors.green,
-            child: Center(child: Text('Main Container')),
+          child: GestureDetector(
+            onTap: () => _navigateToVideo(),
+            child: Container(
+              height: screenWidth,
+              width: screenWidth,
+              color: Colors.green,
+              child: Center(
+                child: Text('Main Container'),
+              ),
+            ),
           ),
         ),
         GridView.builder(
@@ -81,9 +86,12 @@ class _ExploreState extends State<Explore> {
           ),
           itemCount: 20,
           itemBuilder: (context, index) {
-            return Container(
-              color: Colors.green,
-              child: Text("Index: $index"),
+            return GestureDetector(
+              onTap: () => _navigateToVideo(),
+              child: Container(
+                color: Colors.green,
+                child: Text("Index: $index"),
+              ),
             );
           },
         ),
@@ -116,6 +124,14 @@ class _ExploreState extends State<Explore> {
           ),
         );
       },
+    );
+  }
+
+  _navigateToVideo() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => VideoPlayerScreen(),
+      ),
     );
   }
 
