@@ -75,7 +75,12 @@ class _InterestsSignUpState extends State<InterestsSignUp> {
                 )),
             SizedBox(height: 40.0),
             CreaidButton(
-                label: 'Done',
+                children: <Widget>[
+                  Text(
+                    'Done',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
                 onPressed: () async {
                   interests.add(interestHolder.text);
                   clearTextInput();

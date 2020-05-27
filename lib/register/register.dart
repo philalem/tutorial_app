@@ -99,7 +99,12 @@ class _RegisterState extends State<Register> {
                       ),
                       SizedBox(height: 40.0),
                       CreaidButton(
-                        label: 'Next',
+                        children: <Widget>[
+                          Text(
+                            'Next',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
                             _formKey.currentState.save();
