@@ -72,7 +72,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                       top: 140,
                       bottom: 0,
                       child: Container(
-                        color: Colors.grey[300],
+                        color: Colors.orange[200],
                         width: screenWidth,
                       ),
                     ),
@@ -117,8 +117,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                           child: Text(
                             data.name,
                             style: TextStyle(
-                              fontSize: 20,
-                            ),
+                                fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                         ),
                         Padding(
@@ -143,6 +142,14 @@ class _DynamicProfileState extends State<DynamicProfile> {
                                 flex: 2,
                               ),
                               FlatButton(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    width: 0,
+                                    style: BorderStyle.none,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                color: Colors.white,
                                 textColor: Colors.black,
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
@@ -160,6 +167,14 @@ class _DynamicProfileState extends State<DynamicProfile> {
                               ),
                               Spacer(),
                               FlatButton(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    width: 0,
+                                    style: BorderStyle.none,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                color: Colors.white,
                                 textColor: Colors.black,
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
