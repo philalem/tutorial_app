@@ -28,50 +28,74 @@ class _ExploreState extends State<Explore> {
   }
 
   Widget _getSearchOrExplore(screenHeight, screenWidth) {
-    var children2 = <Widget>[
-      AnimatedOpacity(
-        opacity: _isSearching ? 0.5 : 0,
+    var children = <Widget>[
+      _displayExploreScreen(screenWidth),
+      AnimatedSwitcher(
         duration: Duration(milliseconds: 200),
-        child: Container(
-          color: Colors.black,
-          height: screenHeight,
-          width: screenWidth,
-        ),
+        child: _getSearchDisplayWithBackground(screenWidth, screenHeight),
       ),
-      _displayExploreScreen(),
-      _isSearching ? _displaySearchScreen() : Container(),
     ];
     return Stack(
       fit: StackFit.expand,
-      children: children2,
+      children: children,
     );
   }
 
-  Widget _displayExploreScreen() {
-    return ListView.separated(
-      separatorBuilder: (context, index) => Divider(
-        color: Colors.grey[400],
-      ),
-      itemCount: 20,
-      itemBuilder: (context, index) => InkWell(
-        child: ListTile(
-          title: Padding(
-            padding: EdgeInsets.all(5),
-            child: Text(
-              'Item $index',
+  Widget _getSearchDisplayWithBackground(screenWidth, screenHeight) {
+    if (!_isSearching) {
+      return Container();
+    }
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Container(
+          color: Colors.black.withOpacity(0.5),
+          height: screenHeight,
+          width: screenWidth,
+        ),
+        _displaySearchScreen(),
+      ],
+    );
+  }
+
+  Widget _displayExploreScreen(screenWidth) {
+    return ListView(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(bottom: 1.0),
+          child: GestureDetector(
+            onTap: () => _navigateToVideo(),
+            child: Container(
+              height: screenWidth,
+              width: screenWidth,
+              color: Colors.green,
+              child: Center(
+                child: Text('Main Container'),
+              ),
             ),
           ),
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) {
-                  return VideoPlayerScreen();
-                },
+        ),
+        GridView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            crossAxisSpacing: 1.0,
+            mainAxisSpacing: 1.0,
+          ),
+          itemCount: 20,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () => _navigateToVideo(),
+              child: Container(
+                color: Colors.green,
+                child: Text("Index: $index"),
               ),
             );
           },
         ),
-      ),
+      ],
     );
   }
 
@@ -100,6 +124,14 @@ class _ExploreState extends State<Explore> {
           ),
         );
       },
+    );
+  }
+
+  _navigateToVideo() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => VideoPlayerScreen(),
+      ),
     );
   }
 
