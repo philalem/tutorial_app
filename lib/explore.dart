@@ -31,8 +31,9 @@ class _ExploreState extends State<Explore> {
     var children = <Widget>[
       _displayExploreScreen(screenWidth),
       AnimatedSwitcher(
-          duration: Duration(milliseconds: 200),
-          child: _getSearchDisplayWithBackground(screenWidth, screenHeight)),
+        duration: Duration(milliseconds: 200),
+        child: _getSearchDisplayWithBackground(screenWidth, screenHeight),
+      ),
     ];
     return Stack(
       fit: StackFit.expand,
