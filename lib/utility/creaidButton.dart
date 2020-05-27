@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class CreaidButton extends StatelessWidget {
-  CreaidButton({this.label, this.onPressed});
-  final Function onPressed;
-  final String label;
+  CreaidButton({this.onPressed, this.children});
+  Function onPressed;
+  List<Widget> children;
+
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
@@ -13,12 +14,7 @@ class CreaidButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(18.0),
       ),
       child: Row(
-        children: <Widget>[
-          Text(
-            label,
-            style: TextStyle(fontSize: 16),
-          ),
-        ],
+        children: children,
         mainAxisSize: MainAxisSize.min,
       ),
     );

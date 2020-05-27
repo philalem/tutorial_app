@@ -90,7 +90,12 @@ class _LoginState extends State<Login> {
                     ),
                     SizedBox(height: 40.0),
                     CreaidButton(
-                      label: 'Sign in',
+                      children: <Widget>[
+                        Text(
+                          'Sign in',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
                       onPressed: () async {
                         if (_formKey.currentState.validate()) {
                           _formKey.currentState.save();
