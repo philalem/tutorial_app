@@ -19,11 +19,9 @@ class _HomeState extends State<Home> {
   final List<Widget> _pages = [
     Navigator(
       onGenerateRoute: (RouteSettings settings) {
-        print("hey");
         return MaterialPageRoute(
           settings: settings,
           builder: (BuildContext context) {
-            print(settings.name);
             switch (settings.name) {
               case '/':
                 return VideoPlayerScreen();
@@ -36,11 +34,9 @@ class _HomeState extends State<Home> {
     ),
     Navigator(
       onGenerateRoute: (RouteSettings settings) {
-        print('hey1');
         return MaterialPageRoute(
           settings: settings,
           builder: (BuildContext context) {
-            print(settings.name);
             switch (settings.name) {
               case '/':
                 return Explore();
@@ -53,11 +49,9 @@ class _HomeState extends State<Home> {
     ),
     Navigator(
       onGenerateRoute: (RouteSettings settings) {
-        print('hey1');
         return MaterialPageRoute(
           settings: settings,
           builder: (BuildContext context) {
-            print(settings.name);
             switch (settings.name) {
               case '/':
                 return Explore();
@@ -88,7 +82,6 @@ class _HomeState extends State<Home> {
         return MaterialPageRoute(
           settings: settings,
           builder: (BuildContext context) {
-            print(settings.name);
             switch (settings.name) {
               case '/':
                 return DynamicProfile();
