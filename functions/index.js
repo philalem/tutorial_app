@@ -23,26 +23,53 @@ exports.sendPostToFollowers = functions
 exports.sendUsersToAlgolia = functions
   .region("us-east4")
   .https.onRequest((req, res) => {
-    return algoliaFunctions.sendDataToAgolia(req, res, db);
+    return algoliaFunctions.sendUsersToAlgolia(req, res, db, "users");
+  });
+
+exports.sendUserNamesToAlgolia = functions
+  .region("us-east4")
+  .https.onRequest((req, res) => {
+    return algoliaFunctions.sendUsernamesToAlgolia(req, res, db, "usernames");
   });
 
 exports.collectionOnCreate = functions
   .region("us-east4")
   .firestore.document("user-info/{uid}")
   .onCreate(async (snapshot, context) => {
-    await algoliaFunctions.saveDocumentInAlgolia(snapshot);
+    await algoliaFunctions.saveDocumentInAlgolia(snapshot, "users");
+  });
+
+exports.collectionOnCreateForUsernames = functions
+  .region("us-east4")
+  .firestore.document("user-info/{uid}")
+  .onCreate(async (snapshot, context) => {
+    await algoliaFunctions.saveDocumentInAlgolia(snapshot, "usernames");
   });
 
 exports.collectionOnUpdate = functions
   .region("us-east4")
   .firestore.document("user-info/{uid}")
   .onUpdate(async (change, context) => {
-    await algoliaFunctions.updateDocumentInAlgolia(change);
+    await algoliaFunctions.updateDocumentInAlgolia(change, "users");
+  });
+
+exports.collectionOnUpdateForUsernames = functions
+  .region("us-east4")
+  .firestore.document("user-info/{uid}")
+  .onUpdate(async (change, context) => {
+    await algoliaFunctions.updateDocumentInAlgolia(change, "usernames");
   });
 
 exports.collectionOnDelete = functions
   .region("us-east4")
   .firestore.document("user-info/{uid}")
   .onDelete(async (snapshot, context) => {
-    await algoliaFunctions.deleteDocumentFromAlgolia(snapshot);
+    await algoliaFunctions.deleteDocumentFromAlgolia(snapshot, "users");
+  });
+
+exports.collectionOnDeleteForUsernames = functions
+  .region("us-east4")
+  .firestore.document("user-info/{uid}")
+  .onDelete(async (snapshot, context) => {
+    await algoliaFunctions.deleteDocumentFromAlgolia(snapshot, "usernames");
   });
