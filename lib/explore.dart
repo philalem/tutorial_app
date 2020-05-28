@@ -163,19 +163,15 @@ class _ExploreState extends State<Explore> {
           },
           cursorColor: Colors.white,
           showCursor: _isSearching,
-          autofocus: false,
           controller: _searchController,
           focusNode: focusNode,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.symmetric(
+              horizontal: 15,
               vertical: 0,
             ),
             filled: true,
             fillColor: Colors.indigo[400],
-            prefixIcon: Icon(
-              Icons.search,
-              color: Colors.white,
-            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide(

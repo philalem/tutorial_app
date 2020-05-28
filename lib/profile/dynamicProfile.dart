@@ -72,7 +72,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                       top: 140,
                       bottom: 0,
                       child: Container(
-                        color: Colors.orange[200],
+                        color: Colors.grey[300],
                         width: screenWidth,
                       ),
                     ),
@@ -142,14 +142,6 @@ class _DynamicProfileState extends State<DynamicProfile> {
                                 flex: 2,
                               ),
                               FlatButton(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 0,
-                                    style: BorderStyle.none,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                color: Colors.white,
                                 textColor: Colors.black,
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
@@ -167,14 +159,6 @@ class _DynamicProfileState extends State<DynamicProfile> {
                               ),
                               Spacer(),
                               FlatButton(
-                                shape: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: 0,
-                                    style: BorderStyle.none,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                color: Colors.white,
                                 textColor: Colors.black,
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
