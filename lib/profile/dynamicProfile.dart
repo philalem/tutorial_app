@@ -115,7 +115,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                         Padding(
                           padding: EdgeInsets.only(top: 15),
                           child: Text(
-                            data.name,
+                            data.username,
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
