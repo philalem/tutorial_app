@@ -34,6 +34,7 @@ class UserDbService {
 
   UserData _mapUserData(DocumentSnapshot snapshot) {
     return UserData(
+        username: snapshot['username'],
         email: snapshot['email'],
         name: snapshot['name'],
         interests: List.from(snapshot['interests']),
