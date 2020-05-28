@@ -127,7 +127,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                             children: <Widget>[
                               Text(
                                 'Follow',
-                                style: TextStyle(fontSize: 16),
+                                style: TextStyle(fontSize: 12),
                               ),
                               Icon(Icons.add)
                             ],
