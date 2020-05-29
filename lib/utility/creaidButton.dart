@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 
 class CreaidButton extends StatelessWidget {
-  CreaidButton({this.onPressed, this.children, this.disabled: false});
+  CreaidButton({
+    this.onPressed,
+    this.children,
+    this.disabled: false,
+    this.shrink: false,
+  });
+  List<Widget> children;
   Function onPressed;
   bool disabled;
-  List<Widget> children;
+  bool shrink;
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +21,9 @@ class CreaidButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(18.0),
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: children,
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: shrink ? MainAxisSize.min : MainAxisSize.max,
       ),
     );
   }

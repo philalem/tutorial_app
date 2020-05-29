@@ -45,19 +45,18 @@ class _UsernameAndInterestsSignUpState
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        elevation: 0.0,
         title: Text('Creaid'),
       ),
       body: Column(
         children: <Widget>[
-          CreateUsername(
-            enableForm: enableSubmitButton,
-            disableForm: disableSubmitButton,
-            controller: usernameHolder,
-          ),
           Container(
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+              padding: EdgeInsets.symmetric(vertical: 50.0, horizontal: 50.0),
               child: Column(children: <Widget>[
+                CreateUsername(
+                  enableForm: enableSubmitButton,
+                  disableForm: disableSubmitButton,
+                  controller: usernameHolder,
+                ),
                 SizedBox(height: 20.0),
                 Text(
                   'Add interests to your profile',
@@ -78,6 +77,7 @@ class _UsernameAndInterestsSignUpState
                       Text(
                         'Done',
                         style: TextStyle(fontSize: 16),
+                        textAlign: TextAlign.center,
                       ),
                     ],
                     onPressed: () async {
@@ -96,6 +96,7 @@ class _UsernameAndInterestsSignUpState
                           error = 'Can not register this user';
                         });
                       }
+                      Navigator.of(context).pop();
                     }),
                 SizedBox(height: 12.0),
                 Text(

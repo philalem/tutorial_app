@@ -29,8 +29,8 @@ class _DynamicProfileState extends State<DynamicProfile> {
     super.initState();
   }
 
-  void _loadCurrentUser() async {
-    FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
+  Future<void> _loadCurrentUser() async {
+    return await FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
       setState(() {
         this.userName = user;
       });
@@ -42,9 +42,13 @@ class _DynamicProfileState extends State<DynamicProfile> {
       return widget.name;
     }
     if (userName != null) {
-      return userName.displayName;
+      if (userName.displayName != null) {
+        return userName.displayName;
+      }
     }
-
+    setState(() {
+      _loadCurrentUser();
+    });
     return '';
   }
 
@@ -123,6 +127,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                         Padding(
                           padding: EdgeInsets.only(top: 10),
                           child: CreaidButton(
+                            shrink: true,
                             onPressed: () => {},
                             children: <Widget>[
                               Text(

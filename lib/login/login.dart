@@ -54,7 +54,7 @@ class _LoginState extends State<Login> {
         child: ListView(
           children: <Widget>[
             Container(
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+              padding: EdgeInsets.symmetric(vertical: 50.0, horizontal: 50.0),
               child: Form(
                 key: _formKey,
                 child: Column(
