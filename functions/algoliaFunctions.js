@@ -91,7 +91,7 @@ exports.saveDocumentInAlgolia = async (snapshot, collectionIndexName) => {
   }
 };
 
-exports.collectionOnUpdate = async (change, collectionIndexName) => {
+exports.updateDocumentInAlgolia = async (change, collectionIndexName) => {
   const docBeforeChange = change.before.data();
   const docAfterChange = change.after.data();
   if (docBeforeChange && docAfterChange) {
@@ -105,7 +105,7 @@ exports.collectionOnUpdate = async (change, collectionIndexName) => {
   }
 };
 
-exports.collectionOnDelete = async (snapshot, collectionIndexName) => {
+exports.deleteDocumentFromAlgolia = async (snapshot, collectionIndexName) => {
   const collectionIndex = algoliaClient.initIndex(collectionIndexName);
   if (snapshot.exists) {
     const objectID = snapshot.id;
