@@ -1,6 +1,6 @@
+import 'package:creaid/register/usernameAndInterestsSignUp.dart';
 import 'package:creaid/utility/creaidButton.dart';
-import 'package:creaid/utility/customTextField.dart';
-import 'package:creaid/register/interestsSignUp.dart';
+import 'package:creaid/utility/creaidTextField.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -69,7 +69,7 @@ class _RegisterState extends State<Register> {
                         ),
                       ),
                       SizedBox(height: 40.0),
-                      CustomTextField(
+                      CreaidTextField(
                         icon: Icon(Icons.person),
                         obsecure: false,
                         onChanged: (input) => name = input,
@@ -78,7 +78,7 @@ class _RegisterState extends State<Register> {
                         hint: "Name",
                       ),
                       SizedBox(height: 30.0),
-                      CustomTextField(
+                      CreaidTextField(
                         icon: Icon(Icons.email),
                         obsecure: false,
                         onChanged: (input) => email = input,
@@ -88,7 +88,7 @@ class _RegisterState extends State<Register> {
                         hint: "Email",
                       ),
                       SizedBox(height: 30.0),
-                      CustomTextField(
+                      CreaidTextField(
                         icon: Icon(Icons.panorama_fish_eye),
                         obsecure: false,
                         onChanged: (input) => password = input,
@@ -111,10 +111,11 @@ class _RegisterState extends State<Register> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => InterestsSignUp(
-                                      email: email,
-                                      name: name,
-                                      password: password)),
+                                  builder: (context) =>
+                                      UsernameAndInterestsSignUp(
+                                          email: email,
+                                          name: name,
+                                          password: password)),
                             );
                           }
                         },
