@@ -16,7 +16,7 @@ class UserDbService {
       'name': name,
       'email': email,
       'interests': interests,
-      'photo-url': '',
+      'photo-url': 'https://firebasestorage.googleapis.com/v0/b/creaid-b4528.appspot.com/o/unknown-profile.png?alt=media&token=36b3cb28-743c-4352-ad53-32ec67387e0d',
     });
   }
 
@@ -36,7 +36,9 @@ class UserDbService {
         email: snapshot['email'],
         name: snapshot['name'],
         interests: List.from(snapshot['interests']),
-        photoUrl: snapshot['photo-url']);
+        photoUrl: snapshot['photo-url'],
+        videos: List.from(snapshot['video-stream'])
+    );
   }
 
   Future<String> getUsersName() async {

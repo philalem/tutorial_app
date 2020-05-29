@@ -6,6 +6,7 @@ class UserData {
   List<String> interests;
   List<String> followers;
   List<String> following;
+  List<String> videos;
 
   UserData(
       {this.uid,
@@ -14,5 +15,7 @@ class UserData {
       this.interests,
       this.followers,
       this.following,
-      this.photoUrl});
+      this.photoUrl,
+      this.videos
+      });
 }
