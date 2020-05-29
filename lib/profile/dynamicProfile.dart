@@ -74,9 +74,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                         shape: BoxShape.circle,
                         image: DecorationImage(
                           fit: BoxFit.contain,
-                          image: data.photoUrl != null && data.photoUrl != ''
-                              ? Image.network(data.photoUrl).image
-                              : AssetImage('assets/images/phillip_profile.jpg'),
+                          image: Image.network(data.photoUrl).image
                         ),
                       ),
                     ),

@@ -1,6 +1,5 @@
 import 'package:creaid/utility/creaidButton.dart';
 import 'package:flutter/material.dart';
-import 'package:creaid/home.dart';
 import 'package:creaid/utility/firebaseAuth.dart';
 
 class InterestsSignUp extends StatefulWidget {

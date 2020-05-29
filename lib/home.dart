@@ -1,5 +1,6 @@
 import 'package:creaid/camerascreen/camera_screen.dart';
 import 'package:creaid/explore.dart';
+import 'package:creaid/feed.dart';
 import 'package:creaid/notifications.dart';
 import 'package:creaid/profile/dynamicProfile.dart';
 import 'package:creaid/video-player.dart';
@@ -26,7 +27,7 @@ class _HomeState extends State<Home> {
             print(settings.name);
             switch (settings.name) {
               case '/':
-                return VideoPlayerScreen();
+                return Feed();
               default:
                 throw UnimplementedError();
             }
