@@ -24,43 +24,41 @@ class _CreateUsername extends State<CreateUsername> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-      child: Column(
-        children: <Widget>[
-          SizedBox(height: 20.0),
-          Text(
-            'Create a username',
-            textAlign: TextAlign.center,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 20.0),
-          CreaidTextField(
-            validator: (val) => val.isEmpty ? 'Enter a username' : null,
-            controller: widget.controller,
-            onChanged: (value) async {
-              bool isMatch =
-                  await algoliaService.isThereAnExactUsernameMatch(value);
-              if (isMatch) {
-                widget.disableForm();
-                error = 'Sorry, this username is taken already. Try another.';
-              } else if (value != '') {
-                widget.disableForm();
-                error = 'Please enter a username';
-              } else {
-                widget.enableForm();
-                error = '';
-              }
-              setState(() {});
-            },
-          ),
-          Text(
-            error,
-            style: TextStyle(color: Colors.red, fontSize: 14.0),
-          )
-        ],
-      ),
+    return Column(
+      children: <Widget>[
+        SizedBox(height: 20.0),
+        Text(
+          'Create a username',
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 20.0),
+        CreaidTextField(
+          icon: Icon(Icons.edit),
+          validator: (val) => val.isEmpty ? 'Enter a username' : null,
+          controller: widget.controller,
+          onChanged: (value) async {
+            bool isMatch =
+                await algoliaService.isThereAnExactUsernameMatch(value);
+            if (isMatch) {
+              widget.disableForm();
+              error = 'Sorry, this username is taken already. Try another.';
+            } else if (value == '') {
+              widget.disableForm();
+              error = 'Please enter a username';
+            } else {
+              widget.enableForm();
+              error = '';
+            }
+            setState(() {});
+          },
+        ),
+        Text(
+          error,
+          style: TextStyle(color: Colors.red, fontSize: 14.0),
+        )
+      ],
     );
   }
 }

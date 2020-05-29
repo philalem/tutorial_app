@@ -54,7 +54,7 @@ class _RegisterState extends State<Register> {
           children: <Widget>[
             Center(
               child: Container(
-                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+                padding: EdgeInsets.symmetric(vertical: 50.0, horizontal: 50.0),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -103,6 +103,7 @@ class _RegisterState extends State<Register> {
                           Text(
                             'Next',
                             style: TextStyle(fontSize: 16),
+                            textAlign: TextAlign.center,
                           ),
                         ],
                         onPressed: () async {

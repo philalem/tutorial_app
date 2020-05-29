@@ -18,6 +18,9 @@ class AlgoliaService {
     AlgoliaQuery query = algolia.instance.index('usernames').setHitsPerPage(1);
     query = query.search(potentialUsername);
     var hit = (await query.getObjects()).hits;
+    if (hit.length == 0) {
+      return false;
+    }
     AlgoliaObjectSnapshot snap = hit[0];
     var closestMatch = snap.data['username'];
     return closestMatch == potentialUsername;

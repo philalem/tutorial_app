@@ -16,30 +16,27 @@ class CreaidTextField extends StatelessWidget {
   final TextEditingController controller;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(left: 30, right: 30),
-      child: TextFormField(
-        controller: controller != null ? controller : TextEditingController(),
-        onChanged: onChanged,
-        validator: validator,
-        autofocus: true,
-        obscureText: obsecure,
-        style: TextStyle(
-          fontSize: 16,
-        ),
-        decoration: InputDecoration(
-          hintStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          hintText: hint,
-          prefixIcon: icon != null
-              ? Padding(
-                  child: IconTheme(
-                    data: IconThemeData(color: Theme.of(context).primaryColor),
-                    child: icon,
-                  ),
-                  padding: EdgeInsets.only(left: 0, right: 0),
-                )
-              : null,
-        ),
+    return TextFormField(
+      controller: controller != null ? controller : TextEditingController(),
+      onChanged: onChanged,
+      validator: validator,
+      autofocus: true,
+      obscureText: obsecure,
+      style: TextStyle(
+        fontSize: 16,
+      ),
+      decoration: InputDecoration(
+        hintStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        hintText: hint,
+        prefixIcon: icon != null
+            ? Padding(
+                child: IconTheme(
+                  data: IconThemeData(color: Theme.of(context).primaryColor),
+                  child: icon,
+                ),
+                padding: EdgeInsets.only(left: 0, right: 0),
+              )
+            : null,
       ),
     );
   }
