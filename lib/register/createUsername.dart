@@ -1,4 +1,5 @@
 import 'package:creaid/utility/algoliaService.dart';
+import 'package:creaid/utility/creaidTextField.dart';
 import 'package:creaid/utility/firebaseAuth.dart';
 import 'package:flutter/material.dart';
 
@@ -19,9 +20,7 @@ class CreateUsername extends StatefulWidget {
 class _CreateUsername extends State<CreateUsername> {
   final AlgoliaService algoliaService = AlgoliaService();
   final FireBaseAuthorization _auth = FireBaseAuthorization();
-
   String error = '';
-  var interests = new List<String>();
 
   @override
   Widget build(BuildContext context) {
@@ -37,50 +36,25 @@ class _CreateUsername extends State<CreateUsername> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 20.0),
-          TextFormField(
-              validator: (val) => val.isEmpty ? 'Enter a valid interest' : null,
-              controller: widget.controller,
-              onChanged: (value) async {
-                bool isMatch =
-                    await algoliaService.isThereAnExactUsernameMatch(value);
-                if (isMatch) {
-                  setState(() {
-                    widget.disableForm();
-                    error = 'Can not register this username. Try another.';
-                  });
-                } else {
-                  setState(() {
-                    widget.enableForm();
-                    error = '';
-                  });
-                }
-              },
-              decoration: InputDecoration(
-                hintStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                hintText: 'Username',
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide(
-                    color: Theme.of(context).primaryColor,
-                    width: 2,
-                  ),
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide(
-                    color: Theme.of(context).primaryColor,
-                    width: 3,
-                  ),
-                ),
-                prefixIcon: Padding(
-                  child: IconTheme(
-                    data: IconThemeData(color: Theme.of(context).primaryColor),
-                    child: Icon(Icons.alarm),
-                  ),
-                  padding: EdgeInsets.only(left: 30, right: 10),
-                ),
-              )),
-          SizedBox(height: 12.0),
+          CreaidTextField(
+            validator: (val) => val.isEmpty ? 'Enter a username' : null,
+            controller: widget.controller,
+            onChanged: (value) async {
+              bool isMatch =
+                  await algoliaService.isThereAnExactUsernameMatch(value);
+              if (isMatch) {
+                widget.disableForm();
+                error = 'Sorry, this username is taken already. Try another.';
+              } else if (value != '') {
+                widget.disableForm();
+                error = 'Please enter a username';
+              } else {
+                widget.enableForm();
+                error = '';
+              }
+              setState(() {});
+            },
+          ),
           Text(
             error,
             style: TextStyle(color: Colors.red, fontSize: 14.0),

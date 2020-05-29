@@ -1,18 +1,21 @@
 import 'package:creaid/register/createUsername.dart';
 import 'package:creaid/utility/creaidButton.dart';
+import 'package:creaid/utility/creaidTextField.dart';
 import 'package:creaid/utility/firebaseAuth.dart';
 import 'package:flutter/material.dart';
 
-class InterestsSignUp extends StatefulWidget {
+class UsernameAndInterestsSignUp extends StatefulWidget {
   final String email, name, password;
 
-  InterestsSignUp({this.email, this.name, this.password});
+  UsernameAndInterestsSignUp({this.email, this.name, this.password});
 
   @override
-  _InterestsSignUpState createState() => _InterestsSignUpState();
+  _UsernameAndInterestsSignUpState createState() =>
+      _UsernameAndInterestsSignUpState();
 }
 
-class _InterestsSignUpState extends State<InterestsSignUp> {
+class _UsernameAndInterestsSignUpState
+    extends State<UsernameAndInterestsSignUp> {
   final FireBaseAuthorization _auth = FireBaseAuthorization();
   final interestHolder = TextEditingController();
   final usernameHolder = TextEditingController();
@@ -63,37 +66,11 @@ class _InterestsSignUpState extends State<InterestsSignUp> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 20.0),
-                TextFormField(
-                    validator: (val) =>
-                        val.isEmpty ? 'Enter a valid interest' : null,
-                    controller: interestHolder,
-                    decoration: InputDecoration(
-                      hintStyle:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                      hintText: 'Interest',
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(
-                          color: Theme.of(context).primaryColor,
-                          width: 2,
-                        ),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide(
-                          color: Theme.of(context).primaryColor,
-                          width: 3,
-                        ),
-                      ),
-                      prefixIcon: Padding(
-                        child: IconTheme(
-                          data: IconThemeData(
-                              color: Theme.of(context).primaryColor),
-                          child: Icon(Icons.alarm),
-                        ),
-                        padding: EdgeInsets.only(left: 30, right: 10),
-                      ),
-                    )),
+                CreaidTextField(
+                  validator: (val) =>
+                      val.isEmpty ? 'Enter a valid interest' : null,
+                  controller: interestHolder,
+                ),
                 SizedBox(height: 40.0),
                 CreaidButton(
                     disabled: _isSubmitDisabled,

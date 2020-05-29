@@ -1,8 +1,7 @@
 import 'package:creaid/utility/creaidButton.dart';
-import 'package:creaid/utility/customTextField.dart';
+import 'package:creaid/utility/creaidTextField.dart';
 import 'package:creaid/utility/firebaseAuth.dart';
 import 'package:flutter/material.dart';
-import 'package:creaid/home.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Login extends StatefulWidget {
@@ -70,7 +69,7 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     SizedBox(height: 40.0),
-                    CustomTextField(
+                    CreaidTextField(
                       icon: Icon(Icons.email),
                       obsecure: false,
                       onChanged: (input) => email = input,
@@ -79,7 +78,7 @@ class _LoginState extends State<Login> {
                       hint: "Email",
                     ),
                     SizedBox(height: 30.0),
-                    CustomTextField(
+                    CreaidTextField(
                       icon: Icon(Icons.panorama_fish_eye),
                       obsecure: true,
                       onChanged: (input) => password = input,
