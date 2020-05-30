@@ -36,14 +36,14 @@ exports.collectionOnCreate = functions
   .region("us-east4")
   .firestore.document("user-info/{uid}")
   .onCreate(async (snapshot, context) => {
-    await algoliaFunctions.saveDocumentInAlgolia(snapshot, "users");
+    await algoliaFunctions.saveUserInAlgolia(snapshot, "users");
   });
 
 exports.collectionOnCreateForUsernames = functions
   .region("us-east4")
   .firestore.document("user-info/{uid}")
   .onCreate(async (snapshot, context) => {
-    await algoliaFunctions.saveDocumentInAlgolia(snapshot, "usernames");
+    await algoliaFunctions.saveUsernameInAlgolia(snapshot, "usernames");
   });
 
 exports.collectionOnUpdate = functions
