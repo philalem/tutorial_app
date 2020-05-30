@@ -63,14 +63,12 @@ exports.saveUserInAlgolia = async (snapshot, collectionIndexName) => {
   if (snapshot.exists) {
     const record = snapshot.data();
     if (record) {
-      if (record.isIncomplete === false) {
-        const user = {
-          objectID: snapshot.id,
-          name: record.name,
-          username: record.username,
-        };
-        await collectionIndex.saveObject(user);
-      }
+      const user = {
+        objectID: snapshot.id,
+        name: record.name,
+        username: record.username,
+      };
+      await collectionIndex.saveObject(user);
     }
   }
 };
@@ -80,19 +78,17 @@ exports.saveUsernameInAlgolia = async (snapshot, collectionIndexName) => {
     const record = snapshot.data();
     if (record) {
       // Removes the possibility of snapshot.data() being undefined.
-      if (record.isIncomplete === false) {
-        // We only index products that are complete.
-        const username = {
-          objectID: snapshot.id,
-          username: record.username,
-        };
+      // We only index products that are complete.
+      const username = {
+        objectID: snapshot.id,
+        username: record.username,
+      };
 
-        // In this example, we are including all properties of the Firestore document
-        // in the Algolia record, but do remember to evaluate if they are all necessary.
-        // More on that in Part 2, Step 2 above.
+      // In this example, we are including all properties of the Firestore document
+      // in the Algolia record, but do remember to evaluate if they are all necessary.
+      // More on that in Part 2, Step 2 above.
 
-        await collectionIndex.saveObject(username); // Adds or replaces a specific object.
-      }
+      await collectionIndex.saveObject(username); // Adds or replaces a specific object.
     }
   }
 };
@@ -111,10 +107,12 @@ exports.updateDocumentInAlgolia = async (change, collectionIndexName) => {
   }
 };
 
-exports.deleteDocumentFromAlgolia = async (snapshot, collectionIndexName) => {
-  const collectionIndex = algoliaClient.initIndex(collectionIndexName);
+exports.deleteDocumentFromAlgolia = async (snapshot) => {
+  const collectionUsernameIndex = algoliaClient.initIndex("usernames");
+  const collectionUserIndex = algoliaClient.initIndex("users");
   if (snapshot.exists) {
     const objectID = snapshot.id;
-    await collectionIndex.deleteObject(objectID);
+    await collectionUserIndex.deleteObject(objectID);
+    await collectionUsernameIndex.deleteObject(objectID);
   }
 };

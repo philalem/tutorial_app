@@ -64,12 +64,5 @@ exports.collectionOnDelete = functions
   .region("us-east4")
   .firestore.document("user-info/{uid}")
   .onDelete(async (snapshot, context) => {
-    await algoliaFunctions.deleteDocumentFromAlgolia(snapshot, "users");
-  });
-
-exports.collectionOnDeleteForUsernames = functions
-  .region("us-east4")
-  .firestore.document("user-info/{uid}")
-  .onDelete(async (snapshot, context) => {
-    await algoliaFunctions.deleteDocumentFromAlgolia(snapshot, "usernames");
+    await algoliaFunctions.deleteDocumentFromAlgolia(snapshot);
   });
