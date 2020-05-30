@@ -1,5 +1,6 @@
 import 'package:algolia/algolia.dart';
 import 'package:creaid/profile/dynamicProfile.dart';
+import 'package:creaid/utility/algoliaService.dart';
 import 'package:creaid/video-player.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,7 @@ class Explore extends StatefulWidget {
 class _ExploreState extends State<Explore> {
   bool _isSearching = false;
   TextEditingController _searchController = TextEditingController();
+  AlgoliaService algoliaService = AlgoliaService();
   FocusNode focusNode;
   var _searchResults = [];
 
@@ -136,14 +138,8 @@ class _ExploreState extends State<Explore> {
   }
 
   void _searchForUsers() async {
-    Algolia algolia = Algolia.init(
-      applicationId: 'JRNVNTRH9V',
-      apiKey: '409b8ed6d2483d5d25b3d738bd9a48ed',
-    );
-
-    AlgoliaQuery query = algolia.instance.index('users').setHitsPerPage(5);
-    query = query.search(_searchController.text);
-    _searchResults = (await query.getObjects()).hits;
+    _searchResults =
+        await algoliaService.searchForUsers(_searchController.text, 5);
     setState(() {});
   }
 
@@ -163,19 +159,15 @@ class _ExploreState extends State<Explore> {
           },
           cursorColor: Colors.white,
           showCursor: _isSearching,
-          autofocus: false,
           controller: _searchController,
           focusNode: focusNode,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.symmetric(
+              horizontal: 15,
               vertical: 0,
             ),
             filled: true,
             fillColor: Colors.indigo[400],
-            prefixIcon: Icon(
-              Icons.search,
-              color: Colors.white,
-            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide(

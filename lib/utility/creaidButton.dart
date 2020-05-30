@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
 
 class CreaidButton extends StatelessWidget {
-  CreaidButton({this.label, this.onPressed});
-  final Function onPressed;
-  final String label;
+  CreaidButton({
+    this.onPressed,
+    this.children,
+    this.disabled: false,
+    this.shrink: false,
+  });
+  List<Widget> children;
+  Function onPressed;
+  bool disabled;
+  bool shrink;
+
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
-      onPressed: onPressed,
+      onPressed: disabled ? null : onPressed,
       textColor: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18.0),
       ),
       child: Row(
-        children: <Widget>[
-          Text(
-            label,
-            style: TextStyle(fontSize: 16),
-          ),
-        ],
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: children,
+        mainAxisSize: shrink ? MainAxisSize.min : MainAxisSize.max,
       ),
     );
   }

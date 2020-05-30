@@ -1,5 +1,6 @@
 class UserData {
   final String uid;
+  String username;
   String email;
   String name;
   String photoUrl;
@@ -9,6 +10,7 @@ class UserData {
 
   UserData(
       {this.uid,
+      this.username,
       this.email,
       this.name,
       this.interests,

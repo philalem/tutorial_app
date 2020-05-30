@@ -36,15 +36,15 @@ class FireBaseAuthorization {
     await user.reload();
   }
 
-  Future registerWithEmailAndPassword(String email, String password,
-      String name, List<String> interests) async {
+  Future registerWithEmailAndPassword(String email, String username,
+      String password, String name, List<String> interests) async {
     try {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       FirebaseUser user = result.user;
       updateUserName(name, user);
       UserDbService(uid: user.uid)
-          .updateUserInfo(name, email, password, interests);
+          .updateUserInfo(name, username, email, password, interests);
       return _userFromFireBaseUser(user);
     } catch (error) {
       print(error.toString());

@@ -10,10 +10,11 @@ class UserDbService {
 
   UserDbService({this.uid});
 
-  Future<void> updateUserInfo(String name, String email, String password,
-      List<String> interests) async {
+  Future<void> updateUserInfo(String name, String username, String email,
+      String password, List<String> interests) async {
     return await creaidCollection.document(uid).setData({
       'name': name,
+      'username': username,
       'email': email,
       'interests': interests,
       'photo-url': '',
@@ -33,6 +34,7 @@ class UserDbService {
 
   UserData _mapUserData(DocumentSnapshot snapshot) {
     return UserData(
+        username: snapshot['username'],
         email: snapshot['email'],
         name: snapshot['name'],
         interests: List.from(snapshot['interests']),
