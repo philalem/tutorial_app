@@ -16,22 +16,21 @@ class UsernameAndInterestsSignUp extends StatefulWidget {
 class _UsernameAndInterestsSignUpState
     extends State<UsernameAndInterestsSignUp> {
   final FireBaseAuthorization _auth = FireBaseAuthorization();
-  final List<String> topics = [
-    'Cooking',
-    'Carpentry',
-    'Wedding Decor',
-    'Crafts'
+  var topics = [
+    {'Cooking': false},
+    {'Carpentry': false},
+    {'Wedding Decor': false},
+    {'Crafts': false},
   ];
   final interestHolder = TextEditingController();
   final usernameHolder = TextEditingController();
   bool _isSubmitDisabled = false;
+  String error = '';
+  var _interests = List<String>();
 
   clearTextInput() {
     interestHolder.clear();
   }
-
-  String error = '';
-  var interests = new List<String>();
 
   void enableSubmitButton() {
     setState(() {
@@ -73,13 +72,31 @@ class _UsernameAndInterestsSignUpState
                 Wrap(
                     alignment: WrapAlignment.center,
                     direction: Axis.horizontal,
-                    spacing: 20,
+                    spacing: 12,
                     children: topics.map(
                       (e) {
+                        bool added = e.values.toList()[0];
                         return CreaidButton(
+                          color:
+                              added ? Colors.indigoAccent[700] : Colors.indigo,
+                          onPressed: () {
+                            _addOrRemoveInterest(e);
+                          },
                           shrink: true,
                           children: <Widget>[
-                            Text(e),
+                            Text(e.keys.toList()[0]),
+                            SizedBox(
+                              width: 4,
+                            ),
+                            added
+                                ? Icon(
+                                    Icons.check,
+                                    size: 20,
+                                  )
+                                : Icon(
+                                    Icons.add,
+                                    size: 20,
+                                  ),
                           ],
                         );
                       },
@@ -95,14 +112,14 @@ class _UsernameAndInterestsSignUpState
                       ),
                     ],
                     onPressed: () async {
-                      interests.add(interestHolder.text);
+                      _interests.add(interestHolder.text);
                       clearTextInput();
                       dynamic res = await _auth.registerWithEmailAndPassword(
                           widget.email,
                           usernameHolder.text,
                           widget.password,
                           widget.name,
-                          interests);
+                          _interests);
                       res = await _auth.signInWithEmailAndPassword(
                           widget.email, widget.password);
                       if (res == null) {
@@ -121,5 +138,19 @@ class _UsernameAndInterestsSignUpState
         ],
       ),
     );
+  }
+
+  void _addOrRemoveInterest(Map<String, bool> e) {
+    var topic = e;
+    var interest = e.keys.toList()[0];
+    topic = {interest: !topic.values.toList()[0]};
+    if (!_interests.contains(e)) {
+      _interests.add(interest);
+    } else {
+      _interests.remove(interest);
+    }
+    topics[topics.indexOf(e)] = topic;
+    print(topic);
+    setState(() {});
   }
 }
