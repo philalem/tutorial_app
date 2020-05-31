@@ -20,10 +20,13 @@ class CreaidButton extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18.0),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: children,
-        mainAxisSize: shrink ? MainAxisSize.min : MainAxisSize.max,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: children,
+          mainAxisSize: shrink ? MainAxisSize.min : MainAxisSize.max,
+        ),
       ),
     );
   }

@@ -26,6 +26,7 @@ class CreaidTextField extends StatelessWidget {
         fontSize: 16,
       ),
       decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(vertical: 5),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.indigo, width: 2.0),
         ),
