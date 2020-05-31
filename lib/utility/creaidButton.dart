@@ -7,12 +7,14 @@ class CreaidButton extends StatelessWidget {
     this.disabled: false,
     this.shrink: false,
     this.color: Colors.indigo,
+    this.padding: 10,
   });
   List<Widget> children;
   Function onPressed;
   bool disabled;
   bool shrink;
   Color color;
+  double padding;
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,7 @@ class CreaidButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(18.0),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: EdgeInsets.all(padding),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: children,
