@@ -22,15 +22,10 @@ class _UsernameAndInterestsSignUpState
     {'Wedding Decor': false},
     {'Crafts': false},
   ];
-  final interestHolder = TextEditingController();
   final usernameHolder = TextEditingController();
   bool _isSubmitDisabled = false;
   String error = '';
   var _interests = List<String>();
-
-  clearTextInput() {
-    interestHolder.clear();
-  }
 
   void enableSubmitButton() {
     setState(() {
@@ -112,8 +107,6 @@ class _UsernameAndInterestsSignUpState
                       ),
                     ],
                     onPressed: () async {
-                      _interests.add(interestHolder.text);
-                      clearTextInput();
                       dynamic res = await _auth.registerWithEmailAndPassword(
                           widget.email,
                           usernameHolder.text,
@@ -144,7 +137,7 @@ class _UsernameAndInterestsSignUpState
     var topic = e;
     var interest = e.keys.toList()[0];
     topic = {interest: !topic.values.toList()[0]};
-    if (!_interests.contains(e)) {
+    if (!_interests.contains(interest)) {
       _interests.add(interest);
     } else {
       _interests.remove(interest);
