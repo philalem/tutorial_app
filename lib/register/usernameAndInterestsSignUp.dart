@@ -1,6 +1,5 @@
 import 'package:creaid/register/createUsername.dart';
 import 'package:creaid/utility/creaidButton.dart';
-import 'package:creaid/utility/creaidTextField.dart';
 import 'package:creaid/utility/firebaseAuth.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +16,12 @@ class UsernameAndInterestsSignUp extends StatefulWidget {
 class _UsernameAndInterestsSignUpState
     extends State<UsernameAndInterestsSignUp> {
   final FireBaseAuthorization _auth = FireBaseAuthorization();
+  final List<String> topics = [
+    'Cooking',
+    'Carpentry',
+    'Wedding Decor',
+    'Crafts'
+  ];
   final interestHolder = TextEditingController();
   final usernameHolder = TextEditingController();
   bool _isSubmitDisabled = false;
@@ -65,11 +70,20 @@ class _UsernameAndInterestsSignUpState
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 20.0),
-                CreaidTextField(
-                  validator: (val) =>
-                      val.isEmpty ? 'Enter a valid interest' : null,
-                  controller: interestHolder,
-                ),
+                Wrap(
+                    alignment: WrapAlignment.center,
+                    direction: Axis.horizontal,
+                    spacing: 20,
+                    children: topics.map(
+                      (e) {
+                        return CreaidButton(
+                          shrink: true,
+                          children: <Widget>[
+                            Text(e),
+                          ],
+                        );
+                      },
+                    ).toList()),
                 SizedBox(height: 40.0),
                 CreaidButton(
                     disabled: _isSubmitDisabled,
