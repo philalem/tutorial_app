@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class UserDbService {
   final String uid;
-  final CollectionReference creaidCollection =
+  final CollectionReference userInfoCollection =
       Firestore.instance.collection('user-info');
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -12,7 +12,7 @@ class UserDbService {
 
   Future<void> updateUserInfo(String name, String username, String email,
       String password, List<String> interests) async {
-    return await creaidCollection.document(uid).setData({
+    return await userInfoCollection.document(uid).setData({
       'name': name,
       'username': username,
       'email': email,
@@ -22,8 +22,15 @@ class UserDbService {
   }
 
   Future<void> updatePhotoUrl(String photoUrl) async {
-    DocumentReference ref = creaidCollection.document(uid);
+    DocumentReference ref = userInfoCollection.document(uid);
     ref.updateData({"photo-url": photoUrl});
+  }
+
+  Future<void> updateFollowing(String following) async {
+    return userInfoCollection
+        .document(this.uid)
+        .collection('following')
+        .document(following);
   }
 
   List<String> _nameFromSnapshot(QuerySnapshot snapshot) {
@@ -44,7 +51,7 @@ class UserDbService {
   Future<String> getUsersName() async {
     String userName;
     final FirebaseUser user = await _auth.currentUser();
-    creaidCollection.document(user.uid).snapshots().map((snapshot) {
+    userInfoCollection.document(user.uid).snapshots().map((snapshot) {
       userName = snapshot['name'];
     });
 
@@ -52,10 +59,10 @@ class UserDbService {
   }
 
   Stream<QuerySnapshot> get name {
-    return creaidCollection.snapshots();
+    return userInfoCollection.snapshots();
   }
 
   Stream<UserData> getNames() {
-    return creaidCollection.document(uid).snapshots().map(_mapUserData);
+    return userInfoCollection.document(uid).snapshots().map(_mapUserData);
   }
 }

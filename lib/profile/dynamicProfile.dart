@@ -37,21 +37,6 @@ class _DynamicProfileState extends State<DynamicProfile> {
     });
   }
 
-  String _getLoadedName() {
-    if (widget.name != null) {
-      return widget.name;
-    }
-    if (userName != null) {
-      if (userName.displayName != null) {
-        return userName.displayName;
-      }
-    }
-    setState(() {
-      _loadCurrentUser();
-    });
-    return '';
-  }
-
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     var screenWidth = size.width;
@@ -60,7 +45,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_getLoadedName()),
+        title: Text(widget.name),
       ),
       body: StreamBuilder<UserData>(
         stream: UserDbService(uid: uid).getNames(),
@@ -82,37 +67,20 @@ class _DynamicProfileState extends State<DynamicProfile> {
                     ),
                     Column(
                       children: <Widget>[
-                        GestureDetector(
-                          key: profileKey,
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => new UploadProfile(),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(
-                              top: 80,
-                            ),
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                image: data.photoUrl != null &&
-                                        data.photoUrl != ''
-                                    ? Image.network(data.photoUrl).image
-                                    : AssetImage(
-                                        'assets/images/phillip_profile.jpg'),
-                              ),
-                            ),
-                            child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: Icon(
-                                Icons.edit,
-                                color: Colors.black,
-                              ),
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: 80,
+                          ),
+                          width: 120,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image:
+                                  data.photoUrl != null && data.photoUrl != ''
+                                      ? Image.network(data.photoUrl).image
+                                      : AssetImage(
+                                          'assets/images/phillip_profile.jpg'),
                             ),
                           ),
                         ),
@@ -127,6 +95,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                         Padding(
                           padding: EdgeInsets.only(top: 10),
                           child: CreaidButton(
+                            padding: 0,
                             shrink: true,
                             onPressed: () => {},
                             children: <Widget>[
