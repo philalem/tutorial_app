@@ -25,3 +25,14 @@ exports.removeUserFromFollowers = async (snap, context) => {
     .document(userId)
     .delete();
 };
+
+exports.sendFollowNotification = async (snap, context) => {
+  const userId = context.params.userId;
+  const followedUserId = context.params.followingId;
+  return await firestore
+    .collection("user-info")
+    .doc(userId)
+    .collection("notifications")
+    .document(userId)
+    .addData({ type: "follow" });
+};

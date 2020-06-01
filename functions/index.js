@@ -27,6 +27,13 @@ exports.removeUserFromFollowers = functions
     return followFunctions.removeUserFromFollowers(snap, context);
   });
 
+exports.sendFollowNotification = functions
+  .region("us-east4")
+  .firestore.document("posts/{userId}/followers/{followerId}")
+  .onCreate((snap, context) => {
+    return followFunctions.sendFollowNotification(snap, context);
+  });
+
 // Shelving this for now.
 //
 // exports.generateThumbnailFromPost = functions.storage
