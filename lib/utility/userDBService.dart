@@ -31,7 +31,17 @@ class UserDbService {
         .document(this.uid)
         .collection('following')
         .document(uidToBeFollowed)
-        .setData({'uid': uidToBeFollowed});
+        .setData({'uid': uidToBeFollowed}).whenComplete(
+            () => print("User followed successfully."));
+  }
+
+  Future<void> removeFromFollowing(String uidToBeUnFollowed) async {
+    return userInfoCollection
+        .document(this.uid)
+        .collection('following')
+        .document(uidToBeUnFollowed)
+        .delete()
+        .whenComplete(() => print("User unfollowed successfully."));
   }
 
   Future<bool> isFollowing(String uidToBeFollowed) async {
@@ -43,6 +53,7 @@ class UserDbService {
       if (docSnapshot.exists) {
         return true;
       }
+      return false;
     });
     return false;
   }

@@ -1,12 +1,9 @@
 import 'package:creaid/profile/DisplayFollow.dart';
-import 'package:creaid/profile/UploadProfile.dart';
 import 'package:creaid/utility/UserData.dart';
 import 'package:creaid/utility/creaidButton.dart';
-import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class DynamicProfile extends StatefulWidget {
   String uid;
@@ -22,10 +19,12 @@ GlobalKey profileKey = GlobalKey();
 class _DynamicProfileState extends State<DynamicProfile> {
   FirebaseUser userName;
   UserDbService dbService = UserDbService();
+  bool isFollowing;
 
   @override
   void initState() {
     _loadCurrentUser();
+    _setIsFollowing();
     super.initState();
   }
 
@@ -37,11 +36,15 @@ class _DynamicProfileState extends State<DynamicProfile> {
     });
   }
 
+  Future<void> _setIsFollowing() async {
+    isFollowing = await dbService.isFollowing(userName.uid);
+    setState(() {});
+  }
+
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     var screenWidth = size.width;
-    final user = Provider.of<User>(context);
-    var uid = widget.uid != null ? widget.uid : user.uid;
+    var uid = widget.uid;
 
     return Scaffold(
       appBar: AppBar(
@@ -97,14 +100,20 @@ class _DynamicProfileState extends State<DynamicProfile> {
                           child: CreaidButton(
                             padding: 0,
                             shrink: true,
-                            onPressed: () => {},
-                            children: <Widget>[
-                              Text(
-                                'Follow',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                              Icon(Icons.add)
-                            ],
+                            onPressed: () {
+                              _updateFollowing(uid);
+                            },
+                            children: isFollowing
+                                ? [
+                                    Text(
+                                      'Follow',
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                    Icon(Icons.add)
+                                  ]
+                                : [
+                                    Text('Unfollow'),
+                                  ],
                           ),
                         ),
                         Padding(
@@ -184,5 +193,16 @@ class _DynamicProfileState extends State<DynamicProfile> {
         },
       ),
     );
+  }
+
+  void _updateFollowing(String uid) {
+    if (isFollowing) {
+      dbService.removeFromFollowing(uid);
+    } else {
+      dbService.addToFollowing(uid);
+    }
+    setState(() {
+      isFollowing = !isFollowing;
+    });
   }
 }
