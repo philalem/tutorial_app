@@ -1,4 +1,5 @@
 const postFunctions = require("./userPostFunctions");
+const followFunctions = require("./userFollowFunctions");
 const algoliaFunctions = require("./algoliaFunctions");
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
@@ -11,6 +12,21 @@ exports.sendPostToFollowers = functions
   .onCreate((snap, context) => {
     return postFunctions.createPostToFollowersBatchJobs(snap, context, false);
   });
+
+exports.addUserToFollowers = functions
+  .region("us-east4")
+  .firestore.document("posts/{userId}/following/{followingId}")
+  .onCreate((snap, context) => {
+    return followFunctions.addUserToFollowers(snap, context);
+  });
+
+exports.removeUserFromFollowers = functions
+  .region("us-east4")
+  .firestore.document("posts/{userId}/following/{followingId}")
+  .onDelete((snap, context) => {
+    return followFunctions.removeUserFromFollowers(snap, context);
+  });
+
 // Shelving this for now.
 //
 // exports.generateThumbnailFromPost = functions.storage
