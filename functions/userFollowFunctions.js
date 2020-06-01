@@ -11,8 +11,8 @@ exports.addUserToFollowers = async (snap, context) => {
     .collection("user-info")
     .doc(followedUserId)
     .collection("followers")
-    .document(userId)
-    .addData({ uid: userId });
+    .doc(userId)
+    .set({ uid: userId });
 };
 
 exports.removeUserFromFollowers = async (snap, context) => {
@@ -22,7 +22,7 @@ exports.removeUserFromFollowers = async (snap, context) => {
     .collection("user-info")
     .doc(followedUserId)
     .collection("followers")
-    .document(userId)
+    .doc(userId)
     .delete();
 };
 
@@ -33,6 +33,6 @@ exports.sendFollowNotification = async (snap, context) => {
     .collection("user-info")
     .doc(userId)
     .collection("notifications")
-    .document(userId)
-    .addData({ type: "follow" });
+    .doc(followedUserId)
+    .set({ type: "follow" });
 };
