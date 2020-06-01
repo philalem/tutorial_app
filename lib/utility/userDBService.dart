@@ -26,11 +26,25 @@ class UserDbService {
     ref.updateData({"photo-url": photoUrl});
   }
 
-  Future<void> updateFollowing(String following) async {
+  Future<void> addToFollowing(String uidToBeFollowed) async {
     return userInfoCollection
         .document(this.uid)
         .collection('following')
-        .document(following);
+        .document(uidToBeFollowed)
+        .setData({'uid': uidToBeFollowed});
+  }
+
+  Future<bool> isFollowing(String uidToBeFollowed) async {
+    var usersRef = userInfoCollection
+        .document(this.uid)
+        .collection('following')
+        .document(uidToBeFollowed);
+    usersRef.get().then((docSnapshot) {
+      if (docSnapshot.exists) {
+        return true;
+      }
+    });
+    return false;
   }
 
   List<String> _nameFromSnapshot(QuerySnapshot snapshot) {
