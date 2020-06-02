@@ -2,7 +2,6 @@ import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/customTextField.dart';
 import 'package:creaid/utility/firebaseAuth.dart';
 import 'package:flutter/material.dart';
-import 'package:creaid/home.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Login extends StatefulWidget {

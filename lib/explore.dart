@@ -1,5 +1,4 @@
 import 'package:algolia/algolia.dart';
-import 'package:creaid/feed.dart';
 import 'package:creaid/profile/dynamicProfile.dart';
 import 'package:creaid/video-player.dart';
 import 'package:flutter/material.dart';
@@ -66,7 +65,7 @@ class _ExploreState extends State<Explore> {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) {
-                  return Feed();
+                  return VideoPlayerScreen();
                 },
               ),
             );
