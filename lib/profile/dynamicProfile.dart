@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 
 class DynamicProfile extends StatefulWidget {
   String uid;
-  String viewingUid;
+  String loggedInUid;
   String name;
   DynamicProfile({
     this.uid,
     this.name,
-    this.viewingUid,
+    this.loggedInUid,
   });
 
   @override
@@ -42,7 +42,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
   }
 
   Future<void> _setDbService() async {
-    dbService = UserDbService(uid: widget.viewingUid);
+    dbService = UserDbService(uid: widget.loggedInUid);
     isFollowing = await dbService.isFollowing(widget.uid);
     setState(() {});
   }
@@ -51,7 +51,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
     var size = MediaQuery.of(context).size;
     var screenWidth = size.width;
     var uid = widget.uid;
-    dbService = UserDbService(uid: widget.viewingUid);
+    dbService = UserDbService(uid: widget.loggedInUid);
 
     return Scaffold(
       appBar: AppBar(

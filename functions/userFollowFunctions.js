@@ -8,7 +8,7 @@ exports.addUserToFollowers = async (snap, context) => {
   const userId = context.params.userId;
   const followedUserId = context.params.followingId;
   return await firestore
-    .collection("user-info")
+    .collection("follow-info")
     .doc(followedUserId)
     .collection("followers")
     .doc(userId)
@@ -19,7 +19,7 @@ exports.removeUserFromFollowers = async (snap, context) => {
   const userId = context.params.userId;
   const followedUserId = context.params.followingId;
   return await firestore
-    .collection("user-info")
+    .collection("follow-info")
     .doc(followedUserId)
     .collection("followers")
     .doc(userId)
@@ -30,7 +30,7 @@ exports.sendFollowNotification = async (snap, context) => {
   const userId = context.params.userId;
   const followedUserId = context.params.followingId;
   return await firestore
-    .collection("user-info")
+    .collection("notifications")
     .doc(userId)
     .collection("notifications")
     .doc(followedUserId)
