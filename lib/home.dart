@@ -1,8 +1,10 @@
 import 'package:creaid/camerascreen/camera_screen.dart';
 import 'package:creaid/explore.dart';
 import 'package:creaid/notifications.dart';
-import 'package:creaid/profile/dynamicProfile.dart';
+import 'package:creaid/profile/profile.dart';
+import 'package:creaid/utility/UserData.dart';
 import 'package:creaid/video-player.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -82,7 +84,7 @@ class _HomeState extends State<Home> {
           builder: (BuildContext context) {
             switch (settings.name) {
               case '/':
-                return DynamicProfile();
+                return Profile();
               default:
                 throw UnimplementedError();
             }

@@ -1,4 +1,5 @@
 const postFunctions = require("./userPostFunctions");
+const followFunctions = require("./userFollowFunctions");
 const algoliaFunctions = require("./algoliaFunctions");
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
@@ -11,6 +12,28 @@ exports.sendPostToFollowers = functions
   .onCreate((snap, context) => {
     return postFunctions.createPostToFollowersBatchJobs(snap, context, false);
   });
+
+exports.addUserToFollowers = functions
+  .region("us-east4")
+  .firestore.document("following-info/{userId}/following/{followingId}")
+  .onCreate((snap, context) => {
+    return followFunctions.addUserToFollowers(snap, context);
+  });
+
+exports.removeUserFromFollowers = functions
+  .region("us-east4")
+  .firestore.document("following-info/{userId}/following/{followingId}")
+  .onDelete((snap, context) => {
+    return followFunctions.removeUserFromFollowers(snap, context);
+  });
+
+exports.sendFollowNotification = functions
+  .region("us-east4")
+  .firestore.document("following-info/{userId}/followers/{followerId}")
+  .onCreate((snap, context) => {
+    return followFunctions.sendFollowNotification(snap, context);
+  });
+
 // Shelving this for now.
 //
 // exports.generateThumbnailFromPost = functions.storage
@@ -32,35 +55,35 @@ exports.sendUserNamesToAlgolia = functions
     return algoliaFunctions.sendUsernamesToAlgolia(req, res, db, "usernames");
   });
 
-exports.collectionOnCreate = functions
+exports.onCreationOfUser = functions
   .region("us-east4")
   .firestore.document("user-info/{uid}")
   .onCreate(async (snapshot, context) => {
     await algoliaFunctions.saveUserInAlgolia(snapshot, "users");
   });
 
-exports.collectionOnCreateForUsernames = functions
+exports.onCreationOfUserForUsernames = functions
   .region("us-east4")
-  .firestore.document("user-info/{uid}")
+  .firestore.document("usernames/{uid}")
   .onCreate(async (snapshot, context) => {
     await algoliaFunctions.saveUsernameInAlgolia(snapshot, "usernames");
   });
 
-exports.collectionOnUpdate = functions
+exports.onUserUpdate = functions
   .region("us-east4")
   .firestore.document("user-info/{uid}")
   .onUpdate(async (change, context) => {
     await algoliaFunctions.updateDocumentInAlgolia(change, "users");
   });
 
-exports.collectionOnUpdateForUsernames = functions
+exports.onUsernameUpdate = functions
   .region("us-east4")
-  .firestore.document("user-info/{uid}")
+  .firestore.document("usernames/{uid}")
   .onUpdate(async (change, context) => {
     await algoliaFunctions.updateDocumentInAlgolia(change, "usernames");
   });
 
-exports.collectionOnDelete = functions
+exports.onUserDeletion = functions
   .region("us-east4")
   .firestore.document("user-info/{uid}")
   .onDelete(async (snapshot, context) => {

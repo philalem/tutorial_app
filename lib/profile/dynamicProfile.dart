@@ -1,17 +1,19 @@
 import 'package:creaid/profile/DisplayFollow.dart';
-import 'package:creaid/profile/UploadProfile.dart';
 import 'package:creaid/utility/UserData.dart';
 import 'package:creaid/utility/creaidButton.dart';
-import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class DynamicProfile extends StatefulWidget {
   String uid;
+  String loggedInUid;
   String name;
-  DynamicProfile({this.uid, this.name});
+  DynamicProfile({
+    this.uid,
+    this.name,
+    this.loggedInUid,
+  });
 
   @override
   _DynamicProfileState createState() => _DynamicProfileState();
@@ -21,46 +23,39 @@ GlobalKey profileKey = GlobalKey();
 
 class _DynamicProfileState extends State<DynamicProfile> {
   FirebaseUser userName;
-  UserDbService dbService = UserDbService();
+  UserDbService dbService;
+  bool isFollowing = false;
 
   @override
   void initState() {
     _loadCurrentUser();
+    _setDbService();
     super.initState();
   }
 
   Future<void> _loadCurrentUser() async {
     return await FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
       setState(() {
-        this.userName = user;
+        userName = user;
       });
     });
   }
 
-  String _getLoadedName() {
-    if (widget.name != null) {
-      return widget.name;
-    }
-    if (userName != null) {
-      if (userName.displayName != null) {
-        return userName.displayName;
-      }
-    }
-    setState(() {
-      _loadCurrentUser();
-    });
-    return '';
+  Future<void> _setDbService() async {
+    dbService = UserDbService(uid: widget.loggedInUid);
+    isFollowing = await dbService.isFollowing(widget.uid);
+    setState(() {});
   }
 
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     var screenWidth = size.width;
-    final user = Provider.of<User>(context);
-    var uid = widget.uid != null ? widget.uid : user.uid;
+    var uid = widget.uid;
+    dbService = UserDbService(uid: widget.loggedInUid);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_getLoadedName()),
+        title: Text(widget.name),
       ),
       body: StreamBuilder<UserData>(
         stream: UserDbService(uid: uid).getNames(),
@@ -82,37 +77,20 @@ class _DynamicProfileState extends State<DynamicProfile> {
                     ),
                     Column(
                       children: <Widget>[
-                        GestureDetector(
-                          key: profileKey,
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => new UploadProfile(),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(
-                              top: 80,
-                            ),
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                image: data.photoUrl != null &&
-                                        data.photoUrl != ''
-                                    ? Image.network(data.photoUrl).image
-                                    : AssetImage(
-                                        'assets/images/phillip_profile.jpg'),
-                              ),
-                            ),
-                            child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: Icon(
-                                Icons.edit,
-                                color: Colors.black,
-                              ),
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: 80,
+                          ),
+                          width: 120,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image:
+                                  data.photoUrl != null && data.photoUrl != ''
+                                      ? Image.network(data.photoUrl).image
+                                      : AssetImage(
+                                          'assets/images/phillip_profile.jpg'),
                             ),
                           ),
                         ),
@@ -127,15 +105,20 @@ class _DynamicProfileState extends State<DynamicProfile> {
                         Padding(
                           padding: EdgeInsets.only(top: 10),
                           child: CreaidButton(
+                            padding: 0,
                             shrink: true,
-                            onPressed: () => {},
-                            children: <Widget>[
-                              Text(
-                                'Follow',
-                                style: TextStyle(fontSize: 12),
-                              ),
-                              Icon(Icons.add)
-                            ],
+                            onPressed: () {
+                              _updateFollowing(uid);
+                            },
+                            children: isFollowing
+                                ? [
+                                    Text('Unfollow'),
+                                  ]
+                                : [
+                                    Text(
+                                      'Follow',
+                                    ),
+                                  ],
                           ),
                         ),
                         Padding(
@@ -157,8 +140,8 @@ class _DynamicProfileState extends State<DynamicProfile> {
                                 },
                                 child: Text(
                                   "Following: " +
-                                      (data.following != null
-                                          ? data.following.length.toString()
+                                      (data.numberFollowing != null
+                                          ? data.numberFollowing.toString()
                                           : '0'),
                                 ),
                               ),
@@ -174,8 +157,8 @@ class _DynamicProfileState extends State<DynamicProfile> {
                                 },
                                 child: Text(
                                   "Followers: " +
-                                      (data.followers != null
-                                          ? data.followers.length.toString()
+                                      (data.numberFollowers != null
+                                          ? data.numberFollowers.toString()
                                           : '0'),
                                 ),
                               ),
@@ -215,5 +198,16 @@ class _DynamicProfileState extends State<DynamicProfile> {
         },
       ),
     );
+  }
+
+  void _updateFollowing(String uid) {
+    if (isFollowing) {
+      dbService.removeFromFollowing(uid);
+    } else {
+      dbService.addToFollowing(uid);
+    }
+    setState(() {
+      isFollowing = !isFollowing;
+    });
   }
 }
