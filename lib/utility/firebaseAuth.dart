@@ -44,7 +44,7 @@ class FireBaseAuthorization {
       FirebaseUser user = result.user;
       updateUserName(name, user);
       UserDbService(uid: user.uid)
-          .updateUserInfo(name, username, email, password, interests);
+          .updateUserInfo(name, username, email, password, interests, 0, 0);
       return _userFromFireBaseUser(user);
     } catch (error) {
       print(error.toString());
