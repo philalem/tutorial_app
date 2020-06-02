@@ -2,6 +2,7 @@ import 'package:algolia/algolia.dart';
 import 'package:creaid/profile/dynamicProfile.dart';
 import 'package:creaid/utility/algoliaService.dart';
 import 'package:creaid/video-player.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Explore extends StatefulWidget {
@@ -15,11 +16,21 @@ class _ExploreState extends State<Explore> {
   AlgoliaService algoliaService = AlgoliaService();
   FocusNode focusNode;
   var _searchResults = [];
+  FirebaseUser userName;
 
   @override
   void initState() {
-    super.initState();
     focusNode = FocusNode();
+    _loadCurrentUser();
+    super.initState();
+  }
+
+  Future<void> _loadCurrentUser() async {
+    return await FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
+      setState(() {
+        userName = user;
+      });
+    });
   }
 
   @override
@@ -116,8 +127,9 @@ class _ExploreState extends State<Explore> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => DynamicProfile(
-                      uid: snap.data['objectID'],
+                      uid: snap.objectID,
                       name: snap.data['name'],
+                      viewingUid: userName.uid,
                     ),
                   ),
                 );
