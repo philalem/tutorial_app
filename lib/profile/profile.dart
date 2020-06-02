@@ -147,8 +147,8 @@ class _ProfileState extends State<Profile> {
                                 },
                                 child: Text(
                                   "Following: " +
-                                      (data.following != null
-                                          ? data.following.length.toString()
+                                      (data.numberFollowing != null
+                                          ? data.numberFollowing.toString()
                                           : '0'),
                                 ),
                               ),
@@ -164,8 +164,8 @@ class _ProfileState extends State<Profile> {
                                 },
                                 child: Text(
                                   "Followers: " +
-                                      (data.followers != null
-                                          ? data.followers.length.toString()
+                                      (data.numberFollowers != null
+                                          ? data.numberFollowers.toString()
                                           : '0'),
                                 ),
                               ),

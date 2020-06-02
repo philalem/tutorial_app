@@ -7,8 +7,13 @@ import 'package:flutter/material.dart';
 
 class DynamicProfile extends StatefulWidget {
   String uid;
+  String viewingUid;
   String name;
-  DynamicProfile({this.uid, this.name});
+  DynamicProfile({
+    this.uid,
+    this.name,
+    this.viewingUid,
+  });
 
   @override
   _DynamicProfileState createState() => _DynamicProfileState();
@@ -18,26 +23,27 @@ GlobalKey profileKey = GlobalKey();
 
 class _DynamicProfileState extends State<DynamicProfile> {
   FirebaseUser userName;
-  UserDbService dbService = UserDbService();
-  bool isFollowing;
+  UserDbService dbService;
+  bool isFollowing = false;
 
   @override
   void initState() {
     _loadCurrentUser();
-    _setIsFollowing();
+    _setDbService();
     super.initState();
   }
 
   Future<void> _loadCurrentUser() async {
     return await FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
       setState(() {
-        this.userName = user;
+        userName = user;
       });
     });
   }
 
-  Future<void> _setIsFollowing() async {
-    isFollowing = await dbService.isFollowing(userName.uid);
+  Future<void> _setDbService() async {
+    dbService = UserDbService(uid: widget.viewingUid);
+    isFollowing = await dbService.isFollowing(widget.uid);
     setState(() {});
   }
 
@@ -45,6 +51,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
     var size = MediaQuery.of(context).size;
     var screenWidth = size.width;
     var uid = widget.uid;
+    dbService = UserDbService(uid: widget.viewingUid);
 
     return Scaffold(
       appBar: AppBar(
@@ -105,14 +112,12 @@ class _DynamicProfileState extends State<DynamicProfile> {
                             },
                             children: isFollowing
                                 ? [
-                                    Text(
-                                      'Follow',
-                                      style: TextStyle(fontSize: 12),
-                                    ),
-                                    Icon(Icons.add)
+                                    Text('Unfollow'),
                                   ]
                                 : [
-                                    Text('Unfollow'),
+                                    Text(
+                                      'Follow',
+                                    ),
                                   ],
                           ),
                         ),
@@ -135,8 +140,8 @@ class _DynamicProfileState extends State<DynamicProfile> {
                                 },
                                 child: Text(
                                   "Following: " +
-                                      (data.following != null
-                                          ? data.following.length.toString()
+                                      (data.numberFollowing != null
+                                          ? data.numberFollowing.toString()
                                           : '0'),
                                 ),
                               ),
@@ -152,8 +157,8 @@ class _DynamicProfileState extends State<DynamicProfile> {
                                 },
                                 child: Text(
                                   "Followers: " +
-                                      (data.followers != null
-                                          ? data.followers.length.toString()
+                                      (data.numberFollowers != null
+                                          ? data.numberFollowers.toString()
                                           : '0'),
                                 ),
                               ),
