@@ -1,5 +1,6 @@
 const postFunctions = require("./userPostFunctions");
 const followFunctions = require("./userFollowFunctions");
+const userFunctions = require("./userFunctions");
 const algoliaFunctions = require("./algoliaFunctions");
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
@@ -47,6 +48,13 @@ exports.sendUsersToAlgolia = functions
   .region("us-east4")
   .https.onRequest((req, res) => {
     return algoliaFunctions.sendUsersToAlgolia(req, res, db);
+  });
+
+exports.onCreationOfUser = functions
+  .region("us-east4")
+  .firestore.document("user-info/{uid}")
+  .onCreate(async (snapshot, context) => {
+    userFunctions.addUserToFollowers(snapshot, context);
   });
 
 exports.onCreationOfUser = functions
