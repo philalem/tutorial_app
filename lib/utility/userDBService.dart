@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:creaid/utility/UserData.dart';
+import 'package:creaid/utility/VideoFeedObject.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UserDbService {
@@ -37,8 +38,26 @@ class UserDbService {
         name: snapshot['name'],
         interests: List.from(snapshot['interests']),
         photoUrl: snapshot['photo-url'],
-        videos: List.from(snapshot['video-stream'])
+        videos: List.from(snapshot['video-stream']),
     );
+  }
+
+  List<VideoFeedObject> _mapVideoFeedObject(QuerySnapshot snapshot) {
+    List<VideoFeedObject> res = new List();
+      snapshot.documents.forEach((document) => 
+        res.add(
+          VideoFeedObject(
+            author: document['author'],
+            videoUrl: document['videoUrl'],
+            likes: document['likes'],
+            comments: List.from(document['comments']),
+            documentId: document.documentID,
+            uid: uid
+          )
+        )
+      );
+
+    return res;
   }
 
   Future<String> getUsersName() async {
@@ -57,5 +76,9 @@ class UserDbService {
 
   Stream<UserData> getNames() {
     return creaidCollection.document(uid).snapshots().map(_mapUserData);
+  }
+
+  Stream<List<VideoFeedObject>> getUserFeed() {
+    return creaidCollection.document(uid).collection('feeds').snapshots().map(_mapVideoFeedObject);
   }
 }

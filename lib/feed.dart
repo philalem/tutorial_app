@@ -1,5 +1,6 @@
 import 'package:creaid/FeedVideoPlayer.dart';
 import 'package:creaid/utility/UserData.dart';
+import 'package:creaid/utility/VideoFeedObject.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,12 +11,12 @@ class Feed extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
 
-    return StreamBuilder<UserData>(
-      stream: UserDbService(uid: user.uid).getNames(),
-      builder: (context, AsyncSnapshot<UserData> snapshot) {
+    return StreamBuilder<List<VideoFeedObject>>(
+      stream: UserDbService(uid: user.uid).getUserFeed(),
+      builder: (context, AsyncSnapshot<List<VideoFeedObject>> snapshot) {
         if (snapshot.hasData) {
-          UserData userData = snapshot.data;
-          return FeedVideoPlayer(videos: userData.videos);
+          List<VideoFeedObject> userData = snapshot.data;
+          return FeedVideoPlayer(videos: userData);
         } else {
           return Align(
               alignment: Alignment.center, child: CircularProgressIndicator());
