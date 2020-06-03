@@ -2,40 +2,28 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NotificationsDbService {
   final String uid;
-  final CollectionReference postsCollection =
+  final CollectionReference notificationsCollection =
       Firestore.instance.collection('notifications');
 
   NotificationsDbService({this.uid});
 
-  Future<void> addPostToDb(
-      String title, String description, List<String> videoPaths) async {
-    print('Adding post information...');
-    var date = DateTime.now();
-    var postData = {
-      'title': title,
-      'description': description,
-      'videos': videoPaths,
-      'number-likes': 0,
-      'date': date,
-    };
-    DocumentReference userRef = await postsCollection
+  Stream<List<dynamic>> getAllNotifications() {
+    Stream<QuerySnapshot> stream = notificationsCollection
         .document(uid)
-        .collection("user-posts")
-        .add(postData)
-        .catchError((e) {
-      print("Got error: ${e.error}");
-      return 1;
-    });
-    await postsCollection
-        .document(uid)
-        .collection("following-posts")
-        .document(userRef.documentID)
-        .setData(postData)
-        .catchError((e) {
-      print("Got error: ${e.error}");
-      return 1;
-    });
-    print("Document ID: " + userRef.documentID);
-    print('Done.');
+        .collection('notifications')
+        .limit(20)
+        .snapshots();
+    return stream.map(
+      (snap) => snap.documents
+          .map(
+            (doc) => {
+              doc.data['name'],
+              doc.data['type'],
+              doc.data['comment'],
+              doc.data['date'],
+            },
+          )
+          .toList(),
+    );
   }
 }
