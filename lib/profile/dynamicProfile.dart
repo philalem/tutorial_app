@@ -108,7 +108,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                             padding: 0,
                             shrink: true,
                             onPressed: () {
-                              _updateFollowing(uid);
+                              _updateFollowing(uid, widget.name);
                             },
                             children: isFollowing
                                 ? [
@@ -194,11 +194,11 @@ class _DynamicProfileState extends State<DynamicProfile> {
     );
   }
 
-  void _updateFollowing(String uid) {
+  void _updateFollowing(String uid, String name) {
     if (isFollowing) {
       followDbService.removeFromFollowing(uid);
     } else {
-      followDbService.addToFollowing(uid);
+      followDbService.addToFollowing(uid, name);
     }
     setState(() {
       isFollowing = !isFollowing;
