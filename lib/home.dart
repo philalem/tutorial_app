@@ -3,9 +3,6 @@ import 'package:creaid/explore.dart';
 import 'package:creaid/feed.dart';
 import 'package:creaid/notifications.dart';
 import 'package:creaid/profile/profile.dart';
-import 'package:creaid/utility/UserData.dart';
-import 'package:creaid/video-player.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

@@ -32,7 +32,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   _initControllers() {
     _controllers.add(null);
     for (int i = 0; i < widget.videos.length; i++) {
-      print(widget.videos[i]);
+      print(widget.videos[i].videoUrl);
       if (i == 2) {
         break;
       }

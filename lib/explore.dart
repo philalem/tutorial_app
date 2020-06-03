@@ -129,7 +129,7 @@ class _ExploreState extends State<Explore> {
                     builder: (context) => DynamicProfile(
                       uid: snap.objectID,
                       name: snap.data['name'],
-                      viewingUid: userName.uid,
+                      loggedInUid: userName.uid,
                     ),
                   ),
                 );
