@@ -1,3 +1,4 @@
+import 'package:creaid/utility/followDbService.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -44,7 +45,8 @@ class FireBaseAuthorization {
       FirebaseUser user = result.user;
       updateUserName(name, user);
       UserDbService(uid: user.uid)
-          .updateUserInfo(name, username, email, password, interests, 0, 0);
+          .updateUserInfo(name, username, email, interests, 0, 0);
+      FollowDbService(uid: user.uid).setUpFollowInfo();
       return _userFromFireBaseUser(user);
     } catch (error) {
       print(error.toString());

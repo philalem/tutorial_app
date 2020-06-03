@@ -44,4 +44,11 @@ class FollowDbService {
     });
     return isFollowing;
   }
+
+  Future<void> setUpFollowInfo() async {
+    return await followInfoCollection.document(uid).setData({
+      'number-following': 0,
+      'number-followers': 0,
+    });
+  }
 }
