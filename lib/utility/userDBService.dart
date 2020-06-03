@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:creaid/utility/UserData.dart';
+import 'package:creaid/utility/VideoFeedObject.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UserDbService {
@@ -23,7 +24,7 @@ class UserDbService {
       'username': username,
       'email': email,
       'interests': interests,
-      'photo-url': '',
+      'photo-url': 'https://firebasestorage.googleapis.com/v0/b/creaid-b4528.appspot.com/o/unknown-profile.png?alt=media&token=36b3cb28-743c-4352-ad53-32ec67387e0d',
       'number-following': numberFollowing,
       'number-followers': numberFollowers,
     });
@@ -90,6 +91,22 @@ class UserDbService {
     );
   }
 
+  List<VideoFeedObject> _mapVideoFeedObject(QuerySnapshot snapshot) {
+    List<VideoFeedObject> res = new List();
+      snapshot.documents.forEach((document) => 
+        res.add(
+          VideoFeedObject(
+            author: document['author'],
+            videoUrl: document['videoUrl'],
+            likes: document['likes'],
+            comments: List.from(document['comments']),
+            documentId: document.documentID,
+            uid: uid
+          )
+        )
+      );
+  }
+
   Future<String> getUsersName() async {
     String userName;
     final FirebaseUser user = await _auth.currentUser();
@@ -112,5 +129,9 @@ class UserDbService {
         .handleError((e) {
       print(e);
     });
+  }
+
+  Stream<List<VideoFeedObject>> getUserFeed() {
+    return userInfoCollection.document(uid).collection('feeds').snapshots().map(_mapVideoFeedObject);
   }
 }
