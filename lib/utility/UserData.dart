@@ -9,6 +9,7 @@ class UserData {
   List<String> interests;
   List<String> followers;
   List<String> following;
+  List<String> videos;
 
   UserData({
     this.uid,
