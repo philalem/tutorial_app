@@ -1,4 +1,7 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class FollowDbService {
   final String uid;
@@ -34,7 +37,7 @@ class FollowDbService {
   Future<bool> isFollowing(String uidToBeFollowed) async {
     bool isFollowing = false;
     var usersRef = followInfoCollection
-        .document(this.uid)
+        .document(uid)
         .collection('following')
         .document(uidToBeFollowed);
     await usersRef.get().then((docSnapshot) {
@@ -43,6 +46,16 @@ class FollowDbService {
       }
     });
     return isFollowing;
+  }
+
+  Stream<List<dynamic>> getFollowingData() {}
+
+  List<dynamic> _getListOfFields(DocumentSnapshot snapshot) {
+    var fields = [
+      {'numberFollowing': snapshot['number-following']},
+      {'numberFollowers': snapshot['number-followers']}
+    ];
+    return fields;
   }
 
   Future<void> setUpFollowInfo() async {

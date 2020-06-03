@@ -11,12 +11,11 @@ class UserDbService {
 
   UserDbService({this.uid});
 
-  Future<void> updateUserInfo(String name, String username, String email,
+  Future<void> updateUserInfo(String name, String username,
       List<String> interests, int numberFollowing, int numberFollowers) async {
     return await userInfoCollection.document(uid).setData({
       'name': name,
       'username': username,
-      'email': email,
       'interests': interests,
       'photo-url': 'https://firebasestorage.googleapis.com/v0/b/creaid-b4528.appspot.com/o/unknown-profile.png?alt=media&token=36b3cb28-743c-4352-ad53-32ec67387e0d',
       'number-following': numberFollowing,
@@ -39,6 +38,18 @@ class UserDbService {
         .document(uidToBeFollowed)
         .setData({'uid': uidToBeFollowed}).whenComplete(
             () => print("User followed successfully."));
+  }
+
+  Future<void> incrementNumberFollowing() async {
+    return await userInfoCollection
+        .document(uid)
+        .updateData({'number-following': FieldValue.increment(1)});
+  }
+
+  Future<void> decrementNumberFollowing() async {
+    return await userInfoCollection
+        .document(uid)
+        .updateData({'number-following': FieldValue.increment(-1)});
   }
 
   Future<void> removeFromFollowing(String uidToBeUnFollowed) async {
@@ -76,9 +87,7 @@ class UserDbService {
   UserData _mapUserData(DocumentSnapshot snapshot) {
     return UserData(
       username: snapshot['username'],
-      email: snapshot['email'],
       name: snapshot['name'],
-      interests: List.from(snapshot['interests']),
       photoUrl: snapshot['photo-url'],
       numberFollowing: snapshot['number-following'],
       numberFollowers: snapshot['number-followers'],
