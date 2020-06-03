@@ -17,7 +17,8 @@ class UserDbService {
       'name': name,
       'username': username,
       'interests': interests,
-      'photo-url': 'https://firebasestorage.googleapis.com/v0/b/creaid-b4528.appspot.com/o/unknown-profile.png?alt=media&token=36b3cb28-743c-4352-ad53-32ec67387e0d',
+      'photo-url':
+          'https://firebasestorage.googleapis.com/v0/b/creaid-b4528.appspot.com/o/unknown-profile.png?alt=media&token=36b3cb28-743c-4352-ad53-32ec67387e0d',
       'number-following': numberFollowing,
       'number-followers': numberFollowers,
     });
@@ -26,18 +27,6 @@ class UserDbService {
   Future<void> updatePhotoUrl(String photoUrl) async {
     DocumentReference ref = userInfoCollection.document(uid);
     ref.updateData({"photo-url": photoUrl});
-  }
-
-  Future<void> addToFollowing(String uidToBeFollowed) async {
-    await userInfoCollection
-        .document(uid)
-        .updateData({'number-following': FieldValue.increment(1)});
-    return userInfoCollection
-        .document(uid)
-        .collection('following')
-        .document(uidToBeFollowed)
-        .setData({'uid': uidToBeFollowed}).whenComplete(
-            () => print("User followed successfully."));
   }
 
   Future<void> incrementNumberFollowing() async {
@@ -52,38 +41,6 @@ class UserDbService {
         .updateData({'number-following': FieldValue.increment(-1)});
   }
 
-  Future<void> removeFromFollowing(String uidToBeUnFollowed) async {
-    await userInfoCollection
-        .document(uid)
-        .updateData({'number-following': FieldValue.increment(-1)});
-    return userInfoCollection
-        .document(this.uid)
-        .collection('following')
-        .document(uidToBeUnFollowed)
-        .delete()
-        .whenComplete(() => print("User unfollowed successfully."));
-  }
-
-  Future<bool> isFollowing(String uidToBeFollowed) async {
-    bool isFollowing = false;
-    var usersRef = userInfoCollection
-        .document(this.uid)
-        .collection('following')
-        .document(uidToBeFollowed);
-    await usersRef.get().then((docSnapshot) {
-      if (docSnapshot.exists) {
-        isFollowing = true;
-      }
-    });
-    return isFollowing;
-  }
-
-  List<String> _nameFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.documents.map((doc) {
-      return doc.data['name'] ?? '';
-    });
-  }
-
   UserData _mapUserData(DocumentSnapshot snapshot) {
     return UserData(
       username: snapshot['username'],
@@ -96,18 +53,13 @@ class UserDbService {
 
   List<VideoFeedObject> _mapVideoFeedObject(QuerySnapshot snapshot) {
     List<VideoFeedObject> res = new List();
-      snapshot.documents.forEach((document) => 
-        res.add(
-          VideoFeedObject(
-            author: document['author'],
-            videoUrl: document['videoUrl'],
-            likes: document['likes'],
-            comments: List.from(document['comments']),
-            documentId: document.documentID,
-            uid: uid
-          )
-        )
-      );
+    snapshot.documents.forEach((document) => res.add(VideoFeedObject(
+        author: document['author'],
+        videoUrl: document['videoUrl'],
+        likes: document['likes'],
+        comments: List.from(document['comments']),
+        documentId: document.documentID,
+        uid: uid)));
     return res;
   }
 
@@ -136,6 +88,10 @@ class UserDbService {
   }
 
   Stream<List<VideoFeedObject>> getUserFeed() {
-    return userInfoCollection.document(uid).collection('feeds').snapshots().map(_mapVideoFeedObject);
+    return userInfoCollection
+        .document(uid)
+        .collection('feeds')
+        .snapshots()
+        .map(_mapVideoFeedObject);
   }
 }
