@@ -7,7 +7,7 @@ class FollowDbService {
 
   FollowDbService({this.uid});
 
-  Future<void> addToFollowing(String uidToBeFollowed) async {
+  Future<void> addToFollowing(String uidToBeFollowed, String name) async {
     await followInfoCollection
         .document(uid)
         .updateData({'number-following': FieldValue.increment(1)});
@@ -15,7 +15,7 @@ class FollowDbService {
         .document(uid)
         .collection('following')
         .document(uidToBeFollowed)
-        .setData({'uid': uidToBeFollowed}).whenComplete(
+        .setData({'name': name}).whenComplete(
             () => print("User followed successfully."));
   }
 

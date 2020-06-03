@@ -5,11 +5,14 @@ const algoliaClient = algoliasearch(
   functions.config().algolia.appid,
   functions.config().algolia.apikey
 );
+const userCollectionIndex = algoliaClient.initIndex("users");
+const usernameCollectionIndex = algoliaClient.initIndex("usernames");
 
-exports.sendUsersToAlgolia = async (req, res, db, collectionIndexName) => {
-  const collectionIndex = algoliaClient.initIndex(collectionIndexName);
+exports.sendUsersToAlgolia = async (req, res, db) => {
   const algoliaRecords = [];
   const querySnapshot = await db.collection("user-info").get();
+
+  exports.sendUsernamesToAlgolia(req, res, db);
 
   querySnapshot.docs.forEach((doc) => {
     const document = doc.data();
@@ -22,26 +25,18 @@ exports.sendUsersToAlgolia = async (req, res, db, collectionIndexName) => {
     algoliaRecords.push(record);
   });
 
-  await collectionIndex.saveObjects(algoliaRecords, (_error, content) => {
+  await userCollectionIndex.saveObjects(algoliaRecords, (_error, content) => {
     res.status(200).send("COLLECTION was indexed to Algolia successfully.");
   });
 
   return res.status(200).send("Success");
 };
-exports.sendUsernamesToAlgolia = async (req, res, db, collectionIndexName) => {
-  const collectionIndex = algoliaClient.initIndex(collectionIndexName);
-  // This array will contain all records to be indexed in Algolia.
-  // A record does not need to necessarily contain all properties of the Firestore document,
-  // only the relevant ones.
+exports.sendUsernamesToAlgolia = async (req, res, db) => {
   const algoliaRecords = [];
-
-  // Retrieve all documents from the COLLECTION collection.
   const querySnapshot = await db.collection("user-info").get();
 
   querySnapshot.docs.forEach((doc) => {
     const document = doc.data();
-    // Essentially, you want your records to contain any information that facilitates search,
-    // display, filtering, or relevance. Otherwise, you can leave it out.
     const record = {
       objectID: doc.id,
       username: document.username,
@@ -50,16 +45,18 @@ exports.sendUsernamesToAlgolia = async (req, res, db, collectionIndexName) => {
     algoliaRecords.push(record);
   });
 
-  // After all records are created, we save them to
-  await collectionIndex.saveObjects(algoliaRecords, (_error, content) => {
-    res.status(200).send("COLLECTION was indexed to Algolia successfully.");
-  });
+  await usernameCollectionIndex.saveObjects(
+    algoliaRecords,
+    (_error, content) => {
+      res.status(200).send("COLLECTION was indexed to Algolia successfully.");
+    }
+  );
 
   return res.status(200).send("Success");
 };
 
-exports.saveUserInAlgolia = async (snapshot, collectionIndexName) => {
-  const collectionIndex = algoliaClient.initIndex(collectionIndexName);
+exports.saveUserInAlgolia = async (snapshot) => {
+  exports.saveUsernameInAlgolia(snapshot);
   if (snapshot.exists) {
     const record = snapshot.data();
     if (record) {
@@ -68,12 +65,11 @@ exports.saveUserInAlgolia = async (snapshot, collectionIndexName) => {
         name: record.name,
         username: record.username,
       };
-      await collectionIndex.saveObject(user);
+      await userCollectionIndex.saveObject(user);
     }
   }
 };
-exports.saveUsernameInAlgolia = async (snapshot, collectionIndexName) => {
-  const collectionIndex = algoliaClient.initIndex(collectionIndexName);
+exports.saveUsernameInAlgolia = async (snapshot) => {
   if (snapshot.exists) {
     const record = snapshot.data();
     if (record) {
@@ -88,31 +84,29 @@ exports.saveUsernameInAlgolia = async (snapshot, collectionIndexName) => {
       // in the Algolia record, but do remember to evaluate if they are all necessary.
       // More on that in Part 2, Step 2 above.
 
-      await collectionIndex.saveObject(username); // Adds or replaces a specific object.
+      await usernameCollectionIndex.saveObject(username); // Adds or replaces a specific object.
     }
   }
 };
 
-exports.updateDocumentInAlgolia = async (change, collectionIndexName) => {
+exports.updateDocumentInAlgolia = async (change) => {
   const docBeforeChange = change.before.data();
   const docAfterChange = change.after.data();
   if (docBeforeChange && docAfterChange) {
     if (docAfterChange.isIncomplete && !docBeforeChange.isIncomplete) {
       // If the doc was COMPLETE and is now INCOMPLETE, it was
       // previously indexed in algolia and must now be removed.
-      await deleteDocumentFromAlgolia(change.after, collectionIndexName);
+      await deleteDocumentFromAlgolia(change.after);
     } else if (docAfterChange.isIncomplete === false) {
-      await saveDocumentInAlgolia(change.after, collectionIndexName);
+      await saveDocumentInAlgolia(change.after);
     }
   }
 };
 
 exports.deleteDocumentFromAlgolia = async (snapshot) => {
-  const collectionUsernameIndex = algoliaClient.initIndex("usernames");
-  const collectionUserIndex = algoliaClient.initIndex("users");
   if (snapshot.exists) {
     const objectID = snapshot.id;
-    await collectionUserIndex.deleteObject(objectID);
-    await collectionUsernameIndex.deleteObject(objectID);
+    await userCollectionIndex.deleteObject(objectID);
+    await usernameCollectionIndex.deleteObject(objectID);
   }
 };
