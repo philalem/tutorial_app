@@ -24,10 +24,4 @@ class InterestsDbService {
   List<String> _mapInterestsToList(DocumentSnapshot snapshot) {
     return List.from(snapshot['interests']);
   }
-
-  Future<void> setUpInterestInfo(List<String> interests) async {
-    return await interestsCollection.document(uid).setData({
-      'interests': interests,
-    });
-  }
 }
