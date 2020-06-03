@@ -105,6 +105,7 @@ class UserDbService {
           )
         )
       );
+    return res;
   }
 
   Future<String> getUsersName() async {
