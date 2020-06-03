@@ -1,10 +1,10 @@
-import 'package:creaid/utility/customTextField.dart';
+import 'package:creaid/utility/VideoFeedObject.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class FeedVideoPlayer extends StatefulWidget {
-  final List<String> videos;
+  final List<VideoFeedObject> videos;
   FeedVideoPlayer({Key key, this.videos}) : super(key: key);
 
   @override
@@ -19,6 +19,10 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
   final interestHolder = TextEditingController();
 
+  clearTextInput() {
+    interestHolder.clear();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -32,7 +36,8 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
       if (i == 2) {
         break;
       }
-      _controllers.add(VideoPlayerController.network(widget.videos[i]));
+      _controllers
+          .add(VideoPlayerController.network(widget.videos[i].videoUrl));
     }
     attachListenerAndInit(_controllers[1]).then((_) {
       _controllers[1].play().then((_) {
@@ -86,7 +91,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
     }
     if (index != 0) {
       _controllers.insert(
-          0, VideoPlayerController.network(widget.videos[index - 1]));
+          0, VideoPlayerController.network(widget.videos[index - 1].videoUrl));
       attachListenerAndInit(_controllers.first);
     } else {
       _controllers.insert(0, null);
@@ -113,7 +118,8 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
     _controllers.first?.dispose();
     _controllers.removeAt(0);
     if (index != widget.videos.length - 1) {
-      _controllers.add(VideoPlayerController.network(widget.videos[index + 1]));
+      _controllers.add(
+          VideoPlayerController.network(widget.videos[index + 1].videoUrl));
       attachListenerAndInit(_controllers.last);
     }
 
@@ -145,11 +151,27 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
               child: Center(child: VideoPlayer(_controllers[1]))),
           Positioned(
             child: Container(
-              height: 10,
+              height: 25,
+              width: MediaQuery.of(context).size.width,
+              color: Colors.blue,
+              child: Align(
+                alignment: FractionalOffset.bottomCenter,
+                child: Text(
+                  widget.videos[index].author,
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            child: Container(
+              height: 8,
               width: MediaQuery.of(context).size.width * _progress,
               color: Colors.white,
             ),
-          )
+          ),
         ],
       ),
       floatingActionButton: Row(
@@ -221,7 +243,9 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                                     ),
                                   )),
                             ),
-                            SizedBox(height: 10,),
+                            SizedBox(
+                              height: 10,
+                            ),
                             Divider(
                               color: Colors.indigo[400],
                               thickness: 5,
@@ -231,17 +255,17 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                                 height: 220, //Your custom height
                                 child: ListView.separated(
                                   physics: AlwaysScrollableScrollPhysics(),
-                                  separatorBuilder: (context, index) => Divider(
+                                  separatorBuilder: (context, idx) => Divider(
                                     color: Colors.grey[400],
                                   ),
-                                  itemCount: 20,
-                                  itemBuilder: (context, index) => InkWell(
+                                  itemCount:
+                                      widget.videos[index].comments.length,
+                                  itemBuilder: (context, idx) => InkWell(
                                     child: ListTile(
                                       title: Padding(
                                         padding: EdgeInsets.all(5),
                                         child: Text(
-                                          'Item $index',
-                                        ),
+                                            widget.videos[index].comments[idx]),
                                       ),
                                       onTap: () {},
                                     ),
@@ -256,7 +280,14 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
               },
               child: Icon(Icons.comment)),
           SizedBox(
-            width: MediaQuery.of(context).size.width * .43,
+            width: MediaQuery.of(context).size.width * .05,
+          ),
+          FloatingActionButton(
+            onPressed: nextVideo,
+            child: Text(widget.videos[index].likes.toString()),
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * .23,
           ),
           FloatingActionButton(
             onPressed: previousVideo,
@@ -271,28 +302,6 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
           ),
         ],
       ),
-    );
-  }
-
-  void_showDialog() {
-    showDialog(
-      context: _scaffoldKey.currentContext,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text("Upload failed"),
-          content: new Text("Try Again"),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("Close"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 }
