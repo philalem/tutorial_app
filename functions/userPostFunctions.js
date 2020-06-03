@@ -12,7 +12,7 @@ const firestore = new Firestore({
 
 exports.getUserFollowersIds = async (userId) => {
   const followers = await firestore
-    .collection("userInfo")
+    .collection("user-info")
     .doc(userId)
     .collection("followers")
     .get();

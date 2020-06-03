@@ -1,6 +1,6 @@
+import 'package:creaid/register/usernameAndInterestsSignUp.dart';
 import 'package:creaid/utility/creaidButton.dart';
-import 'package:creaid/utility/customTextField.dart';
-import 'package:creaid/register/interestsSignUp.dart';
+import 'package:creaid/utility/creaidTextField.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -54,7 +54,7 @@ class _RegisterState extends State<Register> {
           children: <Widget>[
             Center(
               child: Container(
-                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+                padding: EdgeInsets.symmetric(vertical: 50.0, horizontal: 50.0),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -69,7 +69,7 @@ class _RegisterState extends State<Register> {
                         ),
                       ),
                       SizedBox(height: 40.0),
-                      CustomTextField(
+                      CreaidTextField(
                         icon: Icon(Icons.person),
                         obsecure: false,
                         onChanged: (input) => name = input,
@@ -78,7 +78,7 @@ class _RegisterState extends State<Register> {
                         hint: "Name",
                       ),
                       SizedBox(height: 30.0),
-                      CustomTextField(
+                      CreaidTextField(
                         icon: Icon(Icons.email),
                         obsecure: false,
                         onChanged: (input) => email = input,
@@ -88,7 +88,7 @@ class _RegisterState extends State<Register> {
                         hint: "Email",
                       ),
                       SizedBox(height: 30.0),
-                      CustomTextField(
+                      CreaidTextField(
                         icon: Icon(Icons.panorama_fish_eye),
                         obsecure: false,
                         onChanged: (input) => password = input,
@@ -99,17 +99,24 @@ class _RegisterState extends State<Register> {
                       ),
                       SizedBox(height: 40.0),
                       CreaidButton(
-                        label: 'Next',
+                        children: <Widget>[
+                          Text(
+                            'Next',
+                            style: TextStyle(fontSize: 16),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
                             _formKey.currentState.save();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => InterestsSignUp(
-                                      email: email,
-                                      name: name,
-                                      password: password)),
+                                  builder: (context) =>
+                                      UsernameAndInterestsSignUp(
+                                          email: email,
+                                          name: name,
+                                          password: password)),
                             );
                           }
                         },

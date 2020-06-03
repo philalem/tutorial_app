@@ -1,6 +1,8 @@
 import 'package:algolia/algolia.dart';
 import 'package:creaid/profile/dynamicProfile.dart';
+import 'package:creaid/utility/algoliaService.dart';
 import 'package:creaid/video-player.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Explore extends StatefulWidget {
@@ -11,13 +13,24 @@ class Explore extends StatefulWidget {
 class _ExploreState extends State<Explore> {
   bool _isSearching = false;
   TextEditingController _searchController = TextEditingController();
+  AlgoliaService algoliaService = AlgoliaService();
   FocusNode focusNode;
   var _searchResults = [];
+  FirebaseUser userName;
 
   @override
   void initState() {
-    super.initState();
     focusNode = FocusNode();
+    _loadCurrentUser();
+    super.initState();
+  }
+
+  Future<void> _loadCurrentUser() async {
+    return await FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
+      setState(() {
+        userName = user;
+      });
+    });
   }
 
   @override
@@ -28,50 +41,74 @@ class _ExploreState extends State<Explore> {
   }
 
   Widget _getSearchOrExplore(screenHeight, screenWidth) {
-    var children2 = <Widget>[
-      AnimatedOpacity(
-        opacity: _isSearching ? 0.5 : 0,
+    var children = <Widget>[
+      _displayExploreScreen(screenWidth),
+      AnimatedSwitcher(
         duration: Duration(milliseconds: 200),
-        child: Container(
-          color: Colors.black,
-          height: screenHeight,
-          width: screenWidth,
-        ),
+        child: _getSearchDisplayWithBackground(screenWidth, screenHeight),
       ),
-      _displayExploreScreen(),
-      _isSearching ? _displaySearchScreen() : Container(),
     ];
     return Stack(
       fit: StackFit.expand,
-      children: children2,
+      children: children,
     );
   }
 
-  Widget _displayExploreScreen() {
-    return ListView.separated(
-      separatorBuilder: (context, index) => Divider(
-        color: Colors.grey[400],
-      ),
-      itemCount: 20,
-      itemBuilder: (context, index) => InkWell(
-        child: ListTile(
-          title: Padding(
-            padding: EdgeInsets.all(5),
-            child: Text(
-              'Item $index',
+  Widget _getSearchDisplayWithBackground(screenWidth, screenHeight) {
+    if (!_isSearching) {
+      return Container();
+    }
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Container(
+          color: Colors.black.withOpacity(0.5),
+          height: screenHeight,
+          width: screenWidth,
+        ),
+        _displaySearchScreen(),
+      ],
+    );
+  }
+
+  Widget _displayExploreScreen(screenWidth) {
+    return ListView(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(bottom: 1.0),
+          child: GestureDetector(
+            onTap: () => _navigateToVideo(),
+            child: Container(
+              height: screenWidth,
+              width: screenWidth,
+              color: Colors.green,
+              child: Center(
+                child: Text('Main Container'),
+              ),
             ),
           ),
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) {
-                  return VideoPlayerScreen();
-                },
+        ),
+        GridView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            crossAxisSpacing: 1.0,
+            mainAxisSpacing: 1.0,
+          ),
+          itemCount: 20,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () => _navigateToVideo(),
+              child: Container(
+                color: Colors.green,
+                child: Text("Index: $index"),
               ),
             );
           },
         ),
-      ),
+      ],
     );
   }
 
@@ -90,8 +127,9 @@ class _ExploreState extends State<Explore> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => DynamicProfile(
-                      uid: snap.data['objectID'],
+                      uid: snap.objectID,
                       name: snap.data['name'],
+                      viewingUid: userName.uid,
                     ),
                   ),
                 );
@@ -103,15 +141,17 @@ class _ExploreState extends State<Explore> {
     );
   }
 
-  void _searchForUsers() async {
-    Algolia algolia = Algolia.init(
-      applicationId: 'JRNVNTRH9V',
-      apiKey: '409b8ed6d2483d5d25b3d738bd9a48ed',
+  _navigateToVideo() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => VideoPlayerScreen(),
+      ),
     );
+  }
 
-    AlgoliaQuery query = algolia.instance.index('users').setHitsPerPage(5);
-    query = query.search(_searchController.text);
-    _searchResults = (await query.getObjects()).hits;
+  void _searchForUsers() async {
+    _searchResults =
+        await algoliaService.searchForUsers(_searchController.text, 5);
     setState(() {});
   }
 
@@ -131,19 +171,15 @@ class _ExploreState extends State<Explore> {
           },
           cursorColor: Colors.white,
           showCursor: _isSearching,
-          autofocus: false,
           controller: _searchController,
           focusNode: focusNode,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.symmetric(
+              horizontal: 15,
               vertical: 0,
             ),
             filled: true,
             fillColor: Colors.indigo[400],
-            prefixIcon: Icon(
-              Icons.search,
-              color: Colors.white,
-            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide(
