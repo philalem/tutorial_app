@@ -1,5 +1,5 @@
 import 'package:creaid/utility/creaidButton.dart';
-import 'package:creaid/utility/customTextField.dart';
+import 'package:creaid/utility/creaidTextField.dart';
 import 'package:creaid/utility/firebaseAuth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -54,7 +54,7 @@ class _LoginState extends State<Login> {
         child: ListView(
           children: <Widget>[
             Container(
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
+              padding: EdgeInsets.symmetric(vertical: 50.0, horizontal: 50.0),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -69,7 +69,7 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     SizedBox(height: 40.0),
-                    CustomTextField(
+                    CreaidTextField(
                       icon: Icon(Icons.email),
                       obsecure: false,
                       onChanged: (input) => email = input,
@@ -78,7 +78,7 @@ class _LoginState extends State<Login> {
                       hint: "Email",
                     ),
                     SizedBox(height: 30.0),
-                    CustomTextField(
+                    CreaidTextField(
                       icon: Icon(Icons.panorama_fish_eye),
                       obsecure: true,
                       onChanged: (input) => password = input,
@@ -89,7 +89,12 @@ class _LoginState extends State<Login> {
                     ),
                     SizedBox(height: 40.0),
                     CreaidButton(
-                      label: 'Sign in',
+                      children: <Widget>[
+                        Text(
+                          'Sign in',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ],
                       onPressed: () async {
                         if (_formKey.currentState.validate()) {
                           _formKey.currentState.save();

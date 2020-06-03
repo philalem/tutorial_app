@@ -2,8 +2,10 @@ import 'package:creaid/camerascreen/camera_screen.dart';
 import 'package:creaid/explore.dart';
 import 'package:creaid/feed.dart';
 import 'package:creaid/notifications.dart';
-import 'package:creaid/profile/dynamicProfile.dart';
+import 'package:creaid/profile/profile.dart';
+import 'package:creaid/utility/UserData.dart';
 import 'package:creaid/video-player.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -12,19 +14,15 @@ class Home extends StatefulWidget {
   createState() => _HomeState();
 }
 
-GlobalKey<NavigatorState> _navigatorGlobalKey = GlobalKey<NavigatorState>();
-
 class _HomeState extends State<Home> {
   var _navBarItemIndex = 1;
 
   final List<Widget> _pages = [
     Navigator(
       onGenerateRoute: (RouteSettings settings) {
-        print("hey");
         return MaterialPageRoute(
           settings: settings,
           builder: (BuildContext context) {
-            print(settings.name);
             switch (settings.name) {
               case '/':
                 return Feed();
@@ -37,11 +35,9 @@ class _HomeState extends State<Home> {
     ),
     Navigator(
       onGenerateRoute: (RouteSettings settings) {
-        print('hey1');
         return MaterialPageRoute(
           settings: settings,
           builder: (BuildContext context) {
-            print(settings.name);
             switch (settings.name) {
               case '/':
                 return Explore();
@@ -54,11 +50,9 @@ class _HomeState extends State<Home> {
     ),
     Navigator(
       onGenerateRoute: (RouteSettings settings) {
-        print('hey1');
         return MaterialPageRoute(
           settings: settings,
           builder: (BuildContext context) {
-            print(settings.name);
             switch (settings.name) {
               case '/':
                 return Explore();
@@ -89,10 +83,9 @@ class _HomeState extends State<Home> {
         return MaterialPageRoute(
           settings: settings,
           builder: (BuildContext context) {
-            print(settings.name);
             switch (settings.name) {
               case '/':
-                return DynamicProfile();
+                return Profile();
               default:
                 throw UnimplementedError();
             }

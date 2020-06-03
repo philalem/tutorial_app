@@ -1,58 +1,61 @@
 import 'package:creaid/profile/DisplayFollow.dart';
-import 'package:creaid/profile/UploadProfile.dart';
 import 'package:creaid/utility/UserData.dart';
-import 'package:creaid/utility/user.dart';
+import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class DynamicProfile extends StatefulWidget {
   String uid;
+  String loggedInUid;
   String name;
-  DynamicProfile({this.uid, this.name});
+  DynamicProfile({
+    this.uid,
+    this.name,
+    this.loggedInUid,
+  });
 
   @override
   _DynamicProfileState createState() => _DynamicProfileState();
 }
 
+GlobalKey profileKey = GlobalKey();
+
 class _DynamicProfileState extends State<DynamicProfile> {
   FirebaseUser userName;
-  UserDbService dbService = UserDbService();
+  UserDbService dbService;
+  bool isFollowing = false;
 
   @override
   void initState() {
     _loadCurrentUser();
+    _setDbService();
     super.initState();
   }
 
-  void _loadCurrentUser() async {
-    FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
+  Future<void> _loadCurrentUser() async {
+    return await FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
       setState(() {
-        // call setState to rebuild the view
-        this.userName = user;
+        userName = user;
       });
     });
   }
 
-  String _getLoadedName() {
-    if (widget.name != null) {
-      return widget.name;
-    }
-    if (userName != null) {
-      return userName.displayName;
-    }
-
-    return '';
+  Future<void> _setDbService() async {
+    dbService = UserDbService(uid: widget.loggedInUid);
+    isFollowing = await dbService.isFollowing(widget.uid);
+    setState(() {});
   }
 
   Widget build(BuildContext context) {
-    final user = Provider.of<User>(context);
-    var uid = widget.uid != null ? widget.uid : user.uid;
+    var size = MediaQuery.of(context).size;
+    var screenWidth = size.width;
+    var uid = widget.uid;
+    dbService = UserDbService(uid: widget.loggedInUid);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_getLoadedName()),
+        title: Text(widget.name),
       ),
       body: StreamBuilder<UserData>(
         stream: UserDbService(uid: uid).getNames(),
@@ -62,109 +65,110 @@ class _DynamicProfileState extends State<DynamicProfile> {
 
             return ListView(
               children: <Widget>[
-                Column(
+                Stack(
                   children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: 80,
-                      ),
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          fit: BoxFit.contain,
-                          image: Image.network(data.photoUrl).image
-                        ),
+                    Positioned(
+                      top: 140,
+                      bottom: 0,
+                      child: Container(
+                        color: Colors.grey[300],
+                        width: screenWidth,
                       ),
                     ),
-                    Padding(
-                        padding: EdgeInsets.only(top: 5, right: 15),
-                        child: Container(
-                          child: IconButton(
-                              icon: Icon(Icons.people_outline),
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (_) => new UploadProfile()));
-                              }),
-                        )),
-                    Padding(
-                      padding: EdgeInsets.only(top: 15),
-                      child: Text(
-                        data.name,
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 10),
-                      child: RaisedButton(
-                        color: Colors.white,
-                        onPressed: () {},
-                        textColor: Colors.lightBlue,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
-                          side: BorderSide(color: Colors.lightBlue),
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                              "Follow ",
-                              style: TextStyle(fontSize: 15),
-                            ),
-                            Icon(Icons.add)
-                          ],
-                          mainAxisSize: MainAxisSize.min,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Spacer(
-                            flex: 2,
+                    Column(
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(
+                            top: 80,
                           ),
-                          FlatButton(
-                            textColor: Colors.black,
+                          width: 120,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              image:
+                                  data.photoUrl != null && data.photoUrl != ''
+                                      ? Image.network(data.photoUrl).image
+                                      : AssetImage(
+                                          'assets/images/phillip_profile.jpg'),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 15),
+                          child: Text(
+                            data.username,
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 10),
+                          child: CreaidButton(
+                            padding: 0,
+                            shrink: true,
                             onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (_) => new DisplayFollow(
-                                      people: (data.following != null
-                                          ? data.following.asMap()
-                                          : {}))));
+                              _updateFollowing(uid);
                             },
-                            child: Text(
-                              "Following: " +
-                                  (data.following != null
-                                      ? data.following.length.toString()
-                                      : '0'),
-                            ),
+                            children: isFollowing
+                                ? [
+                                    Text('Unfollow'),
+                                  ]
+                                : [
+                                    Text(
+                                      'Follow',
+                                    ),
+                                  ],
                           ),
-                          Spacer(),
-                          FlatButton(
-                            textColor: Colors.black,
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (_) => new DisplayFollow(
-                                      people: (data.followers != null
-                                          ? data.followers.asMap()
-                                          : {}))));
-                            },
-                            child: Text(
-                              "Followers: " +
-                                  (data.followers != null
-                                      ? data.followers.length.toString()
-                                      : '0'),
-                            ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Spacer(
+                                flex: 2,
+                              ),
+                              FlatButton(
+                                textColor: Colors.black,
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (_) => new DisplayFollow(
+                                          people: (data.following != null
+                                              ? data.following.asMap()
+                                              : {}))));
+                                },
+                                child: Text(
+                                  "Following: " +
+                                      (data.numberFollowing != null
+                                          ? data.numberFollowing.toString()
+                                          : '0'),
+                                ),
+                              ),
+                              Spacer(),
+                              FlatButton(
+                                textColor: Colors.black,
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (_) => new DisplayFollow(
+                                          people: (data.followers != null
+                                              ? data.followers.asMap()
+                                              : {}))));
+                                },
+                                child: Text(
+                                  "Followers: " +
+                                      (data.numberFollowers != null
+                                          ? data.numberFollowers.toString()
+                                          : '0'),
+                                ),
+                              ),
+                              Spacer(
+                                flex: 2,
+                              ),
+                            ],
                           ),
-                          Spacer(
-                            flex: 2,
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -194,5 +198,16 @@ class _DynamicProfileState extends State<DynamicProfile> {
         },
       ),
     );
+  }
+
+  void _updateFollowing(String uid) {
+    if (isFollowing) {
+      dbService.removeFromFollowing(uid);
+    } else {
+      dbService.addToFollowing(uid);
+    }
+    setState(() {
+      isFollowing = !isFollowing;
+    });
   }
 }
