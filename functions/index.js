@@ -44,6 +44,7 @@ exports.sendFollowNotification = functions
 //   });
 
 // Create a HTTP request cloud function.
+
 exports.sendUsersToAlgolia = functions
   .region("us-east4")
   .https.onRequest((req, res) => {
@@ -54,7 +55,7 @@ exports.onCreationOfUser = functions
   .region("us-east4")
   .firestore.document("user-info/{uid}")
   .onCreate(async (snapshot, context) => {
-    userFunctions.addUserToFollowers(snapshot, context);
+    userFunctions.addUserToUsersCollection(snapshot, context);
   });
 
 exports.onCreationOfUser = functions
@@ -62,13 +63,6 @@ exports.onCreationOfUser = functions
   .firestore.document("users/{uid}")
   .onCreate(async (snapshot, context) => {
     await algoliaFunctions.saveUserInAlgolia(snapshot);
-  });
-
-exports.onCreationOfUserForUsernames = functions
-  .region("us-east4")
-  .firestore.document("users/{uid}")
-  .onCreate(async (snapshot, context) => {
-    await algoliaFunctions.saveUsernameInAlgolia(snapshot);
   });
 
 exports.onUsernameUpdate = functions

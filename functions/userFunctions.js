@@ -4,7 +4,7 @@ const firestore = new Firestore({
   projectId: process.env.GCP_PROJECT,
 });
 
-exports.addUserToFollowers = async (snap, context) => {
+exports.addUserToUsersCollection = async (snap, context) => {
   const name = snap.data().name;
   const username = snap.data().username;
   const userId = context.params.userId;
