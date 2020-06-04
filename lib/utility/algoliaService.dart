@@ -22,7 +22,19 @@ class AlgoliaService {
       return false;
     }
     AlgoliaObjectSnapshot snap = hit[0];
-    var closestMatch = snap.data['users'];
+    var closestMatch = snap.data['username'];
+    return closestMatch == potentialUsername;
+  }
+
+  Future<bool> isThereAnExactEmailMatch(potentialUsername) async {
+    AlgoliaQuery query = algolia.instance.index('emails').setHitsPerPage(1);
+    query = query.search(potentialUsername);
+    var hit = (await query.getObjects()).hits;
+    if (hit.length == 0) {
+      return false;
+    }
+    AlgoliaObjectSnapshot snap = hit[0];
+    var closestMatch = snap.data['email'];
     return closestMatch == potentialUsername;
   }
 }
