@@ -7,7 +7,7 @@ const firestore = new Firestore({
 exports.addUserToUsersCollection = async (snap, context) => {
   const name = snap.data().name;
   const username = snap.data().username;
-  const userId = context.params.userId;
+  const userId = context.params.uid;
   return await firestore
     .collection("users")
     .doc(userId)

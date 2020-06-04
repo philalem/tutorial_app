@@ -58,7 +58,7 @@ exports.onCreationOfUser = functions
     userFunctions.addUserToUsersCollection(snapshot, context);
   });
 
-exports.onCreationOfUser = functions
+exports.onMigrationOfUserInfoToUsers = functions
   .region("us-east4")
   .firestore.document("users/{uid}")
   .onCreate(async (snapshot, context) => {

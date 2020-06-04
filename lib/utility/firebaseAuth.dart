@@ -1,3 +1,4 @@
+import 'package:creaid/utility/emailsDbService.dart';
 import 'package:creaid/utility/followDbService.dart';
 import 'package:creaid/utility/interestsDbService.dart';
 import 'package:creaid/utility/userDBService.dart';
@@ -45,6 +46,7 @@ class FireBaseAuthorization {
           email: email, password: password);
       FirebaseUser user = result.user;
       updateUserName(name, user);
+      EmailsDbService(uid: user.uid).populateEmail(email);
       UserDbService(uid: user.uid)
           .updateUserInfo(name, username, interests, 0, 0);
       FollowDbService(uid: user.uid).setUpFollowInfo();
