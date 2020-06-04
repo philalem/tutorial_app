@@ -140,10 +140,7 @@ class _ProfileState extends State<Profile> {
                                 textColor: Colors.black,
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (_) => new DisplayFollow(
-                                          people: (data.following != null
-                                              ? data.following.asMap()
-                                              : {}))));
+                                      builder: (_) => new DisplayFollow()));
                                 },
                                 child: Text(
                                   "Following: " +
@@ -157,10 +154,7 @@ class _ProfileState extends State<Profile> {
                                 textColor: Colors.black,
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (_) => new DisplayFollow(
-                                          people: (data.followers != null
-                                              ? data.followers.asMap()
-                                              : {}))));
+                                      builder: (_) => new DisplayFollow()));
                                 },
                                 child: Text(
                                   "Followers: " +
