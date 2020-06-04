@@ -119,8 +119,9 @@ class _UsernameAndInterestsSignUpState
                         setState(() {
                           error = 'Can not register this user';
                         });
+                      } else {
+                        Navigator.of(context).pop();
                       }
-                      Navigator.of(context).pop();
                     }),
                 SizedBox(height: 12.0),
                 Text(
