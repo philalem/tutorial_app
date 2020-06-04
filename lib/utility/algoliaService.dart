@@ -15,14 +15,14 @@ class AlgoliaService {
   }
 
   Future<bool> isThereAnExactUsernameMatch(potentialUsername) async {
-    AlgoliaQuery query = algolia.instance.index('usernames').setHitsPerPage(1);
+    AlgoliaQuery query = algolia.instance.index('users').setHitsPerPage(1);
     query = query.search(potentialUsername);
     var hit = (await query.getObjects()).hits;
     if (hit.length == 0) {
       return false;
     }
     AlgoliaObjectSnapshot snap = hit[0];
-    var closestMatch = snap.data['username'];
+    var closestMatch = snap.data['users'];
     return closestMatch == potentialUsername;
   }
 }
