@@ -1,4 +1,5 @@
 import 'package:creaid/register/usernameAndInterestsSignUp.dart';
+import 'package:creaid/utility/algoliaService.dart';
 import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/creaidTextField.dart';
 import 'package:flutter/material.dart';
@@ -14,10 +15,21 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
-
+  TextEditingController emailController = TextEditingController();
+  AlgoliaService algoliaService = AlgoliaService();
+  bool _isSubmitDisabled = true;
+  String emailError;
   String email = '';
   String password = '';
   String name = '';
+
+  _disableForm() {
+    _isSubmitDisabled = true;
+  }
+
+  _enableForm() {
+    _isSubmitDisabled = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,13 +91,11 @@ class _RegisterState extends State<Register> {
                       ),
                       SizedBox(height: 30.0),
                       CreaidTextField(
-                        icon: Icon(Icons.email),
-                        obsecure: false,
-                        onChanged: (input) => email = input,
-                        validator: (input) => input.isEmpty
-                            ? "Need to enter a valid email"
-                            : null,
-                        hint: "Email",
+                        icon: Icon(Icons.edit),
+                        controller: emailController,
+                        validator: (value) =>
+                            emailError != null ? emailError : null,
+                        onChanged: (value) => _isValidEmail(value),
                       ),
                       SizedBox(height: 30.0),
                       CreaidTextField(
@@ -99,6 +109,7 @@ class _RegisterState extends State<Register> {
                       ),
                       SizedBox(height: 40.0),
                       CreaidButton(
+                        disabled: _isSubmitDisabled,
                         children: <Widget>[
                           Text(
                             'Next',
@@ -130,5 +141,17 @@ class _RegisterState extends State<Register> {
         ),
       ),
     );
+  }
+
+  Future _isValidEmail(String value) async {
+    bool isMatch = await algoliaService.isThereAnExactEmailMatch(value);
+    if (isMatch) {
+      emailError = 'Sorry, this email is taken already. Try another.';
+    } else if (value.isEmpty) {
+      emailError = 'Please enter an email';
+    } else {
+      emailError = null;
+    }
+    setState(() {});
   }
 }

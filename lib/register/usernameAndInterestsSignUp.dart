@@ -113,6 +113,7 @@ class _UsernameAndInterestsSignUpState
                           widget.password,
                           widget.name,
                           _interests);
+
                       res = await _auth.signInWithEmailAndPassword(
                           widget.email, widget.password);
                       if (res == null) {
