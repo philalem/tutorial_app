@@ -51,6 +51,12 @@ exports.sendUsersToAlgolia = functions
     return algoliaFunctions.sendUsersToAlgolia(req, res, db);
   });
 
+exports.sendEmailsToAlgolia = functions
+  .region("us-east4")
+  .https.onRequest((req, res) => {
+    return algoliaFunctions.sendEmailsToAlgolia(req, res, db);
+  });
+
 exports.onCreationOfUser = functions
   .region("us-east4")
   .firestore.document("user-info/{uid}")
@@ -65,16 +71,37 @@ exports.onMigrationOfUserInfoToUsers = functions
     await algoliaFunctions.saveUserInAlgolia(snapshot);
   });
 
+exports.onEmailCreation = functions
+  .region("us-east4")
+  .firestore.document("email/{uid}")
+  .onCreate(async (snapshot, context) => {
+    await algoliaFunctions.saveEmailInAlgolia(snapshot);
+  });
+
 exports.onUsernameUpdate = functions
   .region("us-east4")
   .firestore.document("users/{uid}")
   .onUpdate(async (change, context) => {
-    await algoliaFunctions.updateDocumentInAlgolia(change);
+    await algoliaFunctions.updateDocumentInAlgolia(change, "users");
+  });
+
+exports.onUsernameUpdate = functions
+  .region("us-east4")
+  .firestore.document("email/{uid}")
+  .onUpdate(async (change, context) => {
+    await algoliaFunctions.updateDocumentInAlgolia(change, "emails");
   });
 
 exports.onUserDeletion = functions
   .region("us-east4")
   .firestore.document("users/{uid}")
   .onDelete(async (snapshot, context) => {
-    await algoliaFunctions.deleteDocumentFromAlgolia(snapshot);
+    await algoliaFunctions.deleteUserFromAlgolia(snapshot);
+  });
+
+exports.onEmailDeletion = functions
+  .region("us-east4")
+  .firestore.document("email/{uid}")
+  .onDelete(async (snapshot, context) => {
+    await algoliaFunctions.deleteEmailFromAlgolia(snapshot);
   });
