@@ -53,7 +53,6 @@ class _UsernameAndInterestsSignUpState
             Align(
               alignment: Alignment.topLeft,
               child: IconButton(
-                iconSize: 30,
                 icon: Icon(Icons.arrow_back_ios),
                 color: Colors.indigo,
                 onPressed: () => Navigator.of(context).pop(),
