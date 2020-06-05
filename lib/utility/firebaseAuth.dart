@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:creaid/notifications.dart';
 import 'package:creaid/utility/emailsDbService.dart';
 import 'package:creaid/utility/followDbService.dart';
 import 'package:creaid/utility/interestsDbService.dart';
+import 'package:creaid/utility/notificationsDbService.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -52,7 +54,6 @@ class FireBaseAuthorization {
           .runTransaction((transaction) async {
             EmailsDbService(uid: uid).populateEmail(email);
             UserDbService(uid: uid).updateUserInfo(name, username, 0, 0);
-            FollowDbService(uid: uid).setUpFollowInfo();
             InterestsDbService(uid: uid).updateInterests(interests);
             return;
           })
