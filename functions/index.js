@@ -62,6 +62,7 @@ exports.onCreationOfUser = functions
   .firestore.document("user-info/{uid}")
   .onCreate(async (snapshot, context) => {
     userFunctions.addUserToUsersCollection(snapshot, context);
+    userFunctions.addEmailToEmailsCollection(snapshot, context);
   });
 
 exports.onMigrationOfUserInfoToUsers = functions
@@ -73,7 +74,7 @@ exports.onMigrationOfUserInfoToUsers = functions
 
 exports.onEmailCreation = functions
   .region("us-east4")
-  .firestore.document("email/{uid}")
+  .firestore.document("emails/{uid}")
   .onCreate(async (snapshot, context) => {
     await algoliaFunctions.saveEmailInAlgolia(snapshot);
   });
@@ -85,9 +86,9 @@ exports.onUsernameUpdate = functions
     await algoliaFunctions.updateDocumentInAlgolia(change, "users");
   });
 
-exports.onUsernameUpdate = functions
+exports.onEmailUpdate = functions
   .region("us-east4")
-  .firestore.document("email/{uid}")
+  .firestore.document("emails/{uid}")
   .onUpdate(async (change, context) => {
     await algoliaFunctions.updateDocumentInAlgolia(change, "emails");
   });
@@ -101,7 +102,7 @@ exports.onUserDeletion = functions
 
 exports.onEmailDeletion = functions
   .region("us-east4")
-  .firestore.document("email/{uid}")
+  .firestore.document("emails/{uid}")
   .onDelete(async (snapshot, context) => {
     await algoliaFunctions.deleteEmailFromAlgolia(snapshot);
   });
