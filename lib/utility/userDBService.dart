@@ -17,8 +17,6 @@ class UserDbService {
       'name': name,
       'username': username,
       'interests': interests,
-      'photo-url':
-          'https://firebasestorage.googleapis.com/v0/b/creaid-b4528.appspot.com/o/unknown-profile.png?alt=media&token=36b3cb28-743c-4352-ad53-32ec67387e0d',
       'number-following': numberFollowing,
       'number-followers': numberFollowers,
     });
