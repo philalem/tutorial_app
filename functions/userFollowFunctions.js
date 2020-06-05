@@ -4,9 +4,32 @@ const firestore = new Firestore({
   projectId: process.env.GCP_PROJECT,
 });
 
+exports.incrementFollowers = async (userId) => {
+  await firestore
+    .collection("user-info")
+    .doc(userId)
+    .set({ "number-followers": firestore.FieldValue.increment(1) });
+  return await firestore
+    .collection("follow-info")
+    .doc(userId)
+    .set({ "number-followers": firestore.FieldValue.increment(1) });
+};
+
+exports.decrementFollowers = async (userId) => {
+  await firestore
+    .collection("user-info")
+    .doc(userId)
+    .set({ "number-followers": firestore.FieldValue.increment(-1) });
+  return await firestore
+    .collection("follow-info")
+    .doc(userId)
+    .set({ "number-followers": firestore.FieldValue.increment(-1) });
+};
+
 exports.addUserToFollowers = async (snap, context) => {
   const userId = context.params.userId;
   const followedUserId = context.params.followingId;
+  exports.incrementFollowers(followedUserId);
   return await firestore
     .collection("follow-info")
     .doc(followedUserId)
@@ -18,6 +41,7 @@ exports.addUserToFollowers = async (snap, context) => {
 exports.removeUserFromFollowers = async (snap, context) => {
   const userId = context.params.userId;
   const followedUserId = context.params.followingId;
+  exports.decrementFollowers(followedUserId);
   return await firestore
     .collection("follow-info")
     .doc(followedUserId)
@@ -26,11 +50,19 @@ exports.removeUserFromFollowers = async (snap, context) => {
     .delete();
 };
 
+exports.incrementNewNotifications = async (userId) => {
+  return await firestore
+    .collection("follow-info")
+    .doc(userId)
+    .set({ "new-notifications": firestore.FieldValue.increment(1) });
+};
+
 exports.sendFollowNotification = async (snap, context) => {
   const userId = context.params.userId;
   const followedUserId = context.params.followingId;
   const followedUserName = snap.data().name;
   const timestamp = new Date().getTime();
+  exports.incrementNewNotifications(followedUserId);
   return await firestore
     .collection("notifications")
     .doc(userId)

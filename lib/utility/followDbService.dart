@@ -10,34 +10,37 @@ class FollowDbService {
   FollowDbService({this.uid});
 
   Future<void> addToFollowing(String uidToBeFollowed, String name) async {
-    // TODO: Make all these transactions
-    await userInfoCollection
-        .document(uid)
-        .updateData({'number-following': FieldValue.increment(1)});
-    await followInfoCollection
-        .document(uid)
-        .updateData({'number-following': FieldValue.increment(1)});
-    return followInfoCollection
-        .document(uid)
-        .collection('following')
-        .document(uidToBeFollowed)
-        .setData({'name': name}).whenComplete(
-            () => print("User followed successfully."));
+    await Firestore.instance.runTransaction((transaction) async {
+      await userInfoCollection
+          .document(uid)
+          .updateData({'number-following': FieldValue.increment(1)});
+      await followInfoCollection
+          .document(uid)
+          .updateData({'number-following': FieldValue.increment(1)});
+      return followInfoCollection
+          .document(uid)
+          .collection('following')
+          .document(uidToBeFollowed)
+          .setData({'name': name}).whenComplete(
+              () => print("User followed successfully."));
+    });
   }
 
   Future<void> removeFromFollowing(String uidToBeUnFollowed) async {
-    await userInfoCollection
-        .document(uid)
-        .updateData({'number-following': FieldValue.increment(-1)});
-    await followInfoCollection
-        .document(uid)
-        .updateData({'number-following': FieldValue.increment(-1)});
-    return followInfoCollection
-        .document(this.uid)
-        .collection('following')
-        .document(uidToBeUnFollowed)
-        .delete()
-        .whenComplete(() => print("User unfollowed successfully."));
+    await Firestore.instance.runTransaction((transaction) async {
+      await userInfoCollection
+          .document(uid)
+          .updateData({'number-following': FieldValue.increment(-1)});
+      await followInfoCollection
+          .document(uid)
+          .updateData({'number-following': FieldValue.increment(-1)});
+      return followInfoCollection
+          .document(this.uid)
+          .collection('following')
+          .document(uidToBeUnFollowed)
+          .delete()
+          .whenComplete(() => print("User unfollowed successfully."));
+    });
   }
 
   Future<bool> isFollowing(String uidToBeFollowed) async {
@@ -52,12 +55,5 @@ class FollowDbService {
       }
     });
     return isFollowing;
-  }
-
-  Future<void> setUpFollowInfo() async {
-    return await followInfoCollection.document(uid).setData({
-      'number-following': 0,
-      'number-followers': 0,
-    });
   }
 }

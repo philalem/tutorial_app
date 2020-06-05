@@ -35,7 +35,7 @@ class _CreateUsername extends State<CreateUsername> {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 28,
+                fontSize: 22,
               ),
             ),
           ],
