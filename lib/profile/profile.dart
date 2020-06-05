@@ -101,7 +101,7 @@ class _ProfileState extends State<Profile> {
                                         data.photoUrl != ''
                                     ? Image.network(data.photoUrl).image
                                     : AssetImage(
-                                        'assets/images/phillip_profile.jpg'),
+                                        'assets/images/unknown-profile.png'),
                               ),
                             ),
                             child: Align(
