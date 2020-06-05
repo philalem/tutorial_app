@@ -69,17 +69,18 @@ class _UsernameAndInterestsSignUpState
                     direction: Axis.horizontal,
                     spacing: 12,
                     children: topics.map(
-                      (e) {
-                        bool added = e.values.toList()[0];
+                      (topic) {
+                        bool added = topic.values.toList()[0];
                         return CreaidButton(
+                          filled: added,
                           color:
                               added ? Colors.indigoAccent[700] : Colors.indigo,
                           onPressed: () {
-                            _addOrRemoveInterest(e);
+                            _addOrRemoveInterest(topic);
                           },
                           shrink: true,
                           children: <Widget>[
-                            Text(e.keys.toList()[0]),
+                            Text(topic.keys.toList()[0]),
                             SizedBox(
                               width: 4,
                             ),

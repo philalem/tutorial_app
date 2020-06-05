@@ -8,6 +8,7 @@ class CreaidButton extends StatelessWidget {
     this.shrink: false,
     this.color: Colors.indigo,
     this.padding: 10,
+    this.filled: true,
   });
   List<Widget> children;
   Function onPressed;
@@ -15,15 +16,17 @@ class CreaidButton extends StatelessWidget {
   bool shrink;
   Color color;
   double padding;
+  bool filled;
 
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
-      color: color,
+      color: filled ? color : Colors.white,
       onPressed: disabled ? null : onPressed,
-      textColor: Colors.white,
+      textColor: filled ? Colors.white : color,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18.0),
+        side: BorderSide(color: color),
       ),
       child: Padding(
         padding: EdgeInsets.all(padding),

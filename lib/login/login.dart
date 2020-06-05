@@ -2,6 +2,7 @@ import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/creaidTextField.dart';
 import 'package:creaid/utility/firebaseAuth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Login extends StatefulWidget {
@@ -22,64 +23,62 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+      statusBarBrightness: Brightness.light,
+    ));
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'Creaid',
-          style: GoogleFonts.satisfy(
-            fontSize: 34,
-          ),
-        ),
-        actions: <Widget>[
-          FlatButton.icon(
-              icon: Icon(
-                Icons.person,
-                color: Colors.white,
-              ),
-              label: Text(
-                'Sign up',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              onPressed: () {
-                widget.toggleView();
-              })
-        ],
-      ),
       body: Center(
         child: ListView(
           children: <Widget>[
+            Align(
+              alignment: Alignment.topRight,
+              child: FlatButton(
+                child: Text(
+                  'Sign up',
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+                onPressed: () {
+                  widget.toggleView();
+                },
+              ),
+            ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 80.0),
+                child: Image.asset(
+                  'assets/images/creaid_app_icon.png',
+                  scale: 12,
+                ),
+              ),
+            ),
             Container(
-              padding: EdgeInsets.symmetric(vertical: 50.0, horizontal: 50.0),
+              padding: EdgeInsets.symmetric(horizontal: 50.0),
               child: Form(
                 key: _formKey,
                 child: Column(
                   children: <Widget>[
-                    SizedBox(height: 20.0),
-                    Text(
-                      'Login to your Creaid account',
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text('Sign in',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 28,
+                            )),
+                      ],
                     ),
-                    SizedBox(height: 40.0),
                     CreaidTextField(
-                      icon: Icon(Icons.email),
                       obsecure: false,
                       onChanged: (input) => email = input,
                       validator: (input) =>
                           input.isEmpty ? "Need to enter a valid email" : null,
                       hint: "Email",
                     ),
-                    SizedBox(height: 30.0),
                     CreaidTextField(
-                      icon: Icon(Icons.panorama_fish_eye),
                       obsecure: true,
                       onChanged: (input) => password = input,
                       validator: (input) => input.length < 6
@@ -87,7 +86,14 @@ class _LoginState extends State<Login> {
                           : null,
                       hint: "Password",
                     ),
-                    SizedBox(height: 40.0),
+                    SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text('Forgot your password?'),
+                      ],
+                    ),
+                    SizedBox(height: 12),
                     CreaidButton(
                       children: <Widget>[
                         Text(
