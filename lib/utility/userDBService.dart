@@ -14,12 +14,11 @@ class UserDbService {
 
   UserDbService({this.uid});
 
-  Future<void> updateUserInfo(String name, String username,
-      List<String> interests, int numberFollowing, int numberFollowers) async {
+  Future<void> updateUserInfo(String name, String username, int numberFollowing,
+      int numberFollowers) async {
     return await userInfoCollection.document(uid).setData({
       'name': name,
       'username': username,
-      'interests': interests,
       'number-following': numberFollowing,
       'number-followers': numberFollowers,
     });

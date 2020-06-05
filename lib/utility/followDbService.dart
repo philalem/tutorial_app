@@ -4,10 +4,16 @@ class FollowDbService {
   final String uid;
   final CollectionReference followInfoCollection =
       Firestore.instance.collection('follow-info');
+  final CollectionReference userInfoCollection =
+      Firestore.instance.collection('user-info');
 
   FollowDbService({this.uid});
 
   Future<void> addToFollowing(String uidToBeFollowed, String name) async {
+    // TODO: Make all these transactions
+    await userInfoCollection
+        .document(uid)
+        .updateData({'number-following': FieldValue.increment(1)});
     await followInfoCollection
         .document(uid)
         .updateData({'number-following': FieldValue.increment(1)});
@@ -20,6 +26,9 @@ class FollowDbService {
   }
 
   Future<void> removeFromFollowing(String uidToBeUnFollowed) async {
+    await userInfoCollection
+        .document(uid)
+        .updateData({'number-following': FieldValue.increment(-1)});
     await followInfoCollection
         .document(uid)
         .updateData({'number-following': FieldValue.increment(-1)});
