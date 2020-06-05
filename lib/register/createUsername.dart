@@ -27,15 +27,22 @@ class _CreateUsername extends State<CreateUsername> {
     return Column(
       children: <Widget>[
         SizedBox(height: 20.0),
-        Text(
-          'Create a username',
-          textAlign: TextAlign.center,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(fontWeight: FontWeight.bold),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Create a username',
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 28,
+              ),
+            ),
+          ],
         ),
         SizedBox(height: 20.0),
         CreaidTextField(
-          icon: Icon(Icons.edit),
+          hint: 'Create a username',
           validator: (val) => val.isEmpty ? 'Enter a username' : null,
           controller: widget.controller,
           onChanged: (value) async {

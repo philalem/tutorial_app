@@ -81,6 +81,7 @@ class _RegisterState extends State<Register> {
                     ),
                     CreaidTextField(
                       controller: emailController,
+                      onChanged: (value) => email = value,
                       validator: (value) =>
                           emailError != null ? emailError : null,
                       hint: "Email",
