@@ -26,15 +26,8 @@ class CreaidTextField extends StatelessWidget {
         fontSize: 16,
       ),
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(vertical: 5),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.indigo, width: 2.0),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.indigo, width: 2.0),
-        ),
-        hintStyle: TextStyle(fontSize: 16),
-        hintText: hint,
+        labelStyle: TextStyle(fontSize: 16),
+        labelText: hint,
         prefixIcon: icon != null
             ? Padding(
                 child: IconTheme(
