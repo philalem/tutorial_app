@@ -16,21 +16,21 @@ exports.sendPostToFollowers = functions
 
 exports.addUserToFollowers = functions
   .region("us-east4")
-  .firestore.document("following-info/{userId}/following/{followingId}")
+  .firestore.document("follow-info/{userId}/following/{followingId}")
   .onCreate((snap, context) => {
     return followFunctions.addUserToFollowers(snap, context);
   });
 
 exports.removeUserFromFollowers = functions
   .region("us-east4")
-  .firestore.document("following-info/{userId}/following/{followingId}")
+  .firestore.document("follow-info/{userId}/following/{followingId}")
   .onDelete((snap, context) => {
     return followFunctions.removeUserFromFollowers(snap, context);
   });
 
 exports.sendFollowNotification = functions
   .region("us-east4")
-  .firestore.document("following-info/{userId}/followers/{followerId}")
+  .firestore.document("follow-info/{userId}/followers/{followerId}")
   .onCreate((snap, context) => {
     return followFunctions.sendFollowNotification(snap, context);
   });
