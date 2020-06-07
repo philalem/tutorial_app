@@ -67,14 +67,18 @@ class _UsernameAndInterestsSignUpState
                     controller: usernameHolder,
                   ),
                   SizedBox(height: 20.0),
-                  Text(
-                    'What are you interested in?',
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'What are you interested in?',
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 20.0),
                   Wrap(
@@ -129,15 +133,14 @@ class _UsernameAndInterestsSignUpState
                             widget.name,
                             _interests);
 
-                        res = await _auth.signInWithEmailAndPassword(
-                            widget.email, widget.password);
-                        if (res == null) {
-                          setState(() {
-                            error = 'Can not register this user';
-                          });
-                        } else {
+                        if (res != null) {
+                          res = await _auth.signInWithEmailAndPassword(
+                              widget.email, widget.password);
                           Navigator.of(context).pop();
                         }
+                        setState(() {
+                          error = 'Can not register this user';
+                        });
                       }),
                   SizedBox(height: 12.0),
                   Text(

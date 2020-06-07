@@ -5,23 +5,15 @@ const firestore = new Firestore({
 });
 
 exports.incrementFollowers = async (userId) => {
-  await firestore
-    .collection("user-info")
-    .doc(userId)
-    .set({ "number-followers": firestore.FieldValue.increment(1) });
   return await firestore
-    .collection("follow-info")
+    .collection("user-info")
     .doc(userId)
     .set({ "number-followers": firestore.FieldValue.increment(1) });
 };
 
 exports.decrementFollowers = async (userId) => {
-  await firestore
-    .collection("user-info")
-    .doc(userId)
-    .set({ "number-followers": firestore.FieldValue.increment(-1) });
   return await firestore
-    .collection("follow-info")
+    .collection("user-info")
     .doc(userId)
     .set({ "number-followers": firestore.FieldValue.increment(-1) });
 };
