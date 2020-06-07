@@ -42,7 +42,7 @@ class _CreateUsername extends State<CreateUsername> {
         ),
         SizedBox(height: 20.0),
         CreaidTextField(
-          hint: 'Create a username',
+          hint: 'Enter a username',
           validator: (val) => val.isEmpty ? 'Enter a username' : null,
           controller: widget.controller,
           onChanged: (value) async {

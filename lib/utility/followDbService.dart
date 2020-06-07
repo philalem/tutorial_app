@@ -14,9 +14,6 @@ class FollowDbService {
       await userInfoCollection
           .document(uid)
           .updateData({'number-following': FieldValue.increment(1)});
-      await followInfoCollection
-          .document(uid)
-          .updateData({'number-following': FieldValue.increment(1)});
       return followInfoCollection
           .document(uid)
           .collection('following')
@@ -31,11 +28,8 @@ class FollowDbService {
       await userInfoCollection
           .document(uid)
           .updateData({'number-following': FieldValue.increment(-1)});
-      await followInfoCollection
-          .document(uid)
-          .updateData({'number-following': FieldValue.increment(-1)});
       return followInfoCollection
-          .document(this.uid)
+          .document(uid)
           .collection('following')
           .document(uidToBeUnFollowed)
           .delete()
