@@ -1,4 +1,5 @@
 const Firestore = require("@google-cloud/firestore");
+const FieldValue = require("firebase-admin").firestore.FieldValue;
 
 const firestore = new Firestore({
   projectId: process.env.GCP_PROJECT,
@@ -8,20 +9,22 @@ exports.incrementFollowers = async (userId) => {
   return await firestore
     .collection("user-info")
     .doc(userId)
-    .set({ "number-followers": firestore.FieldValue.increment(1) });
+    .update({ "number-followers": FieldValue.increment(1) });
 };
 
 exports.decrementFollowers = async (userId) => {
   return await firestore
     .collection("user-info")
     .doc(userId)
-    .set({ "number-followers": firestore.FieldValue.increment(-1) });
+    .update({ "number-followers": FieldValue.increment(-1) });
 };
 
 exports.addUserToFollowers = async (snap, context) => {
   const userId = context.params.userId;
   const followedUserId = context.params.followingId;
-  exports.incrementFollowers(followedUserId);
+  exports.incrementFollowers(followedUserId).catch((error) => {
+    console.log(error);
+  });
   return await firestore
     .collection("follow-info")
     .doc(followedUserId)
@@ -33,7 +36,9 @@ exports.addUserToFollowers = async (snap, context) => {
 exports.removeUserFromFollowers = async (snap, context) => {
   const userId = context.params.userId;
   const followedUserId = context.params.followingId;
-  exports.decrementFollowers(followedUserId);
+  exports.decrementFollowers(followedUserId).catch((error) => {
+    console.log(error);
+  });
   return await firestore
     .collection("follow-info")
     .doc(followedUserId)
@@ -44,22 +49,24 @@ exports.removeUserFromFollowers = async (snap, context) => {
 
 exports.incrementNewNotifications = async (userId) => {
   return await firestore
-    .collection("follow-info")
+    .collection("notifications")
     .doc(userId)
-    .set({ "new-notifications": firestore.FieldValue.increment(1) });
+    .update({ "new-notifications": FieldValue.increment(1) });
 };
 
 exports.sendFollowNotification = async (snap, context) => {
   const userId = context.params.userId;
-  const followedUserId = context.params.followingId;
+  const followerUserId = context.params.followerId;
   const followedUserName = snap.data().name;
   const timestamp = new Date().getTime();
-  exports.incrementNewNotifications(followedUserId);
+  exports.incrementNewNotifications(followerUserId).catch((error) => {
+    console.log(error);
+  });
   return await firestore
     .collection("notifications")
     .doc(userId)
     .collection("notifications")
-    .doc(followedUserId)
+    .doc(followerUserId)
     .set({
       name: followedUserName,
       type: "follow",
