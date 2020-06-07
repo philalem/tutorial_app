@@ -62,7 +62,6 @@ exports.onCreationOfUser = functions
   .firestore.document("user-info/{uid}")
   .onCreate(async (snapshot, context) => {
     userFunctions.addUserToUsersCollection(snapshot, context);
-    userFunctions.addEmailToEmailsCollection(snapshot, context);
   });
 
 exports.onMigrationOfUserInfoToUsers = functions
