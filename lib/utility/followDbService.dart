@@ -18,7 +18,7 @@ class FollowDbService {
           .document(uid)
           .collection('following')
           .document(uidToBeFollowed)
-          .setData({'name': name}).whenComplete(
+          .setData({'uid': uid, 'name': name}).whenComplete(
               () => print("User followed successfully."));
     });
   }

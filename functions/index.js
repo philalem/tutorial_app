@@ -18,7 +18,7 @@ exports.addUserToFollowers = functions
   .region("us-east4")
   .firestore.document("follow-info/{userId}/following/{followingId}")
   .onCreate((snap, context) => {
-    return followFunctions.addUserToFollowers(snap, context);
+    return followFunctions.addUserToFollowers(snap, context, admin);
   });
 
 exports.removeUserFromFollowers = functions
