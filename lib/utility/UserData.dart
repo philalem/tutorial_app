@@ -5,6 +5,7 @@ class UserData {
   String photoUrl;
   int numberFollowing;
   int numberFollowers;
+  String feedId;
 
   UserData({
     this.uid,

@@ -1,4 +1,5 @@
 import 'package:creaid/FeedVideoPlayer.dart';
+import 'package:creaid/utility/UserData.dart';
 import 'package:creaid/utility/VideoFeedObject.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/userDBService.dart';
@@ -15,15 +16,34 @@ class Feed extends StatelessWidget {
       stream: UserDbService(uid: user.uid).getNames(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          if (snapshot.data.length > 0) {
-            List<VideoFeedObject> userData = snapshot.data;
-            return FeedVideoPlayer(videos: userData);
+          UserData userData = snapshot.data;
+          if (userData.feedId.length > 0) {
+            return StreamBuilder<List<VideoFeedObject>>(
+              stream: UserDbService(uid: user.uid).getUserFeed(userData.feedId),
+              builder:
+                  (context, AsyncSnapshot<List<VideoFeedObject>> snapshot) {
+                if (snapshot.hasData) {
+                  List<VideoFeedObject> userDatas = snapshot.data;
+                  return FeedVideoPlayer(
+                    videos: userDatas,
+                    feedId: userData.feedId,
+                  );
+                } else {
+                  return Align(
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator());
+                }
+              },
+            );
+          } else {
+            return Align(
+                alignment: Alignment.center,
+                child: CircularProgressIndicator());
           }
         } else {
           return Align(
               alignment: Alignment.center, child: CircularProgressIndicator());
         }
-        return VideoPlayerScreen();
       },
     );
   }
