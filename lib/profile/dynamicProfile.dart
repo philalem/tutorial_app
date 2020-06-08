@@ -7,9 +7,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class DynamicProfile extends StatefulWidget {
-  String uid;
-  String loggedInUid;
-  String name;
+  final String uid;
+  final String loggedInUid;
+  final String name;
   DynamicProfile({
     this.uid,
     this.name,

@@ -1,7 +1,6 @@
 import 'package:creaid/profile/DisplayFollow.dart';
 import 'package:creaid/profile/UploadProfile.dart';
 import 'package:creaid/utility/UserData.dart';
-import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,7 +20,6 @@ GlobalKey profileKey = GlobalKey();
 
 class _ProfileState extends State<Profile> {
   FirebaseUser userName;
-  UserDbService dbService = UserDbService();
 
   @override
   void initState() {

@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:creaid/notifications.dart';
 import 'package:creaid/utility/emailsDbService.dart';
-import 'package:creaid/utility/followDbService.dart';
 import 'package:creaid/utility/interestsDbService.dart';
-import 'package:creaid/utility/notificationsDbService.dart';
 import 'package:creaid/utility/userDBService.dart';
-import 'user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import 'user.dart';
 
 class FireBaseAuthorization {
   final FirebaseAuth _auth = FirebaseAuth.instance;
