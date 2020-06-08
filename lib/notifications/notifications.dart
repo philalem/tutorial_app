@@ -53,7 +53,7 @@ class _NotificationsState extends State<Notifications> {
     }
   }
 
-  Text getProperDateTimeAgo(DateTime date) {
+  Text _getProperDateTimeAgo(DateTime date) {
     DateTime now = DateTime.now();
     var difference = date.difference(now);
     int seconds = difference.inSeconds;
@@ -128,7 +128,7 @@ class _NotificationsState extends State<Notifications> {
                 title: Text(
                   '${data[index].name} ${getNotificationPhrase(data[index].type)}',
                 ),
-                subtitle: Text('hey'),
+                subtitle: _getProperDateTimeAgo(data[index].date),
               ),
             );
           } else {
