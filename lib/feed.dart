@@ -16,19 +16,29 @@ class Feed extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           UserData userData = snapshot.data;
-          return StreamBuilder<List<VideoFeedObject>>(
-            stream: UserDbService(uid: user.uid).getUserFeed(userData.feedId),
-            builder: (context, AsyncSnapshot<List<VideoFeedObject>> snapshot) {
-              if (snapshot.hasData) {
-                List<VideoFeedObject> userDatas = snapshot.data;
-                return FeedVideoPlayer(videos: userDatas, feedId: userData.feedId,);
-              } else {
-                return Align(
-                    alignment: Alignment.center,
-                    child: CircularProgressIndicator());
-              }
-            },
-          );
+          if (userData.feedId.length > 0) {
+            return StreamBuilder<List<VideoFeedObject>>(
+              stream: UserDbService(uid: user.uid).getUserFeed(userData.feedId),
+              builder:
+                  (context, AsyncSnapshot<List<VideoFeedObject>> snapshot) {
+                if (snapshot.hasData) {
+                  List<VideoFeedObject> userDatas = snapshot.data;
+                  return FeedVideoPlayer(
+                    videos: userDatas,
+                    feedId: userData.feedId,
+                  );
+                } else {
+                  return Align(
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator());
+                }
+              },
+            );
+          } else {
+            return Align(
+                alignment: Alignment.center,
+                child: CircularProgressIndicator());
+          }
         } else {
           return Align(
               alignment: Alignment.center, child: CircularProgressIndicator());
