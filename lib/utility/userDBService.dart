@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:creaid/utility/FeedCommentObject.dart';
 import 'package:creaid/utility/UserData.dart';
 import 'package:creaid/utility/VideoFeedObject.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,8 @@ class UserDbService {
   final String uid;
   final CollectionReference userInfoCollection =
       Firestore.instance.collection('user-info');
+  final CollectionReference feedInfoCollection =
+    Firestore.instance.collection('posts');
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   UserDbService({this.uid});
@@ -82,12 +85,13 @@ class UserDbService {
   UserData _mapUserData(DocumentSnapshot snapshot) {
     return UserData(
       username: snapshot['username'],
-      email: snapshot['email'],
+      //email: snapshot['email'],
       name: snapshot['name'],
-      interests: List.from(snapshot['interests']),
+      //interests: List.from(snapshot['interests']),
       photoUrl: snapshot['photo-url'],
       numberFollowing: snapshot['number-following'],
       numberFollowers: snapshot['number-followers'],
+      feedId: snapshot['feed-id']
     );
   }
 
@@ -101,10 +105,24 @@ class UserDbService {
             likes: document['likes'],
             comments: List.from(document['comments']),
             documentId: document.documentID,
-            uid: uid
+            uid: uid,
           )
         )
       );
+    return res;
+  }
+
+  List<FeedCommentObject> _mapFeedCommentObject(QuerySnapshot snapshot) {
+    List<FeedCommentObject> res = new List();
+
+    snapshot.documents.forEach((comment) =>
+      res.add(
+        FeedCommentObject(
+          comment: comment['comment']
+        )
+      )
+    );
+
     return res;
   }
 
@@ -132,7 +150,17 @@ class UserDbService {
     });
   }
 
-  Stream<List<VideoFeedObject>> getUserFeed() {
-    return userInfoCollection.document(uid).collection('feeds').snapshots().map(_mapVideoFeedObject);
+  Stream<List<VideoFeedObject>> getUserFeed(String feedId) {
+    return feedInfoCollection.document(feedId).collection('following-posts').snapshots().map(_mapVideoFeedObject);
+  }
+
+  Stream<List<FeedCommentObject>> getFeedComments(String videoId, String feedId) {
+    return feedInfoCollection.document(feedId).collection('following-posts').document(videoId).collection('comments').snapshots().map(_mapFeedCommentObject);
+  }
+
+  addComment(String videoId, String feedId, String comment) async {
+    await feedInfoCollection.document(feedId).collection('following-posts').document(videoId).collection('comments').add({
+      'comment' : comment
+    });
   }
 }
