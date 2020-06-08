@@ -1,10 +1,10 @@
 import 'package:creaid/FeedVideoPlayer.dart';
-import 'package:creaid/utility/UserData.dart';
 import 'package:creaid/utility/VideoFeedObject.dart';
+import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/userDBService.dart';
+import 'package:creaid/video-player.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:creaid/utility/user.dart';
 
 class Feed extends StatelessWidget {
   @override
@@ -15,24 +15,15 @@ class Feed extends StatelessWidget {
       stream: UserDbService(uid: user.uid).getNames(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          UserData userData = snapshot.data;
-          return StreamBuilder<List<VideoFeedObject>>(
-            stream: UserDbService(uid: user.uid).getUserFeed(userData.feedId),
-            builder: (context, AsyncSnapshot<List<VideoFeedObject>> snapshot) {
-              if (snapshot.hasData) {
-                List<VideoFeedObject> userDatas = snapshot.data;
-                return FeedVideoPlayer(videos: userDatas, feedId: userData.feedId,);
-              } else {
-                return Align(
-                    alignment: Alignment.center,
-                    child: CircularProgressIndicator());
-              }
-            },
-          );
+          if (snapshot.data.length > 0) {
+            List<VideoFeedObject> userData = snapshot.data;
+            return FeedVideoPlayer(videos: userData);
+          }
         } else {
           return Align(
               alignment: Alignment.center, child: CircularProgressIndicator());
         }
+        return VideoPlayerScreen();
       },
     );
   }

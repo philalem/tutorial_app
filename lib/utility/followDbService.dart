@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class FollowDbService {
   final String uid;
@@ -8,7 +7,7 @@ class FollowDbService {
 
   FollowDbService({this.uid});
 
-  Future<void> addToFollowing(String uidToBeFollowed) async {
+  Future<void> addToFollowing(String uidToBeFollowed, String name) async {
     await followInfoCollection
         .document(uid)
         .updateData({'number-following': FieldValue.increment(1)});
@@ -16,7 +15,7 @@ class FollowDbService {
         .document(uid)
         .collection('following')
         .document(uidToBeFollowed)
-        .setData({'uid': uidToBeFollowed}).whenComplete(
+        .setData({'name': name}).whenComplete(
             () => print("User followed successfully."));
   }
 
@@ -35,7 +34,7 @@ class FollowDbService {
   Future<bool> isFollowing(String uidToBeFollowed) async {
     bool isFollowing = false;
     var usersRef = followInfoCollection
-        .document(this.uid)
+        .document(uid)
         .collection('following')
         .document(uidToBeFollowed);
     await usersRef.get().then((docSnapshot) {
@@ -44,5 +43,12 @@ class FollowDbService {
       }
     });
     return isFollowing;
+  }
+
+  Future<void> setUpFollowInfo() async {
+    return await followInfoCollection.document(uid).setData({
+      'number-following': 0,
+      'number-followers': 0,
+    });
   }
 }

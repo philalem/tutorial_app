@@ -1,6 +1,7 @@
 import 'package:creaid/profile/DisplayFollow.dart';
 import 'package:creaid/utility/UserData.dart';
 import 'package:creaid/utility/creaidButton.dart';
+import 'package:creaid/utility/followDbService.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ GlobalKey profileKey = GlobalKey();
 
 class _DynamicProfileState extends State<DynamicProfile> {
   FirebaseUser userName;
-  UserDbService dbService;
+  FollowDbService followDbService;
   bool isFollowing = false;
 
   @override
@@ -42,8 +43,8 @@ class _DynamicProfileState extends State<DynamicProfile> {
   }
 
   Future<void> _setDbService() async {
-    dbService = UserDbService(uid: widget.loggedInUid);
-    isFollowing = await dbService.isFollowing(widget.uid);
+    followDbService = FollowDbService(uid: widget.loggedInUid);
+    isFollowing = await followDbService.isFollowing(widget.uid);
     setState(() {});
   }
 
@@ -51,7 +52,6 @@ class _DynamicProfileState extends State<DynamicProfile> {
     var size = MediaQuery.of(context).size;
     var screenWidth = size.width;
     var uid = widget.uid;
-    dbService = UserDbService(uid: widget.loggedInUid);
 
     return Scaffold(
       appBar: AppBar(
@@ -108,7 +108,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                             padding: 0,
                             shrink: true,
                             onPressed: () {
-                              _updateFollowing(uid);
+                              _updateFollowing(uid, widget.name);
                             },
                             children: isFollowing
                                 ? [
@@ -133,10 +133,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                                 textColor: Colors.black,
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (_) => new DisplayFollow(
-                                          people: (data.following != null
-                                              ? data.following.asMap()
-                                              : {}))));
+                                      builder: (_) => new DisplayFollow()));
                                 },
                                 child: Text(
                                   "Following: " +
@@ -150,10 +147,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                                 textColor: Colors.black,
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (_) => new DisplayFollow(
-                                          people: (data.followers != null
-                                              ? data.followers.asMap()
-                                              : {}))));
+                                      builder: (_) => new DisplayFollow()));
                                 },
                                 child: Text(
                                   "Followers: " +
@@ -200,11 +194,11 @@ class _DynamicProfileState extends State<DynamicProfile> {
     );
   }
 
-  void _updateFollowing(String uid) {
+  void _updateFollowing(String uid, String name) {
     if (isFollowing) {
-      dbService.removeFromFollowing(uid);
+      followDbService.removeFromFollowing(uid);
     } else {
-      dbService.addToFollowing(uid);
+      followDbService.addToFollowing(uid, name);
     }
     setState(() {
       isFollowing = !isFollowing;

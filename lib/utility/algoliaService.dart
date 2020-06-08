@@ -15,7 +15,7 @@ class AlgoliaService {
   }
 
   Future<bool> isThereAnExactUsernameMatch(potentialUsername) async {
-    AlgoliaQuery query = algolia.instance.index('usernames').setHitsPerPage(1);
+    AlgoliaQuery query = algolia.instance.index('users').setHitsPerPage(1);
     query = query.search(potentialUsername);
     var hit = (await query.getObjects()).hits;
     if (hit.length == 0) {
@@ -23,6 +23,18 @@ class AlgoliaService {
     }
     AlgoliaObjectSnapshot snap = hit[0];
     var closestMatch = snap.data['username'];
+    return closestMatch == potentialUsername;
+  }
+
+  Future<bool> isThereAnExactEmailMatch(potentialUsername) async {
+    AlgoliaQuery query = algolia.instance.index('emails').setHitsPerPage(1);
+    query = query.search(potentialUsername);
+    var hit = (await query.getObjects()).hits;
+    if (hit.length == 0) {
+      return false;
+    }
+    AlgoliaObjectSnapshot snap = hit[0];
+    var closestMatch = snap.data['email'];
     return closestMatch == potentialUsername;
   }
 }

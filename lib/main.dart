@@ -1,8 +1,8 @@
-import 'package:creaid/home.dart';
 import 'package:creaid/utility/firebaseAuth.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/wrapper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(
