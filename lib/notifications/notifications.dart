@@ -53,6 +53,28 @@ class _NotificationsState extends State<Notifications> {
     }
   }
 
+  Text getProperDateTimeAgo(DateTime date) {
+    DateTime now = DateTime.now();
+    var difference = date.difference(now);
+    int seconds = difference.inSeconds;
+    int minutes = difference.inMinutes;
+    int hours = difference.inHours;
+    int days = difference.inDays;
+    String differencePhrase = 'Just now.';
+    if (days > 7) {
+      differencePhrase = date.toString();
+    } else if (hours > 23) {
+      differencePhrase = '$days ago.';
+    } else if (minutes > 59) {
+      differencePhrase = '$hours ago.';
+    } else if (seconds > 59) {
+      differencePhrase = '$minutes ago.';
+    } else if (seconds > 20) {
+      differencePhrase = '$seconds ago.';
+    }
+    return Text(differencePhrase);
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
@@ -97,13 +119,16 @@ class _NotificationsState extends State<Notifications> {
                     shape: BoxShape.circle,
                     image: DecorationImage(
                       fit: BoxFit.contain,
-                      image: AssetImage('./assets/images/phillip_profile.jpg'),
+                      image: data[index].photoUrl != null
+                          ? Image.network(data[index].photoUrl).image
+                          : AssetImage('./assets/images/phillip_profile.jpg'),
                     ),
                   ),
                 ),
                 title: Text(
                   '${data[index].name} ${getNotificationPhrase(data[index].type)}',
                 ),
+                subtitle: Text('hey'),
               ),
             );
           } else {
