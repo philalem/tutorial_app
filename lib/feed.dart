@@ -11,12 +11,24 @@ class Feed extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
 
-    return StreamBuilder<List<VideoFeedObject>>(
-      stream: UserDbService(uid: user.uid).getUserFeed(),
-      builder: (context, AsyncSnapshot<List<VideoFeedObject>> snapshot) {
+    return StreamBuilder<UserData>(
+      stream: UserDbService(uid: user.uid).getNames(),
+      builder: (context, snapshot) {
         if (snapshot.hasData) {
-          List<VideoFeedObject> userData = snapshot.data;
-          return FeedVideoPlayer(videos: userData);
+          UserData userData = snapshot.data;
+          return StreamBuilder<List<VideoFeedObject>>(
+            stream: UserDbService(uid: user.uid).getUserFeed(userData.feedId),
+            builder: (context, AsyncSnapshot<List<VideoFeedObject>> snapshot) {
+              if (snapshot.hasData) {
+                List<VideoFeedObject> userDatas = snapshot.data;
+                return FeedVideoPlayer(videos: userDatas, feedId: userData.feedId,);
+              } else {
+                return Align(
+                    alignment: Alignment.center,
+                    child: CircularProgressIndicator());
+              }
+            },
+          );
         } else {
           return Align(
               alignment: Alignment.center, child: CircularProgressIndicator());

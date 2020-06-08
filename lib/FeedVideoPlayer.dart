@@ -1,11 +1,14 @@
+import 'package:creaid/utility/FeedCommentObject.dart';
 import 'package:creaid/utility/VideoFeedObject.dart';
+import 'package:creaid/utility/userDBService.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class FeedVideoPlayer extends StatefulWidget {
   final List<VideoFeedObject> videos;
-  FeedVideoPlayer({Key key, this.videos}) : super(key: key);
+  final String feedId;
+  FeedVideoPlayer({Key key, this.videos, this.feedId}) : super(key: key);
 
   @override
   _FeedVideoPlayerState createState() => _FeedVideoPlayerState();
@@ -208,6 +211,15 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 20.0),
                               child: TextFormField(
+                                  onFieldSubmitted: (value) => {
+                                        UserDbService(
+                                            uid: widget.videos[index].uid)
+                                            .addComment(
+                                                widget.videos[index].documentId,
+                                                widget.feedId,
+                                                value),
+                                        interestHolder.clear()
+                                  },
                                   validator: (val) => val.isEmpty
                                       ? 'Enter a valid comment'
                                       : null,
@@ -253,24 +265,41 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                             SizedBox(height: 20),
                             Container(
                                 height: 220, //Your custom height
-                                child: ListView.separated(
-                                  physics: AlwaysScrollableScrollPhysics(),
-                                  separatorBuilder: (context, idx) => Divider(
-                                    color: Colors.grey[400],
-                                  ),
-                                  itemCount:
-                                      widget.videos[index].comments.length,
-                                  itemBuilder: (context, idx) => InkWell(
-                                    child: ListTile(
-                                      title: Padding(
-                                        padding: EdgeInsets.all(5),
-                                        child: Text(
-                                            widget.videos[index].comments[idx]),
-                                      ),
-                                      onTap: () {},
-                                    ),
-                                  ),
-                                ))
+                                child: StreamBuilder<List<FeedCommentObject>>(
+                                  stream: UserDbService(
+                                          uid: widget.videos[index].uid)
+                                      .getFeedComments(
+                                          widget.videos[index].documentId,
+                                          widget.feedId),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      List<FeedCommentObject> feedCommentObject = snapshot.data;
+                                      return ListView.separated(
+                                        physics:
+                                            AlwaysScrollableScrollPhysics(),
+                                        separatorBuilder: (context, idx) =>
+                                            Divider(
+                                          color: Colors.grey[400],
+                                        ),
+                                        itemCount: feedCommentObject.length,
+                                        itemBuilder: (context, idx) => InkWell(
+                                          child: ListTile(
+                                            title: Padding(
+                                              padding: EdgeInsets.all(5),
+                                              child: Text(feedCommentObject[idx].comment),
+                                            ),
+                                            onTap: () {},
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      return Align(
+                                          alignment: Alignment.center,
+                                          child: CircularProgressIndicator());
+                                    }
+                                  },
+                                )
+                                )
                           ],
                         ),
                       ),

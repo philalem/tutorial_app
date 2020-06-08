@@ -10,6 +10,7 @@ class UserData {
   List<String> followers;
   List<String> following;
   List<String> videos;
+  String feedId;
 
   UserData({
     this.uid,
@@ -22,5 +23,6 @@ class UserData {
     this.photoUrl,
     this.numberFollowers,
     this.numberFollowing,
+    this.feedId
   });
 }
