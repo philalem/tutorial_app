@@ -70,7 +70,7 @@ exports.sendFollowNotification = async (snap, context) => {
   const followerUserId = context.params.followerId;
   const followerUserName = snap.data().name;
   const timestamp = new Date().getTime();
-  exports.incrementNewNotifications(followerUserId).catch((error) => {
+  exports.incrementNewNotifications(userId).catch((error) => {
     console.log(error);
   });
   return await firestore
