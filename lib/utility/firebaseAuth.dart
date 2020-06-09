@@ -1,9 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:creaid/utility/emailsDbService.dart';
-import 'package:creaid/utility/followDbService.dart';
 import 'package:creaid/utility/interestsDbService.dart';
 import 'package:creaid/utility/userDBService.dart';
-import 'user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import 'user.dart';
 
 class FireBaseAuthorization {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -45,12 +46,21 @@ class FireBaseAuthorization {
       AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       FirebaseUser user = result.user;
+      var uid = user.uid;
       updateUserName(name, user);
-      EmailsDbService(uid: user.uid).populateEmail(email);
-      UserDbService(uid: user.uid)
-          .updateUserInfo(name, username, interests, 0, 0);
-      FollowDbService(uid: user.uid).setUpFollowInfo();
-      InterestsDbService(uid: user.uid).updateInterests(interests);
+      await Firestore.instance
+          .runTransaction((transaction) async {
+            EmailsDbService(uid: uid).populateEmail(email);
+            UserDbService(uid: uid).updateUserInfo(name, username, 0, 0);
+            InterestsDbService(uid: uid).updateInterests(interests);
+            return;
+          })
+          .then((value) => print("The initialize user transaction successful!"))
+          .catchError((error) {
+            print(
+                'The initialize user transaction failed with the following error: ');
+            throw (error);
+          });
       return _userFromFireBaseUser(user);
     } catch (error) {
       print(error.toString());
