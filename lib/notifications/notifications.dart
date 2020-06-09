@@ -127,7 +127,7 @@ class _NotificationsState extends State<Notifications> {
                       fit: BoxFit.contain,
                       image: data[index].photoUrl != null
                           ? Image.network(data[index].photoUrl).image
-                          : AssetImage('./assets/images/phillip_profile.jpg'),
+                          : AssetImage('assets/images/unknown-profile.png'),
                     ),
                   ),
                 ),
