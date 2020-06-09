@@ -55,7 +55,7 @@ class _NotificationsState extends State<Notifications> {
 
   Text _getProperDateTimeAgo(DateTime date) {
     DateTime now = DateTime.now();
-    var difference = date.difference(now);
+    var difference = now.difference(date);
     int seconds = difference.inSeconds;
     int minutes = difference.inMinutes;
     int hours = difference.inHours;
@@ -63,14 +63,20 @@ class _NotificationsState extends State<Notifications> {
     String differencePhrase = 'Just now.';
     if (days > 7) {
       differencePhrase = date.toString();
+    } else if (days > 1) {
+      differencePhrase = '$days days ago.';
     } else if (hours > 23) {
-      differencePhrase = '$days ago.';
+      differencePhrase = '$days day ago.';
+    } else if (hours > 1) {
+      differencePhrase = '$hours hours ago.';
     } else if (minutes > 59) {
-      differencePhrase = '$hours ago.';
+      differencePhrase = '$hours hour ago.';
+    } else if (minutes > 1) {
+      differencePhrase = '$hours minutes ago.';
     } else if (seconds > 59) {
-      differencePhrase = '$minutes ago.';
+      differencePhrase = '$minutes minute ago.';
     } else if (seconds > 20) {
-      differencePhrase = '$seconds ago.';
+      differencePhrase = '$seconds seconds ago.';
     }
     return Text(differencePhrase);
   }
