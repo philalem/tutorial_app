@@ -1,9 +1,13 @@
+import 'dart:io' show Platform;
+
 import 'package:creaid/profile/DisplayFollow.dart';
 import 'package:creaid/profile/UploadProfile.dart';
 import 'package:creaid/utility/UserData.dart';
+import 'package:creaid/utility/firebaseAuth.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -56,6 +60,11 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_getLoadedName()),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: () => _showLogoutPopUp(context))
+        ],
       ),
       body: StreamBuilder<UserData>(
         stream: UserDbService(uid: uid).getNames(),
@@ -197,5 +206,66 @@ class _ProfileState extends State<Profile> {
         },
       ),
     );
+  }
+}
+
+void _showLogoutPopUp(context) {
+  if (Platform.isAndroid) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Alert Dialog title"),
+          content: Text("Alert Dialog body"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            FlatButton(
+              child: Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  } else {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: Text("Are you sure you want to log out?"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              FlatButton(
+                padding: EdgeInsets.all(0),
+                child: Text(
+                  "Log out",
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 16,
+                  ),
+                ),
+                onPressed: () {
+                  FireBaseAuthorization().signOut();
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                padding: EdgeInsets.all(0),
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 16,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 }
