@@ -82,7 +82,7 @@ class _ProfileState extends State<Profile> {
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (_) => new UploadProfile(),
+                                builder: (_) => UploadProfile(),
                               ),
                             );
                           },

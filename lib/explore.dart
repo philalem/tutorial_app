@@ -161,16 +161,17 @@ class _ExploreState extends State<Explore> {
     var screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: TextField(
           onChanged: (value) => _searchForUsers(),
           onTap: () {
+            focusNode.requestFocus();
             setState(() {
               _isSearching = true;
             });
           },
           cursorColor: Colors.white,
-          showCursor: _isSearching,
           controller: _searchController,
           focusNode: focusNode,
           decoration: InputDecoration(
@@ -207,7 +208,7 @@ class _ExploreState extends State<Explore> {
           iconSize: 30,
           icon: Icon((_isSearching ? Icons.close : Icons.search)),
           onPressed: () {
-            focusNode.requestFocus();
+            focusNode.unfocus();
             setState(() {
               _isSearching = !_isSearching;
             });
