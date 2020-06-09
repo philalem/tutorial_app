@@ -26,15 +26,15 @@ class AlgoliaService {
     return closestMatch == potentialUsername;
   }
 
-  Future<bool> isThereAnExactEmailMatch(potentialUsername) async {
+  Future<bool> isThereAnExactEmailMatch(potentialEmail) async {
     AlgoliaQuery query = algolia.instance.index('emails').setHitsPerPage(1);
-    query = query.search(potentialUsername);
+    query = query.search(potentialEmail);
     var hit = (await query.getObjects()).hits;
     if (hit.length == 0) {
       return false;
     }
     AlgoliaObjectSnapshot snap = hit[0];
-    var closestMatch = snap.data['email'];
-    return closestMatch == potentialUsername;
+    String closestMatch = snap.data['email'].toString().toLowerCase();
+    return closestMatch == potentialEmail.toString().toLowerCase();
   }
 }
