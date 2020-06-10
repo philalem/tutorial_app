@@ -13,6 +13,7 @@ class UploadProfile extends StatefulWidget {
 }
 
 class _UploadProfileState extends State<UploadProfile> {
+  final picker = ImagePicker();
   File _image;
   String _uploadedFileURL;
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -71,10 +72,9 @@ class _UploadProfileState extends State<UploadProfile> {
   }
 
   Future chooseFile() async {
-    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
-      setState(() {
-        _image = image;
-      });
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      _image = File(pickedFile.path);
     });
   }
 
