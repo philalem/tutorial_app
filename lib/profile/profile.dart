@@ -2,6 +2,7 @@ import 'dart:io' show Platform;
 
 import 'package:creaid/profile/DisplayFollow.dart';
 import 'package:creaid/profile/UploadProfile.dart';
+import 'package:creaid/profile/profilePhotoService.dart';
 import 'package:creaid/utility/UserData.dart';
 import 'package:creaid/utility/firebaseAuth.dart';
 import 'package:creaid/utility/user.dart';
@@ -95,30 +96,37 @@ class _ProfileState extends State<Profile> {
                               ),
                             );
                           },
-                          child: Container(
-                            margin: EdgeInsets.only(
-                              top: 80,
-                            ),
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                image: data.photoUrl != null &&
-                                        data.photoUrl != ''
-                                    ? Image.network(data.photoUrl).image
-                                    : AssetImage(
-                                        'assets/images/unknown-profile.png'),
-                              ),
-                            ),
-                            child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: Icon(
-                                Icons.edit,
-                                color: Colors.indigo,
-                              ),
-                            ),
-                          ),
+                          child: StreamBuilder<Object>(
+                              stream: ProfilePhotoService(uid: uid)
+                                  .getProfilePhoto(),
+                              builder: (context, snapshot) {
+                                String photoUrl;
+                                if (snapshot.data != null)
+                                  photoUrl = snapshot.data;
+                                return Container(
+                                  margin: EdgeInsets.only(
+                                    top: 80,
+                                  ),
+                                  width: 120,
+                                  height: 120,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                      image: photoUrl != null
+                                          ? Image.network(photoUrl).image
+                                          : AssetImage(
+                                              'assets/images/unknown-profile.png'),
+                                    ),
+                                  ),
+                                  child: Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Icon(
+                                      Icons.edit,
+                                      color: Colors.indigo,
+                                    ),
+                                  ),
+                                );
+                              }),
                         ),
                         Padding(
                           padding: EdgeInsets.only(top: 15),
@@ -147,7 +155,8 @@ class _ProfileState extends State<Profile> {
                                 textColor: Colors.black,
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (_) => new DisplayFollow()));
+                                      builder: (_) => DisplayFollow(
+                                          uid: uid, isFollowers: false)));
                                 },
                                 child: Text(
                                   "Following: " +
@@ -161,7 +170,8 @@ class _ProfileState extends State<Profile> {
                                 textColor: Colors.black,
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (_) => new DisplayFollow()));
+                                      builder: (_) => DisplayFollow(
+                                          uid: uid, isFollowers: true)));
                                 },
                                 child: Text(
                                   "Followers: " +
@@ -258,27 +268,20 @@ void _showLogoutPopUp(context) {
             title: Text("Are you sure you want to log out?"),
             actions: <Widget>[
               // usually buttons at the bottom of the dialog
-              FlatButton(
-                padding: EdgeInsets.all(0),
+              CupertinoDialogAction(
                 child: Text(
                   "Log out",
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 16,
-                  ),
                 ),
                 onPressed: () {
-                  FireBaseAuthorization().signOut();
                   Navigator.of(context).pop();
+                  FireBaseAuthorization().signOut();
                 },
               ),
-              FlatButton(
-                padding: EdgeInsets.all(0),
+              CupertinoDialogAction(
                 child: Text(
                   "Cancel",
                   style: TextStyle(
                     color: Colors.red,
-                    fontSize: 16,
                   ),
                 ),
                 onPressed: () {

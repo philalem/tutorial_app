@@ -1,8 +1,10 @@
+import 'package:creaid/utility/followDbService.dart';
 import 'package:flutter/material.dart';
 
 class DisplayFollow extends StatefulWidget {
-  final Map<int, String> people;
-  DisplayFollow({this.people});
+  final String uid;
+  final isFollowers;
+  DisplayFollow({this.uid, this.isFollowers});
 
   @override
   _DisplayFollowState createState() => _DisplayFollowState();
@@ -11,26 +13,62 @@ class DisplayFollow extends StatefulWidget {
 class _DisplayFollowState extends State<DisplayFollow> {
   @override
   Widget build(BuildContext context) {
+    FollowDbService followDbService = FollowDbService(uid: widget.uid);
     return Scaffold(
-      body: ListView.separated(
-        separatorBuilder: (context, index) => Divider(
-          color: Colors.grey[400],
-        ),
-        itemCount: widget.people.length,
-        itemBuilder: (context, index) => Container(
-          child: InkWell(
-            child: ListTile(
-              title: Padding(
-                padding: EdgeInsets.all(5),
-                child: Text(
-                  widget.people[index],
-                ),
-              ),
-              onTap: () {},
-            ),
-          ),
-        ),
+      appBar: AppBar(
+        title: Text(widget.isFollowers ? 'Followers' : 'Following'),
+        centerTitle: true,
       ),
+      body: StreamBuilder<Object>(
+          stream: widget.isFollowers
+              ? followDbService.getNextSetOfFollowers()
+              : followDbService.getNextSetOfFollowing(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              List data = snapshot.data;
+
+              if (data.length < 1) {
+                return Center(
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(height: 50),
+                      Text('Nothing to see here!'),
+                    ],
+                  ),
+                );
+              }
+
+              return ListView.separated(
+                padding: EdgeInsets.only(top: 10),
+                separatorBuilder: (context, index) => Divider(
+                  color: Colors.grey[400],
+                ),
+                itemCount: data.length,
+                itemBuilder: (context, index) => ListTile(
+                  leading: Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        fit: BoxFit.contain,
+                        image: data[index].photoUrl != null
+                            ? Image.network(data[index].photoUrl).image
+                            : AssetImage('assets/images/unknown-profile.png'),
+                      ),
+                    ),
+                  ),
+                  title: Text(
+                    '${data[index].name}',
+                  ),
+                ),
+              );
+            } else {
+              return Align(
+                  alignment: Alignment.center,
+                  child: CircularProgressIndicator());
+            }
+          }),
     );
   }
 }

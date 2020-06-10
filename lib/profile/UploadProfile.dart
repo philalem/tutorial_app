@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:creaid/profile/profilePhotoService.dart';
 import 'package:creaid/utility/user.dart';
-import 'package:creaid/utility/userDBService.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -46,11 +46,11 @@ class _UploadProfileState extends State<UploadProfile> {
                   style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () async {
-                  uploadFile();
+                  await uploadFile();
                   print(_uploadedFileURL);
                   if (_uploadedFileURL != null) {
-                    UserDbService(uid: user.uid)
-                        .updatePhotoUrl(_uploadedFileURL);
+                    ProfilePhotoService(uid: user.uid)
+                        .uploadPhoto(_uploadedFileURL);
                     Navigator.pop(context, true);
                   } else {
                     _showDialog();
@@ -85,7 +85,9 @@ class _UploadProfileState extends State<UploadProfile> {
     await uploadTask.onComplete;
     print('File Uploaded');
     String fileUrl = await storageReference.getDownloadURL();
-    _uploadedFileURL = fileUrl;
+    setState(() {
+      _uploadedFileURL = fileUrl;
+    });
   }
 
   void _showDialog() {
