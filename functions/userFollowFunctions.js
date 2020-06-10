@@ -75,7 +75,7 @@ exports.sendFollowNotification = async (snap, context) => {
   });
   return await firestore
     .collection("notifications")
-    .doc(userId)
+    .doc()
     .collection("notifications")
     .doc(followerUserId)
     .set({
