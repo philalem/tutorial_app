@@ -132,6 +132,7 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: false,
         showUnselectedLabels: false,
+        selectedIconTheme: IconThemeData(size: 34),
         iconSize: 30,
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[

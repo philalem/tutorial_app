@@ -132,7 +132,7 @@ class _NotificationsState extends State<Notifications> {
                   ),
                 ),
                 title: Text(
-                  '${data[index].name} ${getNotificationPhrase(data[index].type)}',
+                  '${data[index].name} ${getNotificationPhrase(data[index].type)} ${data[index].comment}',
                 ),
                 subtitle: _getProperDateTimeAgo(data[index].date),
               ),
