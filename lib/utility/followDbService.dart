@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:creaid/utility/UserData.dart';
 
 class FollowDbService {
   final String uid;
@@ -49,5 +50,35 @@ class FollowDbService {
       }
     });
     return isFollowing;
+  }
+
+  Stream<List<Object>> getNextSetOfFollowers() {
+    Stream<QuerySnapshot> stream = followInfoCollection
+        .document(uid)
+        .collection('followers')
+        .limit(20)
+        .snapshots();
+    return stream.map(
+      (snap) => snap.documents.map(_mapToObject).toList(),
+    );
+  }
+
+  Object _mapToObject(DocumentSnapshot snapshot) {
+    return UserData(
+      uid: snapshot['uid'],
+      name: snapshot['name'],
+      photoUrl: snapshot['photoUrl'],
+    );
+  }
+
+  Stream<List<UserData>> getNextSetOfFollowing() {
+    Stream<QuerySnapshot> stream = followInfoCollection
+        .document(uid)
+        .collection('following')
+        .limit(20)
+        .snapshots();
+    return stream.map(
+      (snap) => snap.documents.map(_mapToObject).toList(),
+    );
   }
 }

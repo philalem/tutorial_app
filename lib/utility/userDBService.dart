@@ -9,7 +9,7 @@ class UserDbService {
   final CollectionReference userInfoCollection =
       Firestore.instance.collection('user-info');
   final CollectionReference feedInfoCollection =
-    Firestore.instance.collection('posts');
+      Firestore.instance.collection('posts');
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   UserDbService({this.uid});
@@ -24,32 +24,14 @@ class UserDbService {
     });
   }
 
-  Future<void> updatePhotoUrl(String photoUrl) async {
-    DocumentReference ref = userInfoCollection.document(uid);
-    ref.updateData({"photo-url": photoUrl});
-  }
-
-  Future<void> incrementNumberFollowing() async {
-    return await userInfoCollection
-        .document(uid)
-        .updateData({'number-following': FieldValue.increment(1)});
-  }
-
-  Future<void> decrementNumberFollowing() async {
-    return await userInfoCollection
-        .document(uid)
-        .updateData({'number-following': FieldValue.increment(-1)});
-  }
-
   UserData _mapUserData(DocumentSnapshot snapshot) {
     return UserData(
-      username: snapshot['username'],
-      name: snapshot['name'],
-      photoUrl: snapshot['photo-url'],
-      numberFollowing: snapshot['number-following'],
-      numberFollowers: snapshot['number-followers'],
-      feedId: snapshot['feed-id']
-    );
+        username: snapshot['username'],
+        name: snapshot['name'],
+        photoUrl: snapshot['photo-url'],
+        numberFollowing: snapshot['number-following'],
+        numberFollowers: snapshot['number-followers'],
+        feedId: snapshot['feed-id']);
   }
 
   VideoFeedObject _mapSingleVideoFeedObject(DocumentSnapshot snapshot) {
@@ -60,31 +42,22 @@ class UserDbService {
 
   List<VideoFeedObject> _mapVideoFeedObject(QuerySnapshot snapshot) {
     List<VideoFeedObject> res = new List();
-      snapshot.documents.forEach((document) => 
-        res.add(
-          VideoFeedObject(
-            author: document['author'],
-            videoUrl: document['videoUrl'],
-            likes: document['likes'],
-            comments: List.from(document['comments']),
-            documentId: document.documentID,
-            uid: uid,
-          )
-        )
-      );
+    snapshot.documents.forEach((document) => res.add(VideoFeedObject(
+          author: document['author'],
+          videoUrl: document['videoUrl'],
+          likes: document['likes'],
+          comments: List.from(document['comments']),
+          documentId: document.documentID,
+          uid: uid,
+        )));
     return res;
   }
 
   List<FeedCommentObject> _mapFeedCommentObject(QuerySnapshot snapshot) {
     List<FeedCommentObject> res = new List();
 
-    snapshot.documents.forEach((comment) =>
-      res.add(
-        FeedCommentObject(
-          comment: comment['comment']
-        )
-      )
-    );
+    snapshot.documents.forEach(
+        (comment) => res.add(FeedCommentObject(comment: comment['comment'])));
 
     return res;
   }
@@ -114,17 +87,31 @@ class UserDbService {
   }
 
   Stream<List<VideoFeedObject>> getUserFeed(String feedId) {
-    return feedInfoCollection.document(feedId).collection('following-posts').snapshots().map(_mapVideoFeedObject);
+    return feedInfoCollection
+        .document(feedId)
+        .collection('following-posts')
+        .snapshots()
+        .map(_mapVideoFeedObject);
   }
 
-  Stream<List<FeedCommentObject>> getFeedComments(String videoId, String feedId) {
-    return feedInfoCollection.document(feedId).collection('following-posts').document(videoId).collection('comments').snapshots().map(_mapFeedCommentObject);
+  Stream<List<FeedCommentObject>> getFeedComments(
+      String videoId, String feedId) {
+    return feedInfoCollection
+        .document(feedId)
+        .collection('following-posts')
+        .document(videoId)
+        .collection('comments')
+        .snapshots()
+        .map(_mapFeedCommentObject);
   }
 
   addComment(String videoId, String feedId, String comment) async {
-    await feedInfoCollection.document(feedId).collection('following-posts').document(videoId).collection('comments').add({
-      'comment' : comment
-    });
+    await feedInfoCollection
+        .document(feedId)
+        .collection('following-posts')
+        .document(videoId)
+        .collection('comments')
+        .add({'comment': comment});
   }
 
   addLike(String videoId, String feedId) async {
