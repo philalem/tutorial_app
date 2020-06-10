@@ -220,7 +220,28 @@ void _showLogoutPopUp(context) {
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             FlatButton(
-              child: Text("Close"),
+              padding: EdgeInsets.all(0),
+              child: Text(
+                "Log out",
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 16,
+                ),
+              ),
+              onPressed: () {
+                FireBaseAuthorization().signOut();
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              padding: EdgeInsets.all(0),
+              child: Text(
+                "Cancel",
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 16,
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
