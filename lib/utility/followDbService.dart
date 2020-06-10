@@ -52,7 +52,7 @@ class FollowDbService {
     return isFollowing;
   }
 
-  Stream<List<Object>> getNextSetOfFollowers() {
+  Stream<List<UserData>> getNextSetOfFollowers() {
     Stream<QuerySnapshot> stream = followInfoCollection
         .document(uid)
         .collection('followers')
@@ -63,7 +63,7 @@ class FollowDbService {
     );
   }
 
-  Object _mapToObject(DocumentSnapshot snapshot) {
+  UserData _mapToObject(DocumentSnapshot snapshot) {
     return UserData(
       uid: snapshot['uid'],
       name: snapshot['name'],
