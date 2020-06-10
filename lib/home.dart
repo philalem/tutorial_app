@@ -3,6 +3,7 @@ import 'package:creaid/explore.dart';
 import 'package:creaid/feed/feed.dart';
 import 'package:creaid/notifications/notifications.dart';
 import 'package:creaid/profile/profile.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -112,6 +113,15 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
+    const IconData lightBulb = const IconData(0xf452,
+        fontFamily: CupertinoIcons.iconFont,
+        fontPackage: CupertinoIcons.iconFontPackage);
+    const IconData globe = const IconData(0xf38c,
+        fontFamily: CupertinoIcons.iconFont,
+        fontPackage: CupertinoIcons.iconFontPackage);
+    const IconData camera = const IconData(0xf2d3,
+        fontFamily: CupertinoIcons.iconFont,
+        fontPackage: CupertinoIcons.iconFontPackage);
 
     return Scaffold(
       resizeToAvoidBottomPadding: false,
@@ -126,23 +136,23 @@ class _HomeState extends State<Home> {
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.view_stream),
+            icon: Icon(lightBulb),
             title: Text('Feed'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.explore),
+            icon: Icon(globe),
             title: Text('Explore'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.camera),
+            icon: Icon(camera),
             title: Text('Create'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
+            icon: Icon(CupertinoIcons.bell_solid),
             title: Text('Alerts'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.portrait),
+            icon: Icon(CupertinoIcons.profile_circled),
             title: Text('Profile'),
           ),
         ],
