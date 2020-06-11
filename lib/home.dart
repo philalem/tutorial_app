@@ -1,7 +1,7 @@
 import 'package:creaid/camerascreen/camera_screen.dart';
 import 'package:creaid/explore.dart';
 import 'package:creaid/feed/feed.dart';
-import 'package:creaid/notifications.dart';
+import 'package:creaid/notifications/notifications.dart';
 import 'package:creaid/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

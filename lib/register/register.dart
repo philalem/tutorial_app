@@ -74,21 +74,21 @@ class _RegisterState extends State<Register> {
                       ],
                     ),
                     CreaidTextField(
-                      onChanged: (input) => name = input,
+                      onChanged: (input) => name = input.trim(),
                       validator: (input) =>
                           input.isEmpty ? "Need to enter a name" : null,
                       hint: "Name",
                     ),
                     CreaidTextField(
                       controller: emailController,
-                      onChanged: (value) => email = value,
-                      validator: (value) =>
+                      onChanged: (input) => email = input.trim(),
+                      validator: (input) =>
                           emailError != null ? emailError : null,
                       hint: "Email",
                     ),
                     CreaidTextField(
                       obsecure: true,
-                      onChanged: (input) => password = input,
+                      onChanged: (input) => password = input.trim(),
                       validator: (input) => input.length < 7
                           ? "Need to enter a password with a length longer then 6"
                           : null,

@@ -16,21 +16,21 @@ exports.sendPostToFollowers = functions
 
 exports.addUserToFollowers = functions
   .region("us-east4")
-  .firestore.document("following-info/{userId}/following/{followingId}")
+  .firestore.document("follow-info/{userId}/following/{followingId}")
   .onCreate((snap, context) => {
-    return followFunctions.addUserToFollowers(snap, context);
+    return followFunctions.addUserToFollowers(snap, context, admin);
   });
 
 exports.removeUserFromFollowers = functions
   .region("us-east4")
-  .firestore.document("following-info/{userId}/following/{followingId}")
+  .firestore.document("follow-info/{userId}/following/{followingId}")
   .onDelete((snap, context) => {
     return followFunctions.removeUserFromFollowers(snap, context);
   });
 
 exports.sendFollowNotification = functions
   .region("us-east4")
-  .firestore.document("following-info/{userId}/followers/{followerId}")
+  .firestore.document("follow-info/{userId}/followers/{followerId}")
   .onCreate((snap, context) => {
     return followFunctions.sendFollowNotification(snap, context);
   });
@@ -73,7 +73,7 @@ exports.onMigrationOfUserInfoToUsers = functions
 
 exports.onEmailCreation = functions
   .region("us-east4")
-  .firestore.document("email/{uid}")
+  .firestore.document("emails/{uid}")
   .onCreate(async (snapshot, context) => {
     await algoliaFunctions.saveEmailInAlgolia(snapshot);
   });
@@ -85,9 +85,9 @@ exports.onUsernameUpdate = functions
     await algoliaFunctions.updateDocumentInAlgolia(change, "users");
   });
 
-exports.onUsernameUpdate = functions
+exports.onEmailUpdate = functions
   .region("us-east4")
-  .firestore.document("email/{uid}")
+  .firestore.document("emails/{uid}")
   .onUpdate(async (change, context) => {
     await algoliaFunctions.updateDocumentInAlgolia(change, "emails");
   });
@@ -101,7 +101,7 @@ exports.onUserDeletion = functions
 
 exports.onEmailDeletion = functions
   .region("us-east4")
-  .firestore.document("email/{uid}")
+  .firestore.document("emails/{uid}")
   .onDelete(async (snapshot, context) => {
     await algoliaFunctions.deleteEmailFromAlgolia(snapshot);
   });
