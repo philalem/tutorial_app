@@ -129,36 +129,29 @@ class _HomeState extends State<Home> {
         index: _navBarItemIndex,
         children: _pages,
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        selectedIconTheme: IconThemeData(size: 32),
+      bottomNavigationBar: CupertinoTabBar(
+        backgroundColor: Colors.white,
+        activeColor: Colors.indigoAccent,
+        inactiveColor: Colors.grey,
         iconSize: 30,
-        type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(lightBulb),
-            title: Text('Feed'),
           ),
           BottomNavigationBarItem(
             icon: Icon(globe),
-            title: Text('Explore'),
           ),
           BottomNavigationBarItem(
             icon: Icon(camera),
-            title: Text('Create'),
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.bell_solid),
-            title: Text('Alerts'),
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.profile_circled),
-            title: Text('Profile'),
           ),
         ],
         currentIndex: _navBarItemIndex,
-        selectedItemColor: Colors.indigoAccent,
         onTap: _onNavBarItemTapped,
       ),
     );
