@@ -167,6 +167,7 @@ class _ExploreState extends State<Explore> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: CupertinoNavigationBar(
+        padding: EdgeInsetsDirectional.only(end: 0, start: 0),
         backgroundColor: Colors.indigo,
         middle: TextField(
           maxLines: 1,
