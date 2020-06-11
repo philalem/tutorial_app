@@ -59,13 +59,19 @@ class _ProfileState extends State<Profile> {
     var uid = user.uid;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_getLoadedName()),
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.settings),
-              onPressed: () => _showLogoutPopUp(context))
-        ],
+      appBar: CupertinoNavigationBar(
+        backgroundColor: Colors.indigo,
+        middle: Text(
+          _getLoadedName(),
+          style: TextStyle(color: Colors.white),
+        ),
+        trailing: IconButton(
+            icon: Icon(
+              CupertinoIcons.settings,
+              size: 30,
+              color: Colors.white,
+            ),
+            onPressed: () => _showLogoutPopUp(context)),
       ),
       body: StreamBuilder<UserData>(
         stream: UserDbService(uid: uid).getNames(),
@@ -112,6 +118,7 @@ class _ProfileState extends State<Profile> {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     image: DecorationImage(
+                                      fit: BoxFit.fitWidth,
                                       image: photoUrl != null
                                           ? Image.network(photoUrl).image
                                           : AssetImage(
