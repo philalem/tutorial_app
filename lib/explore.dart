@@ -3,6 +3,7 @@ import 'package:creaid/profile/dynamicProfile.dart';
 import 'package:creaid/utility/algoliaService.dart';
 import 'package:creaid/video-player.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Explore extends StatefulWidget {
@@ -159,11 +160,15 @@ class _ExploreState extends State<Explore> {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
+    const IconData exit = const IconData(0xf2d7,
+        fontFamily: CupertinoIcons.iconFont,
+        fontPackage: CupertinoIcons.iconFontPackage);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: TextField(
+      appBar: CupertinoNavigationBar(
+        backgroundColor: Colors.indigo,
+        middle: TextField(
           onChanged: (value) => _searchForUsers(),
           onTap: () {
             focusNode.requestFocus();
@@ -206,7 +211,10 @@ class _ExploreState extends State<Explore> {
         ),
         leading: IconButton(
           iconSize: 30,
-          icon: Icon((_isSearching ? Icons.close : Icons.search)),
+          icon: Icon(
+            (_isSearching ? exit : CupertinoIcons.search),
+            color: Colors.white,
+          ),
           onPressed: () {
             focusNode.unfocus();
             setState(() {
@@ -214,13 +222,12 @@ class _ExploreState extends State<Explore> {
             });
           },
         ),
-        actions: <Widget>[
-          IconButton(
-            iconSize: 30,
-            icon: Icon(Icons.add),
-            onPressed: () {},
-          ),
-        ],
+        trailing: IconButton(
+          color: Colors.white,
+          iconSize: 30,
+          icon: Icon(Icons.add),
+          onPressed: () {},
+        ),
       ),
       body: _getSearchOrExplore(screenHeight, screenWidth),
     );
