@@ -228,7 +228,7 @@ class _ProfileState extends State<Profile> {
 
 void _showLogoutPopUp(context) {
   if (Platform.isAndroid) {
-    showDialog(
+    showCupertinoDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -268,7 +268,7 @@ void _showLogoutPopUp(context) {
       },
     );
   } else {
-    showDialog(
+    showCupertinoDialog(
         context: context,
         builder: (BuildContext context) {
           return CupertinoAlertDialog(
@@ -280,8 +280,8 @@ void _showLogoutPopUp(context) {
                   "Log out",
                 ),
                 onPressed: () {
-                  Navigator.of(context).pop();
                   FireBaseAuthorization().signOut();
+                  Navigator.of(context).pop();
                 },
               ),
               CupertinoDialogAction(
