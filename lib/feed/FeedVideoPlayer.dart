@@ -1,5 +1,5 @@
-import 'package:creaid/utility/FeedCommentObject.dart';
-import 'package:creaid/utility/VideoFeedObject.dart';
+import 'package:creaid/feed/FeedCommentObject.dart';
+import 'package:creaid/feed/VideoFeedObject.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
@@ -175,6 +175,38 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
               color: Colors.white,
             ),
           ),
+          Positioned(
+          right: 0,
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width / 2,
+            child: GestureDetector(
+              onTap: () {
+                setState(
+                  () {
+                    nextVideo();
+                  },
+                );
+              },
+            ),
+          ),
+        ),
+        Positioned(
+          left: 0,
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width / 2,
+            child: GestureDetector(
+              onTap: () {
+                setState(
+                  () {
+                    previousVideo();
+                  },
+                );
+              },
+            ),
+          ),
+        ),
         ],
       ),
       floatingActionButton: Row(
@@ -213,13 +245,13 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                               child: TextFormField(
                                   onFieldSubmitted: (value) => {
                                         UserDbService(
-                                            uid: widget.videos[index].uid)
+                                                uid: widget.videos[index].uid)
                                             .addComment(
                                                 widget.videos[index].documentId,
                                                 widget.feedId,
                                                 value),
                                         interestHolder.clear()
-                                  },
+                                      },
                                   validator: (val) => val.isEmpty
                                       ? 'Enter a valid comment'
                                       : null,
@@ -273,7 +305,8 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                                           widget.feedId),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      List<FeedCommentObject> feedCommentObject = snapshot.data;
+                                      List<FeedCommentObject>
+                                          feedCommentObject = snapshot.data;
                                       return ListView.separated(
                                         physics:
                                             AlwaysScrollableScrollPhysics(),
@@ -286,7 +319,8 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                                           child: ListTile(
                                             title: Padding(
                                               padding: EdgeInsets.all(5),
-                                              child: Text(feedCommentObject[idx].comment),
+                                              child: Text(feedCommentObject[idx]
+                                                  .comment),
                                             ),
                                             onTap: () {},
                                           ),
@@ -298,8 +332,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                                           child: CircularProgressIndicator());
                                     }
                                   },
-                                )
-                                )
+                                ))
                           ],
                         ),
                       ),
@@ -312,23 +345,33 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
             width: MediaQuery.of(context).size.width * .05,
           ),
           FloatingActionButton(
-            onPressed: nextVideo,
-            child: Text(widget.videos[index].likes.toString()),
+            onPressed: () => UserDbService(uid: widget.videos[index].uid).addLike(widget.videos[index].documentId, widget.feedId),
+            child: StreamBuilder<VideoFeedObject>(
+              stream: UserDbService(uid: widget.videos[index].uid).getVideo(widget.feedId, widget.videos[index].documentId),
+              builder: (context, snapshot) {
+                if(snapshot.hasData){
+                  VideoFeedObject video = snapshot.data;
+                  return Text(video.likes.toString());
+                } else{
+                  return Text('0');
+                }
+              },
+            ),
           ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * .23,
-          ),
-          FloatingActionButton(
-            onPressed: previousVideo,
-            child: Icon(Icons.arrow_back),
-          ),
-          SizedBox(
-            width: 24,
-          ),
-          FloatingActionButton(
-            onPressed: nextVideo,
-            child: Icon(Icons.arrow_forward),
-          ),
+          // SizedBox(
+          //   width: MediaQuery.of(context).size.width * .23,
+          // ),
+          // FloatingActionButton(
+          //   onPressed: previousVideo,
+          //   child: Icon(Icons.arrow_back),
+          // ),
+          // SizedBox(
+          //   width: 24,
+          // ),
+          // FloatingActionButton(
+          //   onPressed: nextVideo,
+          //   child: Icon(Icons.arrow_forward),
+          // ),
         ],
       ),
     );
