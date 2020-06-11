@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:creaid/utility/FeedCommentObject.dart';
+import 'package:creaid/feed/FeedCommentObject.dart';
 import 'package:creaid/utility/UserData.dart';
-import 'package:creaid/utility/VideoFeedObject.dart';
+import 'package:creaid/feed/VideoFeedObject.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class UserDbService {
@@ -50,6 +50,12 @@ class UserDbService {
       numberFollowing: snapshot['number-following'],
       numberFollowers: snapshot['number-followers'],
       feedId: snapshot['feed-id']
+    );
+  }
+
+  VideoFeedObject _mapSingleVideoFeedObject(DocumentSnapshot snapshot) {
+    return VideoFeedObject(
+      likes: snapshot['likes']
     );
   }
 
@@ -120,5 +126,18 @@ class UserDbService {
     await feedInfoCollection.document(feedId).collection('following-posts').document(videoId).collection('comments').add({
       'comment' : comment
     });
+  }
+
+  addLike(String videoId, String feedId) async {
+    final likeDocument = await feedInfoCollection.document(feedId).collection('following-posts').document(videoId).collection('liked').document(uid).get();
+
+    if (likeDocument == null || !likeDocument.exists) {
+      await feedInfoCollection.document(feedId).collection('following-posts').document(videoId).collection('liked').document(uid).setData({'liker-id' : uid});
+      await feedInfoCollection.document(feedId).collection('following-posts').document(videoId).updateData({'likes' : FieldValue.increment(1)});
+    }
+  }
+
+  Stream<VideoFeedObject> getVideo(String feedId, String videoId) {
+    return feedInfoCollection.document(feedId).collection('following-posts').document(videoId).snapshots().map(_mapSingleVideoFeedObject);
   }
 }

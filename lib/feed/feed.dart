@@ -1,9 +1,8 @@
-import 'package:creaid/FeedVideoPlayer.dart';
+import 'package:creaid/feed/FeedVideoPlayer.dart';
 import 'package:creaid/utility/UserData.dart';
-import 'package:creaid/utility/VideoFeedObject.dart';
+import 'package:creaid/feed/VideoFeedObject.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/userDBService.dart';
-import 'package:creaid/video-player.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,10 +23,16 @@ class Feed extends StatelessWidget {
                   (context, AsyncSnapshot<List<VideoFeedObject>> snapshot) {
                 if (snapshot.hasData) {
                   List<VideoFeedObject> userDatas = snapshot.data;
-                  return FeedVideoPlayer(
-                    videos: userDatas,
-                    feedId: userData.feedId,
-                  );
+                  if (userDatas.length > 0) {
+                    return FeedVideoPlayer(
+                      videos: userDatas,
+                      feedId: userData.feedId,
+                    );
+                  } else {
+                    return Align(
+                        alignment: Alignment.center,
+                        child: CircularProgressIndicator());
+                  }
                 } else {
                   return Align(
                       alignment: Alignment.center,
