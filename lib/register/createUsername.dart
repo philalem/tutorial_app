@@ -35,14 +35,14 @@ class _CreateUsername extends State<CreateUsername> {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 28,
+                fontSize: 22,
               ),
             ),
           ],
         ),
         SizedBox(height: 20.0),
         CreaidTextField(
-          hint: 'Create a username',
+          hint: 'Enter a username',
           validator: (val) => val.isEmpty ? 'Enter a username' : null,
           controller: widget.controller,
           onChanged: (value) async {
