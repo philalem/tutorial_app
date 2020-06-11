@@ -169,6 +169,8 @@ class _ExploreState extends State<Explore> {
       appBar: CupertinoNavigationBar(
         backgroundColor: Colors.indigo,
         middle: TextField(
+          maxLines: 1,
+          minLines: 1,
           onChanged: (value) => _searchForUsers(),
           onTap: () {
             focusNode.requestFocus();
@@ -180,9 +182,10 @@ class _ExploreState extends State<Explore> {
           controller: _searchController,
           focusNode: focusNode,
           decoration: InputDecoration(
+            isDense: true,
             contentPadding: EdgeInsets.symmetric(
               horizontal: 15,
-              vertical: 0,
+              vertical: 8,
             ),
             filled: true,
             fillColor: Colors.indigo[400],
