@@ -57,9 +57,13 @@ class _ProfileState extends State<Profile> {
     var screenWidth = size.width;
     final user = Provider.of<User>(context);
     var uid = user.uid;
+    const IconData signOut = const IconData(0xf220,
+        fontFamily: CupertinoIcons.iconFont,
+        fontPackage: CupertinoIcons.iconFontPackage);
 
     return Scaffold(
       appBar: CupertinoNavigationBar(
+        padding: EdgeInsetsDirectional.only(end: 0, start: 0),
         backgroundColor: Colors.indigo,
         middle: Text(
           _getLoadedName(),
@@ -67,7 +71,7 @@ class _ProfileState extends State<Profile> {
         ),
         trailing: IconButton(
             icon: Icon(
-              CupertinoIcons.settings,
+              signOut,
               size: 30,
               color: Colors.white,
             ),
