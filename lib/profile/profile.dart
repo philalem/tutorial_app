@@ -67,7 +67,10 @@ class _ProfileState extends State<Profile> {
         backgroundColor: Colors.indigo,
         middle: Text(
           _getLoadedName(),
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.normal,
+          ),
         ),
         trailing: IconButton(
             icon: Icon(

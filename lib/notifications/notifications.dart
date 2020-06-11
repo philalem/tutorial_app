@@ -93,6 +93,10 @@ class _NotificationsState extends State<Notifications> {
         middle: Text(
           'Notifications',
           textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.normal,
+          ),
         ),
       ),
       body: StreamBuilder<List<dynamic>>(
