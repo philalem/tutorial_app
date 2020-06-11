@@ -220,7 +220,7 @@ class _ExploreState extends State<Explore> {
             color: Colors.white,
           ),
           onPressed: () {
-            focusNode.unfocus();
+            _isSearching ? focusNode.unfocus() : focusNode.requestFocus();
             setState(() {
               _isSearching = !_isSearching;
             });
