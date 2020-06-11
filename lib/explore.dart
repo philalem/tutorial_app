@@ -212,7 +212,7 @@ class _ExploreState extends State<Explore> {
             color: Colors.white,
           ),
         ),
-        leading: IconButton(
+        trailing: IconButton(
           iconSize: 30,
           icon: Icon(
             (_isSearching ? exit : CupertinoIcons.search),
@@ -224,12 +224,6 @@ class _ExploreState extends State<Explore> {
               _isSearching = !_isSearching;
             });
           },
-        ),
-        trailing: IconButton(
-          color: Colors.white,
-          iconSize: 30,
-          icon: Icon(Icons.add),
-          onPressed: () {},
         ),
       ),
       body: _getSearchOrExplore(screenHeight, screenWidth),
