@@ -1,4 +1,5 @@
 import 'package:creaid/utility/followDbService.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DisplayFollow extends StatefulWidget {
@@ -15,9 +16,9 @@ class _DisplayFollowState extends State<DisplayFollow> {
   Widget build(BuildContext context) {
     FollowDbService followDbService = FollowDbService(uid: widget.uid);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.isFollowers ? 'Followers' : 'Following'),
-        centerTitle: true,
+      appBar: CupertinoNavigationBar(
+        backgroundColor: Colors.indigo,
+        middle: Text(widget.isFollowers ? 'Followers' : 'Following'),
       ),
       body: StreamBuilder<Object>(
           stream: widget.isFollowers
