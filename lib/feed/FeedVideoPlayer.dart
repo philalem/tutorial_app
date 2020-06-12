@@ -17,7 +17,6 @@ class FeedVideoPlayer extends StatefulWidget {
 
 class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   int index = 0;
-  double _progress = 0;
   bool _changeLock = false;
   List<VideoPlayerController> _controllers = [];
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -174,29 +173,6 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
             ),
             ),
           ),
-          // Positioned(
-          //   child: Container(
-          //     height: 8,
-          //     width: MediaQuery.of(context).size.width * _progress,
-          //     color: Colors.white,
-          //   ),
-          // ),
-          // Positioned(
-          //   left: 0,
-          //   child: SizedBox(
-          //     height: MediaQuery.of(context).size.height,
-          //     width: MediaQuery.of(context).size.width / 2,
-          //     child: GestureDetector(
-          //       onTap: () {
-          //         setState(
-          //           () {
-          //             previousVideo();
-          //           },
-          //         );
-          //       },
-          //     ),
-          //   ),
-          // ),
           Positioned(
             child: Container(
               height: 25,
