@@ -34,20 +34,6 @@ class _RegisterState extends State<Register> {
       body: Center(
         child: ListView(
           children: <Widget>[
-            Align(
-              alignment: Alignment.topRight,
-              child: FlatButton(
-                child: Text(
-                  'Already have an account?',
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-                onPressed: () {
-                  widget.toggleView();
-                },
-              ),
-            ),
             Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 80.0),
