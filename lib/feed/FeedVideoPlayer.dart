@@ -1,5 +1,6 @@
 import 'package:creaid/feed/FeedCommentObject.dart';
 import 'package:creaid/feed/VideoFeedObject.dart';
+import 'package:creaid/profile/profile.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
@@ -67,7 +68,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
         });
         if (dur - pos < 1) {
           controller.seekTo(Duration(milliseconds: 0));
-          nextVideo();
+          //nextVideo();
         }
       });
     }
@@ -153,60 +154,72 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
               width: MediaQuery.of(context).size.width,
               child: Center(child: VideoPlayer(_controllers[1]))),
           Positioned(
+            right: 0,
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: GestureDetector(onPanUpdate: (details) {
+              if (details.delta.dy > 1.6) {
+                // swiping in right direction
+                setState(() {
+                  nextVideo();
+                });
+              }
+              else if(details.delta.dy < -1.6){
+                setState(() {
+                  previousVideo();
+                });
+              }
+            }
+            ),
+            ),
+          ),
+          // Positioned(
+          //   child: Container(
+          //     height: 8,
+          //     width: MediaQuery.of(context).size.width * _progress,
+          //     color: Colors.white,
+          //   ),
+          // ),
+          // Positioned(
+          //   left: 0,
+          //   child: SizedBox(
+          //     height: MediaQuery.of(context).size.height,
+          //     width: MediaQuery.of(context).size.width / 2,
+          //     child: GestureDetector(
+          //       onTap: () {
+          //         setState(
+          //           () {
+          //             previousVideo();
+          //           },
+          //         );
+          //       },
+          //     ),
+          //   ),
+          // ),
+          Positioned(
             child: Container(
               height: 25,
               width: MediaQuery.of(context).size.width,
               color: Colors.blue,
               child: Align(
                 alignment: FractionalOffset.bottomCenter,
-                child: Text(
-                  widget.videos[index].author,
-                  style: TextStyle(
-                    color: Colors.black,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => Profile(uid: widget.videos[index].uid, name: widget.videos[index].author)));
+                  },
+                  child: Text(
+                    widget.videos[index].author,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20
+                    ),
+                    
                   ),
                 ),
               ),
             ),
           ),
-          Positioned(
-            child: Container(
-              height: 8,
-              width: MediaQuery.of(context).size.width * _progress,
-              color: Colors.white,
-            ),
-          ),
-          Positioned(
-          right: 0,
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width / 2,
-            child: GestureDetector(
-              onTap: () {
-                setState(
-                  () {
-                    nextVideo();
-                  },
-                );
-              },
-            ),
-          ),
-        ),
-        Positioned(
-          left: 0,
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width / 2,
-            child: GestureDetector(
-              onTap: () {
-                setState(
-                  () {
-                    previousVideo();
-                  },
-                );
-              },
-            ),
-          ),
-        ),
         ],
       ),
       floatingActionButton: Row(
@@ -296,7 +309,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                             ),
                             SizedBox(height: 20),
                             Container(
-                                height: 220, //Your custom height
+                                height: 220,
                                 child: StreamBuilder<List<FeedCommentObject>>(
                                   stream: UserDbService(
                                           uid: widget.videos[index].uid)
@@ -345,33 +358,21 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
             width: MediaQuery.of(context).size.width * .05,
           ),
           FloatingActionButton(
-            onPressed: () => UserDbService(uid: widget.videos[index].uid).addLike(widget.videos[index].documentId, widget.feedId),
+            onPressed: () => UserDbService(uid: widget.videos[index].uid)
+                .addLike(widget.videos[index].documentId, widget.feedId),
             child: StreamBuilder<VideoFeedObject>(
-              stream: UserDbService(uid: widget.videos[index].uid).getVideo(widget.feedId, widget.videos[index].documentId),
+              stream: UserDbService(uid: widget.videos[index].uid)
+                  .getVideo(widget.feedId, widget.videos[index].documentId),
               builder: (context, snapshot) {
-                if(snapshot.hasData){
+                if (snapshot.hasData) {
                   VideoFeedObject video = snapshot.data;
                   return Text(video.likes.toString());
-                } else{
+                } else {
                   return Text('0');
                 }
               },
             ),
           ),
-          // SizedBox(
-          //   width: MediaQuery.of(context).size.width * .23,
-          // ),
-          // FloatingActionButton(
-          //   onPressed: previousVideo,
-          //   child: Icon(Icons.arrow_back),
-          // ),
-          // SizedBox(
-          //   width: 24,
-          // ),
-          // FloatingActionButton(
-          //   onPressed: nextVideo,
-          //   child: Icon(Icons.arrow_forward),
-          // ),
         ],
       ),
     );
