@@ -167,64 +167,65 @@ class _ExploreState extends State<Explore> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: CupertinoNavigationBar(
+        leading: SizedBox(width: 20),
+        trailing: SizedBox(width: 20),
         padding: EdgeInsetsDirectional.only(end: 0, start: 0),
         backgroundColor: Colors.indigo,
-        middle: TextField(
-          maxLines: 1,
-          minLines: 1,
-          onChanged: (value) => _searchForUsers(),
-          onTap: () {
-            focusNode.requestFocus();
-            setState(() {
-              _isSearching = true;
-            });
-          },
-          cursorColor: Colors.white,
-          controller: _searchController,
-          focusNode: focusNode,
-          decoration: InputDecoration(
-            isDense: true,
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 15,
-              vertical: 8,
-            ),
-            filled: true,
-            fillColor: Colors.indigo[400],
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(
-                width: 0,
-                style: BorderStyle.none,
+        middle: IntrinsicHeight(
+          child: TextField(
+            textInputAction: TextInputAction.done,
+            onSubmitted: (value) {
+              focusNode.unfocus();
+              setState(() {
+                _isSearching = false;
+              });
+            },
+            maxLines: 1,
+            minLines: 1,
+            onChanged: (value) => _searchForUsers(),
+            onTap: () {
+              focusNode.requestFocus();
+              setState(() {
+                _isSearching = true;
+              });
+            },
+            cursorColor: Colors.white,
+            controller: _searchController,
+            focusNode: focusNode,
+            decoration: InputDecoration(
+              prefixIcon: Icon(
+                CupertinoIcons.search,
+                color: Colors.white,
+              ),
+              isDense: true,
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 6,
+              ),
+              filled: true,
+              fillColor: Colors.indigo[400],
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  width: 0,
+                  style: BorderStyle.none,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(
+                  width: 0,
+                  style: BorderStyle.none,
+                ),
+              ),
+              hintText: 'Search',
+              hintStyle: TextStyle(
+                color: Colors.white,
               ),
             ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(
-                width: 0,
-                style: BorderStyle.none,
-              ),
-            ),
-            hintText: 'Search...',
-            hintStyle: TextStyle(
+            style: TextStyle(
               color: Colors.white,
             ),
           ),
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-        trailing: IconButton(
-          iconSize: 30,
-          icon: Icon(
-            (_isSearching ? exit : CupertinoIcons.search),
-            color: Colors.white,
-          ),
-          onPressed: () {
-            _isSearching ? focusNode.unfocus() : focusNode.requestFocus();
-            setState(() {
-              _isSearching = !_isSearching;
-            });
-          },
         ),
       ),
       body: _getSearchOrExplore(screenHeight, screenWidth),
