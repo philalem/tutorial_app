@@ -38,28 +38,29 @@ class _UploadProfileState extends State<UploadProfile> {
         ),
       ),
       key: _scaffoldKey,
-      body: Center(
+      body: Container(
+        padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            CreaidButton(
-              color: Colors.black,
-              children: <Widget>[
-                Text(
-                  'Choose Picture',
-                ),
-              ],
-              onPressed: () {
-                chooseFile();
-              },
-            ),
+            _image != null
+                ? Container(
+                    width: 300,
+                    height: 300,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                          fit: BoxFit.fitWidth, image: FileImage(_image)),
+                    ),
+                  )
+                : Container(),
             _image != null
                 ? CreaidButton(
-                    color: Colors.black,
                     children: <Widget>[
-                      Text(
-                        'Upload Picture',
-                      ),
-                    ],
+                        Text(
+                          'Upload Picture',
+                        ),
+                      ],
                     onPressed: () async {
                       await uploadFile();
                       print(_uploadedFileURL);
@@ -72,6 +73,19 @@ class _UploadProfileState extends State<UploadProfile> {
                       }
                     })
                 : Container(),
+            CreaidButton(
+              children: <Widget>[
+                Text(
+                  'Choose Picture',
+                ),
+              ],
+              onPressed: () {
+                chooseFile();
+              },
+            ),
+            SizedBox(
+              height: 28,
+            )
           ],
         ),
       ),
