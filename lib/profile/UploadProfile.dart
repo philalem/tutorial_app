@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:creaid/profile/profilePhotoService.dart';
+import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -24,50 +26,55 @@ class _UploadProfileState extends State<UploadProfile> {
 
     return Scaffold(
       backgroundColor: Colors.black87,
-      appBar: AppBar(
-        title: Text('Edit Your Profile Picture'),
+      appBar: CupertinoNavigationBar(
+        padding: EdgeInsetsDirectional.only(end: 0, start: 0),
+        backgroundColor: Colors.indigo,
+        middle: Text(
+          'Profile Picture',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
       ),
       key: _scaffoldKey,
-      body: Column(children: <Widget>[
-        RaisedButton(
-            color: Colors.black,
-            child: Text(
-              'Choose Picture',
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () {
-              chooseFile();
-            }),
-        _image != null
-            ? RaisedButton(
-                color: Colors.black,
-                child: Text(
-                  'Upload Picture',
-                  style: TextStyle(color: Colors.white),
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            CreaidButton(
+              color: Colors.black,
+              children: <Widget>[
+                Text(
+                  'Choose Picture',
                 ),
-                onPressed: () async {
-                  await uploadFile();
-                  print(_uploadedFileURL);
-                  if (_uploadedFileURL != null) {
-                    ProfilePhotoService(uid: user.uid)
-                        .uploadPhoto(_uploadedFileURL);
-                    Navigator.pop(context, true);
-                  } else {
-                    _showDialog();
-                  }
-                })
-            : new Container(),
-        SizedBox(height: 20.0),
-        _uploadedFileURL == null
-            ? RaisedButton(
-                color: Colors.black,
-                child: Text('Return to Profile',
-                    style: TextStyle(color: Colors.white)),
-                onPressed: () {
-                  Navigator.pop(context, true);
-                })
-            : Container()
-      ]),
+              ],
+              onPressed: () {
+                chooseFile();
+              },
+            ),
+            _image != null
+                ? CreaidButton(
+                    color: Colors.black,
+                    children: <Widget>[
+                      Text(
+                        'Upload Picture',
+                      ),
+                    ],
+                    onPressed: () async {
+                      await uploadFile();
+                      print(_uploadedFileURL);
+                      if (_uploadedFileURL != null) {
+                        ProfilePhotoService(uid: user.uid)
+                            .uploadPhoto(_uploadedFileURL);
+                        Navigator.pop(context, true);
+                      } else {
+                        _showDialog();
+                      }
+                    })
+                : Container(),
+          ],
+        ),
+      ),
     );
   }
 
@@ -91,24 +98,45 @@ class _UploadProfileState extends State<UploadProfile> {
   }
 
   void _showDialog() {
-    showDialog(
-      context: _scaffoldKey.currentContext,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text("Upload failed"),
-          content: new Text("Try Again"),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("Close"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+    if (Platform.isAndroid) {
+      showDialog(
+        context: _scaffoldKey.currentContext,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            title: Text("Upload failed"),
+            content: Text("Try Again"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              FlatButton(
+                child: Text("Close"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      showCupertinoDialog(
+        context: _scaffoldKey.currentContext,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return CupertinoAlertDialog(
+            title: Text("Upload failed. Please try again."),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              CupertinoDialogAction(
+                child: Text("okay"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 }
