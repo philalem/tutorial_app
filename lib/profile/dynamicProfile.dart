@@ -4,6 +4,7 @@ import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/followDbService.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DynamicProfile extends StatefulWidget {
@@ -54,8 +55,15 @@ class _DynamicProfileState extends State<DynamicProfile> {
     var uid = widget.uid;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.name),
+      appBar: CupertinoNavigationBar(
+        backgroundColor: Colors.indigo,
+        middle: Text(
+          widget.name,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
       ),
       body: StreamBuilder<UserData>(
         stream: UserDbService(uid: uid).getNames(),
@@ -133,7 +141,10 @@ class _DynamicProfileState extends State<DynamicProfile> {
                                 textColor: Colors.black,
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (_) => new DisplayFollow()));
+                                      builder: (_) => DisplayFollow(
+                                            uid: uid,
+                                            isFollowers: false,
+                                          )));
                                 },
                                 child: Text(
                                   "Following: " +
@@ -147,7 +158,10 @@ class _DynamicProfileState extends State<DynamicProfile> {
                                 textColor: Colors.black,
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (_) => new DisplayFollow()));
+                                      builder: (_) => DisplayFollow(
+                                            uid: uid,
+                                            isFollowers: true,
+                                          )));
                                 },
                                 child: Text(
                                   "Followers: " +
