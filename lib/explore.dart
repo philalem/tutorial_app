@@ -172,7 +172,8 @@ class _ExploreState extends State<Explore> {
         padding: EdgeInsetsDirectional.only(end: 0, start: 0),
         backgroundColor: Colors.indigo,
         middle: IntrinsicHeight(
-          child: TextField(
+          child: CupertinoTextField(
+            textAlignVertical: TextAlignVertical.center,
             textInputAction: TextInputAction.done,
             onSubmitted: (value) {
               focusNode.unfocus();
@@ -192,35 +193,17 @@ class _ExploreState extends State<Explore> {
             cursorColor: Colors.white,
             controller: _searchController,
             focusNode: focusNode,
-            decoration: InputDecoration(
-              prefixIcon: Icon(
+            prefix: Padding(
+              padding: const EdgeInsets.only(left: 6),
+              child: Icon(
                 CupertinoIcons.search,
                 color: Colors.white,
               ),
-              isDense: true,
-              contentPadding: EdgeInsets.symmetric(
-                vertical: 6,
-              ),
-              filled: true,
-              fillColor: Colors.indigo[400],
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  width: 0,
-                  style: BorderStyle.none,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  width: 0,
-                  style: BorderStyle.none,
-                ),
-              ),
-              hintText: 'Search',
-              hintStyle: TextStyle(
-                color: Colors.white,
-              ),
+            ),
+            placeholder: 'Search',
+            decoration: BoxDecoration(
+              color: Colors.indigo[400],
+              borderRadius: BorderRadius.circular(10),
             ),
             style: TextStyle(
               color: Colors.white,

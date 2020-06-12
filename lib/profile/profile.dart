@@ -233,14 +233,13 @@ class _ProfileState extends State<Profile> {
   }
 }
 
-void _showLogoutPopUp(context) {
+_showLogoutPopUp(context) {
   if (Platform.isAndroid) {
     showCupertinoDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Alert Dialog title"),
-          content: Text("Alert Dialog body"),
+          title: Text("Are you sure you want to log out?"),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             FlatButton(
@@ -275,35 +274,34 @@ void _showLogoutPopUp(context) {
       },
     );
   } else {
-    showCupertinoDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return CupertinoAlertDialog(
-            title: Text("Are you sure you want to log out?"),
-            actions: <Widget>[
-              // usually buttons at the bottom of the dialog
-              CupertinoDialogAction(
-                child: Text(
-                  "Log out",
-                ),
-                onPressed: () {
-                  FireBaseAuthorization().signOut();
-                  Navigator.of(context).pop();
-                },
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) {
+        return CupertinoActionSheet(
+          title: Text("Are you sure you want to log out?"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            CupertinoActionSheetAction(
+              child: Text(
+                "Log out",
               ),
-              CupertinoDialogAction(
-                child: Text(
-                  "Cancel",
-                  style: TextStyle(
-                    color: Colors.red,
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
+              onPressed: () {
+                FireBaseAuthorization().signOut();
+                Navigator.of(context).pop();
+              },
+              isDestructiveAction: true,
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: Text(
+              "Cancel",
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        );
+      },
+    );
   }
 }
