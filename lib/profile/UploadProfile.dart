@@ -41,37 +41,42 @@ class _UploadProfileState extends State<UploadProfile> {
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             _image != null
-                ? Container(
-                    width: 300,
-                    height: 300,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          fit: BoxFit.fitWidth, image: FileImage(_image)),
-                    ),
-                  )
-                : Container(),
-            _image != null
-                ? CreaidButton(
+                ? Column(
                     children: <Widget>[
-                        Text(
-                          'Upload Picture',
+                      Container(
+                        width: 300,
+                        height: 300,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              fit: BoxFit.fitWidth, image: FileImage(_image)),
                         ),
-                      ],
-                    onPressed: () async {
-                      await uploadFile();
-                      print(_uploadedFileURL);
-                      if (_uploadedFileURL != null) {
-                        ProfilePhotoService(uid: user.uid)
-                            .uploadPhoto(_uploadedFileURL);
-                        Navigator.pop(context, true);
-                      } else {
-                        _showDialog();
-                      }
-                    })
+                      ),
+                      SizedBox(
+                        height: 24,
+                      ),
+                      CreaidButton(
+                          children: <Widget>[
+                            Text(
+                              'Upload Picture',
+                            ),
+                          ],
+                          onPressed: () async {
+                            await uploadFile();
+                            print(_uploadedFileURL);
+                            if (_uploadedFileURL != null) {
+                              ProfilePhotoService(uid: user.uid)
+                                  .uploadPhoto(_uploadedFileURL);
+                              Navigator.pop(context, true);
+                            } else {
+                              _showDialog();
+                            }
+                          }),
+                    ],
+                  )
                 : Container(),
             CreaidButton(
               children: <Widget>[
