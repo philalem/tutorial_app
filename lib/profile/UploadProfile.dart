@@ -19,10 +19,13 @@ class _UploadProfileState extends State<UploadProfile> {
   File _image;
   String _uploadedFileURL;
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
+  double xCoordinate = 0.0;
+  double yCoordinate = 0.0;
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
+    Size size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: Colors.black87,
@@ -40,57 +43,78 @@ class _UploadProfileState extends State<UploadProfile> {
       key: _scaffoldKey,
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
           children: <Widget>[
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                _image != null
+                    ? Column(
+                        children: <Widget>[
+                          SizedBox(
+                            height: 24,
+                          ),
+                          CreaidButton(
+                            children: <Widget>[
+                              Text(
+                                'Upload Picture',
+                              ),
+                            ],
+                            onPressed: () async {
+                              await uploadFile();
+                              print(_uploadedFileURL);
+                              if (_uploadedFileURL != null) {
+                                ProfilePhotoService(uid: user.uid)
+                                    .uploadPhoto(_uploadedFileURL);
+                                Navigator.pop(context, true);
+                              } else {
+                                _showDialog();
+                              }
+                            },
+                          ),
+                        ],
+                      )
+                    : Container(),
+                CreaidButton(
+                  children: <Widget>[
+                    Text(
+                      'Choose Picture',
+                    ),
+                  ],
+                  onPressed: () {
+                    chooseFile();
+                  },
+                ),
+                SizedBox(
+                  height: 28,
+                )
+              ],
+            ),
             _image != null
-                ? Column(
-                    children: <Widget>[
-                      Container(
-                        width: 300,
-                        height: 300,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              fit: BoxFit.fitWidth, image: FileImage(_image)),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 24,
-                      ),
-                      CreaidButton(
-                          children: <Widget>[
-                            Text(
-                              'Upload Picture',
+                ? Positioned(
+                    left: xCoordinate,
+                    top: yCoordinate,
+                    child: Draggable(
+                      feedback: Container(),
+                      onDraggableCanceled: (velocity, offset) =>
+                          _setXandYCoordinates(offset),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            width: 300,
+                            height: 300,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  fit: BoxFit.fitWidth,
+                                  image: FileImage(_image)),
                             ),
-                          ],
-                          onPressed: () async {
-                            await uploadFile();
-                            print(_uploadedFileURL);
-                            if (_uploadedFileURL != null) {
-                              ProfilePhotoService(uid: user.uid)
-                                  .uploadPhoto(_uploadedFileURL);
-                              Navigator.pop(context, true);
-                            } else {
-                              _showDialog();
-                            }
-                          }),
-                    ],
+                          ),
+                        ],
+                      ),
+                    ),
                   )
                 : Container(),
-            CreaidButton(
-              children: <Widget>[
-                Text(
-                  'Choose Picture',
-                ),
-              ],
-              onPressed: () {
-                chooseFile();
-              },
-            ),
-            SizedBox(
-              height: 28,
-            )
           ],
         ),
       ),
@@ -157,5 +181,12 @@ class _UploadProfileState extends State<UploadProfile> {
         },
       );
     }
+  }
+
+  _setXandYCoordinates(offset) {
+    setState(() {
+      xCoordinate = offset.dx;
+      yCoordinate = offset.dy;
+    });
   }
 }
