@@ -19,13 +19,15 @@ class _UploadProfileState extends State<UploadProfile> {
   File _image;
   String _uploadedFileURL;
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
-  double xCoordinate = 0.0;
-  double yCoordinate = 0.0;
+  double xCoordinate = 100.0;
+  double yCoordinate = 100.0;
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
     Size size = MediaQuery.of(context).size;
+    var navBarHeight = CupertinoNavigationBar().preferredSize.height;
+    var statusBarHeight = MediaQuery.of(context).padding.top;
 
     return Scaffold(
       backgroundColor: Colors.black87,
@@ -41,12 +43,12 @@ class _UploadProfileState extends State<UploadProfile> {
         ),
       ),
       key: _scaffoldKey,
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
-        child: Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            Column(
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 _image != null
@@ -91,21 +93,21 @@ class _UploadProfileState extends State<UploadProfile> {
                 )
               ],
             ),
-            _image != null
-                ? Positioned(
-                    left: xCoordinate,
-                    top: yCoordinate,
-                    child: Draggable(
-                      feedback: _getChosedProfileImage(_image),
-                      childWhenDragging: Container(),
-                      onDraggableCanceled: (velocity, offset) =>
-                          _setXandYCoordinates(offset),
-                      child: _getChosedProfileImage(_image),
-                    ),
-                  )
-                : Container(),
-          ],
-        ),
+          ),
+          _image != null
+              ? Positioned(
+                  left: xCoordinate,
+                  top: yCoordinate - navBarHeight - statusBarHeight,
+                  child: Draggable(
+                    feedback: _getChosedProfileImage(_image),
+                    childWhenDragging: Container(),
+                    onDraggableCanceled: (velocity, offset) =>
+                        _setXandYCoordinates(offset),
+                    child: _getChosedProfileImage(_image),
+                  ),
+                )
+              : Container(),
+        ],
       ),
     );
   }
