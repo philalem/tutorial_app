@@ -44,6 +44,7 @@ class _UploadProfileState extends State<UploadProfile> {
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Stack(
+          fit: StackFit.expand,
           children: <Widget>[
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -95,28 +96,27 @@ class _UploadProfileState extends State<UploadProfile> {
                     left: xCoordinate,
                     top: yCoordinate,
                     child: Draggable(
-                      feedback: Container(),
+                      feedback: _getChosedProfileImage(_image),
+                      childWhenDragging: Container(),
                       onDraggableCanceled: (velocity, offset) =>
                           _setXandYCoordinates(offset),
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            width: 300,
-                            height: 300,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                  fit: BoxFit.fitWidth,
-                                  image: FileImage(_image)),
-                            ),
-                          ),
-                        ],
-                      ),
+                      child: _getChosedProfileImage(_image),
                     ),
                   )
                 : Container(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _getChosedProfileImage(File image) {
+    return Container(
+      width: 300,
+      height: 300,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        image: DecorationImage(fit: BoxFit.fitWidth, image: FileImage(image)),
       ),
     );
   }
