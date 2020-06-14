@@ -19,12 +19,20 @@ class _UploadProfileState extends State<UploadProfile> {
   File _image;
   String _uploadedFileURL;
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
-  double xCoordinate = 100.0;
-  double yCoordinate = 100.0;
+  double xCoordinate = 0.0;
+  double yCoordinate = 0.0;
+  Offset _startingFocalPoint;
+  Offset _previousOffset;
+  Offset _offset = Offset.zero;
+  double _previousZoom;
+  double _zoom = 1.0;
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
+    Size size = MediaQuery.of(context).size;
+    double height = size.height;
+    double width = size.width;
     var navBarHeight = CupertinoNavigationBar().preferredSize.height;
     var statusBarHeight = MediaQuery.of(context).padding.top;
 
@@ -42,82 +50,117 @@ class _UploadProfileState extends State<UploadProfile> {
         ),
       ),
       key: _scaffoldKey,
-      body: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                _image != null
-                    ? Column(
-                        children: <Widget>[
-                          SizedBox(
-                            height: 24,
-                          ),
-                          CreaidButton(
-                            children: <Widget>[
-                              Text(
-                                'Upload Picture',
-                              ),
-                            ],
-                            onPressed: () async {
-                              await uploadFile();
-                              print(_uploadedFileURL);
-                              if (_uploadedFileURL != null) {
-                                ProfilePhotoService(uid: user.uid)
-                                    .uploadPhoto(_uploadedFileURL);
-                                Navigator.pop(context, true);
-                              } else {
-                                _showDialog();
-                              }
-                            },
-                          ),
-                        ],
-                      )
-                    : Container(),
-                CreaidButton(
-                  children: <Widget>[
-                    Text(
-                      'Choose Picture',
-                    ),
-                  ],
-                  onPressed: () {
-                    chooseFile();
-                  },
-                ),
-                SizedBox(
-                  height: 28,
-                )
-              ],
-            ),
-          ),
-          _image != null
-              ? Positioned(
-                  left: xCoordinate,
-                  top: yCoordinate - navBarHeight - statusBarHeight,
-                  child: Draggable(
-                    feedback: _getChosedProfileImage(_image),
-                    childWhenDragging: Container(),
-                    onDraggableCanceled: (velocity, offset) =>
-                        _setXandYCoordinates(offset),
-                    child: _getChosedProfileImage(_image),
+      body: Container(
+        height: height,
+        width: width,
+        child: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            _image != null
+                ? GestureDetector(
+                    onScaleStart: (details) => _handleScaleStart(details),
+                    onScaleUpdate: (details) => _handleScaleUpdate(details),
+                    // onPanUpdate: (tapInfo) {
+                    //   setState(() {
+                    //     xCoordinate += tapInfo.delta.dx;
+                    //     yCoordinate += tapInfo.delta.dy;
+                    //   });
+                    // },
+                    onDoubleTap: _handleScaleReset,
+                    child: Transform(
+                        transform: Matrix4.translationValues(
+                            _offset.dx, _offset.dy, _zoom),
+                        child: _getChosenProfileImage(_image, height, width)),
+                  )
+                : Container(),
+            _image != null ? _getProfileImageFrame() : Container(),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  SizedBox(
+                    height: 28,
                   ),
-                )
-              : Container(),
-        ],
+                  _image != null
+                      ? CreaidButton(
+                          children: <Widget>[
+                            Text(
+                              'Upload Picture',
+                            ),
+                          ],
+                          onPressed: () async {
+                            await uploadFile();
+                            print(_uploadedFileURL);
+                            if (_uploadedFileURL != null) {
+                              ProfilePhotoService(uid: user.uid)
+                                  .uploadPhoto(_uploadedFileURL);
+                              Navigator.pop(context, true);
+                            } else {
+                              _showDialog();
+                            }
+                          },
+                        )
+                      : Container(),
+                  CreaidButton(
+                    children: <Widget>[
+                      Text(
+                        'Choose Picture',
+                      ),
+                    ],
+                    onPressed: () {
+                      chooseFile();
+                    },
+                  ),
+                  SizedBox(
+                    height: 28,
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _getChosedProfileImage(File image) {
-    return Container(
-      width: 300,
-      height: 300,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        image: DecorationImage(fit: BoxFit.fitWidth, image: FileImage(image)),
+  void _handleScaleReset() {
+    setState(() {
+      _zoom = 1.0;
+      _offset = Offset.zero;
+    });
+  }
+
+  void _handleScaleStart(ScaleStartDetails details) {
+    setState(() {
+      _startingFocalPoint = details.focalPoint;
+      _previousOffset = _offset;
+      _previousZoom = _zoom;
+    });
+  }
+
+  void _handleScaleUpdate(ScaleUpdateDetails details) {
+    setState(() {
+      _zoom = _previousZoom * details.scale;
+
+      // Ensure that item under the focal point stays in the same place despite zooming
+      final Offset normalizedOffset =
+          (_startingFocalPoint - _previousOffset) / _previousZoom;
+      _offset = details.focalPoint - normalizedOffset * _zoom;
+    });
+  }
+
+  Widget _getChosenProfileImage(File image, double height, double width) {
+    return Image.file(image, fit: BoxFit.fitWidth);
+  }
+
+  Widget _getProfileImageFrame() {
+    return IgnorePointer(
+      child: ClipPath(
+        clipper: InvertedCircleClipper(),
+        child: Container(
+          color: Color.fromRGBO(0, 0, 0, 0.7),
+        ),
       ),
     );
   }
@@ -183,11 +226,19 @@ class _UploadProfileState extends State<UploadProfile> {
       );
     }
   }
+}
 
-  _setXandYCoordinates(offset) {
-    setState(() {
-      xCoordinate = offset.dx;
-      yCoordinate = offset.dy;
-    });
+class InvertedCircleClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    return Path()
+      ..addOval(Rect.fromCircle(
+          center: Offset(size.width / 2, size.height / 2.5),
+          radius: size.width * 0.45))
+      ..addRect(Rect.fromLTWH(0.0, 0.0, size.width, size.height))
+      ..fillType = PathFillType.evenOdd;
   }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
