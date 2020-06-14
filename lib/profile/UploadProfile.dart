@@ -25,7 +25,6 @@ class _UploadProfileState extends State<UploadProfile> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User>(context);
-    Size size = MediaQuery.of(context).size;
     var navBarHeight = CupertinoNavigationBar().preferredSize.height;
     var statusBarHeight = MediaQuery.of(context).padding.top;
 
