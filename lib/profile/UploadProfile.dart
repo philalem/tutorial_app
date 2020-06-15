@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:creaid/profile/profilePhotoService.dart';
@@ -6,6 +7,7 @@ import 'package:creaid/utility/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
@@ -22,19 +24,6 @@ class _UploadProfileState extends State<UploadProfile> {
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
   double xCoordinate = 0.0;
   double yCoordinate = 0.0;
-  Offset _startingFocalPoint;
-  Offset _previousOffset;
-  Offset _offset = Offset.zero;
-  double _previousZoom;
-  double _zoom = 1.0;
-
-  @override
-  void initState() {
-    _zoom = 1.0;
-    _previousZoom = null;
-    _offset = Offset.zero;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,30 +52,15 @@ class _UploadProfileState extends State<UploadProfile> {
         height: height,
         width: width,
         child: Stack(
-          fit: StackFit.expand,
           children: <Widget>[
-            _image != null
-                ? Positioned(
-                    left: _offset.dx,
-                    top: _offset.dy - navBarHeight - statusBarHeight,
-                    child: GestureDetector(
-                      onScaleStart: (details) => _handleScaleStart(details),
-                      onScaleUpdate: (details) => _handleScaleUpdate(details),
-                      onDoubleTap: _handleScaleReset,
-                      child: Transform(
-                          transform: Matrix4.diagonal3(
-                              vector.Vector3(_zoom, _zoom, _zoom)),
-                          origin: _startingFocalPoint,
-                          child: _getChosenProfileImage(_image, height, width)),
-                    ),
-                  )
-                : Container(),
-            _image != null ? _getProfileImageFrame() : Container(),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
+                  _image != null
+                      ? _getChosenProfileImage(_image, width)
+                      : Container(),
                   SizedBox(
                     height: 28,
                   ),
@@ -116,8 +90,12 @@ class _UploadProfileState extends State<UploadProfile> {
                         'Choose Picture',
                       ),
                     ],
-                    onPressed: () {
-                      chooseFile();
+                    onPressed: () async {
+                      await chooseFile();
+                      File croppedImage = await cropImageView();
+                      setState(() {
+                        _image = croppedImage;
+                      });
                     },
                   ),
                   SizedBox(
@@ -132,46 +110,28 @@ class _UploadProfileState extends State<UploadProfile> {
     );
   }
 
-  void _handleScaleReset() {
-    setState(() {
-      _zoom = 1.0;
-      _offset = Offset.zero;
-    });
+  Future<File> cropImageView() {
+    return ImageCropper.cropImage(
+        sourcePath: _image.path,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Crop your Profile Picture',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+          title: 'Crop your Profile Picture',
+        ));
   }
 
-  void _handleScaleStart(ScaleStartDetails details) {
-    setState(() {
-      _startingFocalPoint = details.focalPoint;
-      _previousOffset = _offset;
-      _previousZoom = _zoom;
-    });
-  }
-
-  void _handleScaleUpdate(ScaleUpdateDetails details) {
-    setState(() {
-      _zoom = _previousZoom * details.scale;
-      // Ensure that item under the focal point stays in the same place despite zooming
-      final Offset normalizedOffset =
-          (_startingFocalPoint - _previousOffset) / _previousZoom;
-      _offset = details.focalPoint - normalizedOffset * _zoom;
-    });
-  }
-
-  Widget _getChosenProfileImage(File image, double height, double width) {
+  Widget _getChosenProfileImage(File image, double width) {
     return Container(
-      height: height,
-      width: width,
-      child: Image.file(image, fit: BoxFit.fitWidth),
-    );
-  }
-
-  Widget _getProfileImageFrame() {
-    return IgnorePointer(
-      child: ClipPath(
-        clipper: InvertedCircleClipper(),
-        child: Container(
-          color: Color.fromRGBO(0, 0, 0, 0.7),
-        ),
+      height: width * 0.9,
+      width: width * 0.9,
+      child: Image.file(
+        image,
+        fit: BoxFit.cover,
       ),
     );
   }
@@ -237,19 +197,4 @@ class _UploadProfileState extends State<UploadProfile> {
       );
     }
   }
-}
-
-class InvertedCircleClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    return Path()
-      ..addOval(Rect.fromCircle(
-          center: Offset(size.width / 2, size.height / 2.5),
-          radius: size.width * 0.5))
-      ..addRect(Rect.fromLTWH(0.0, 0.0, size.width, size.height))
-      ..fillType = PathFillType.evenOdd;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

@@ -18,7 +18,7 @@ class _HomeState extends State<Home> {
   final List<Widget> _pages = [
     Navigator(
       onGenerateRoute: (RouteSettings settings) {
-        return MaterialPageRoute(
+        return CupertinoPageRoute(
           settings: settings,
           builder: (BuildContext context) {
             switch (settings.name) {
@@ -33,7 +33,7 @@ class _HomeState extends State<Home> {
     ),
     Navigator(
       onGenerateRoute: (RouteSettings settings) {
-        return MaterialPageRoute(
+        return CupertinoPageRoute(
           settings: settings,
           builder: (BuildContext context) {
             switch (settings.name) {
@@ -48,7 +48,7 @@ class _HomeState extends State<Home> {
     ),
     Navigator(
       onGenerateRoute: (RouteSettings settings) {
-        return MaterialPageRoute(
+        return CupertinoPageRoute(
           settings: settings,
           builder: (BuildContext context) {
             switch (settings.name) {
@@ -63,7 +63,7 @@ class _HomeState extends State<Home> {
     ),
     Navigator(
       onGenerateRoute: (RouteSettings settings) {
-        return MaterialPageRoute(
+        return CupertinoPageRoute(
           settings: settings,
           builder: (BuildContext context) {
             switch (settings.name) {
@@ -78,7 +78,7 @@ class _HomeState extends State<Home> {
     ),
     Navigator(
       onGenerateRoute: (RouteSettings settings) {
-        return MaterialPageRoute(
+        return CupertinoPageRoute(
           settings: settings,
           builder: (BuildContext context) {
             switch (settings.name) {
@@ -96,7 +96,7 @@ class _HomeState extends State<Home> {
   void _onNavBarItemTapped(int index) {
     if (index == 2) {
       Navigator.of(context).push(
-        MaterialPageRoute(
+        CupertinoPageRoute(
           builder: (context) {
             print("opening camera");
             return CameraScreen();

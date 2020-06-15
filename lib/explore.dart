@@ -126,7 +126,7 @@ class _ExploreState extends State<Explore> {
               title: Text(snap.data['name']),
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(
+                  CupertinoPageRoute(
                     builder: (context) => DynamicProfile(
                       uid: snap.objectID,
                       name: snap.data['name'],
@@ -144,7 +144,7 @@ class _ExploreState extends State<Explore> {
 
   _navigateToVideo() {
     Navigator.of(context).push(
-      MaterialPageRoute(
+      CupertinoPageRoute(
         builder: (context) => VideoPlayerScreen(),
       ),
     );

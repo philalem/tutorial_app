@@ -2,6 +2,7 @@ import 'package:creaid/register/usernameAndInterestsSignUp.dart';
 import 'package:creaid/utility/algoliaService.dart';
 import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/creaidTextField.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -112,7 +113,7 @@ class _RegisterState extends State<Register> {
                           _formKey.currentState.save();
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
+                            CupertinoPageRoute(
                                 builder: (context) =>
                                     UsernameAndInterestsSignUp(
                                         email: email,
