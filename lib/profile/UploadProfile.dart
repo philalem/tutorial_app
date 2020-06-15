@@ -27,16 +27,12 @@ class _UploadProfileState extends State<UploadProfile> {
   Offset _offset = Offset.zero;
   double _previousZoom;
   double _zoom = 1.0;
-  Offset _position;
-  Offset _previousPosition;
 
   @override
   void initState() {
     _zoom = 1.0;
     _previousZoom = null;
     _offset = Offset.zero;
-    _position = Offset.zero;
-    _previousPosition = Offset.zero;
     super.initState();
   }
 
@@ -140,7 +136,6 @@ class _UploadProfileState extends State<UploadProfile> {
     setState(() {
       _zoom = 1.0;
       _offset = Offset.zero;
-      _position = Offset.zero;
     });
   }
 
@@ -250,7 +245,7 @@ class InvertedCircleClipper extends CustomClipper<Path> {
     return Path()
       ..addOval(Rect.fromCircle(
           center: Offset(size.width / 2, size.height / 2.5),
-          radius: size.width * 0.45))
+          radius: size.width * 0.5))
       ..addRect(Rect.fromLTWH(0.0, 0.0, size.width, size.height))
       ..fillType = PathFillType.evenOdd;
   }
