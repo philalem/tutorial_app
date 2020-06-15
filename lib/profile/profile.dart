@@ -131,7 +131,7 @@ class _ProfileState extends State<Profile> {
                         ),
                         FlatButton(
                           child: Icon(CupertinoIcons.photo_camera_solid),
-                          color: Colors.indigo,
+                          color: Colors.black,
                           onPressed: () {
                             Navigator.of(context).push(
                               CupertinoPageRoute(
