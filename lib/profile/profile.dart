@@ -104,7 +104,7 @@ class _ProfileState extends State<Profile> {
                           key: profileKey,
                           onTap: () {
                             Navigator.of(context).push(
-                              MaterialPageRoute(
+                              CupertinoPageRoute(
                                 builder: (_) => UploadProfile(),
                               ),
                             );
@@ -168,7 +168,7 @@ class _ProfileState extends State<Profile> {
                               FlatButton(
                                 textColor: Colors.black,
                                 onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
+                                  Navigator.of(context).push(CupertinoPageRoute(
                                       builder: (_) => DisplayFollow(
                                           uid: uid, isFollowers: false)));
                                 },
@@ -183,7 +183,7 @@ class _ProfileState extends State<Profile> {
                               FlatButton(
                                 textColor: Colors.black,
                                 onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
+                                  Navigator.of(context).push(CupertinoPageRoute(
                                       builder: (_) => DisplayFollow(
                                           uid: uid, isFollowers: true)));
                                 },

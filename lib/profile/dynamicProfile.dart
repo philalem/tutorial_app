@@ -140,7 +140,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                               FlatButton(
                                 textColor: Colors.black,
                                 onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
+                                  Navigator.of(context).push(CupertinoPageRoute(
                                       builder: (_) => DisplayFollow(
                                             uid: uid,
                                             isFollowers: false,
@@ -157,7 +157,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                               FlatButton(
                                 textColor: Colors.black,
                                 onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
+                                  Navigator.of(context).push(CupertinoPageRoute(
                                       builder: (_) => DisplayFollow(
                                             uid: uid,
                                             isFollowers: true,
