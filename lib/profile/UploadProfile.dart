@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:vector_math/vector_math_64.dart' as vector;
 
 class UploadProfile extends StatefulWidget {
   @override
@@ -26,6 +27,18 @@ class _UploadProfileState extends State<UploadProfile> {
   Offset _offset = Offset.zero;
   double _previousZoom;
   double _zoom = 1.0;
+  Offset _position;
+  Offset _previousPosition;
+
+  @override
+  void initState() {
+    _zoom = 1.0;
+    _previousZoom = null;
+    _offset = Offset.zero;
+    _position = Offset.zero;
+    _previousPosition = Offset.zero;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,20 +70,19 @@ class _UploadProfileState extends State<UploadProfile> {
           fit: StackFit.expand,
           children: <Widget>[
             _image != null
-                ? GestureDetector(
-                    onScaleStart: (details) => _handleScaleStart(details),
-                    onScaleUpdate: (details) => _handleScaleUpdate(details),
-                    // onPanUpdate: (tapInfo) {
-                    //   setState(() {
-                    //     xCoordinate += tapInfo.delta.dx;
-                    //     yCoordinate += tapInfo.delta.dy;
-                    //   });
-                    // },
-                    onDoubleTap: _handleScaleReset,
-                    child: Transform(
-                        transform: Matrix4.translationValues(
-                            _offset.dx, _offset.dy, _zoom),
-                        child: _getChosenProfileImage(_image, height, width)),
+                ? Positioned(
+                    left: _offset.dx,
+                    top: _offset.dy - navBarHeight - statusBarHeight,
+                    child: GestureDetector(
+                      onScaleStart: (details) => _handleScaleStart(details),
+                      onScaleUpdate: (details) => _handleScaleUpdate(details),
+                      onDoubleTap: _handleScaleReset,
+                      child: Transform(
+                          transform: Matrix4.diagonal3(
+                              vector.Vector3(_zoom, _zoom, _zoom)),
+                          origin: _startingFocalPoint,
+                          child: _getChosenProfileImage(_image, height, width)),
+                    ),
                   )
                 : Container(),
             _image != null ? _getProfileImageFrame() : Container(),
@@ -128,6 +140,7 @@ class _UploadProfileState extends State<UploadProfile> {
     setState(() {
       _zoom = 1.0;
       _offset = Offset.zero;
+      _position = Offset.zero;
     });
   }
 
@@ -142,7 +155,6 @@ class _UploadProfileState extends State<UploadProfile> {
   void _handleScaleUpdate(ScaleUpdateDetails details) {
     setState(() {
       _zoom = _previousZoom * details.scale;
-
       // Ensure that item under the focal point stays in the same place despite zooming
       final Offset normalizedOffset =
           (_startingFocalPoint - _previousOffset) / _previousZoom;
@@ -151,7 +163,11 @@ class _UploadProfileState extends State<UploadProfile> {
   }
 
   Widget _getChosenProfileImage(File image, double height, double width) {
-    return Image.file(image, fit: BoxFit.fitWidth);
+    return Container(
+      height: height,
+      width: width,
+      child: Image.file(image, fit: BoxFit.fitWidth),
+    );
   }
 
   Widget _getProfileImageFrame() {
