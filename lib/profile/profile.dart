@@ -100,107 +100,105 @@ class _ProfileState extends State<Profile> {
                     ),
                     Column(
                       children: <Widget>[
-                        GestureDetector(
-                          key: profileKey,
-                          onTap: () {
+                        StreamBuilder<Object>(
+                          stream:
+                              ProfilePhotoService(uid: uid).getProfilePhoto(),
+                          builder: (context, snapshot) {
+                            String photoUrl;
+                            if (snapshot.data != null) photoUrl = snapshot.data;
+                            return GestureDetector(
+                              key: profileKey,
+                              onTap: () {},
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 80,
+                                ),
+                                width: 120,
+                                height: 120,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    fit: BoxFit.fitWidth,
+                                    image: photoUrl != null
+                                        ? Image.network(photoUrl).image
+                                        : AssetImage(
+                                            'assets/images/unknown-profile.png'),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        FlatButton(
+                          child: Icon(CupertinoIcons.photo_camera_solid),
+                          color: Colors.indigo,
+                          onPressed: () {
                             Navigator.of(context).push(
                               CupertinoPageRoute(
                                 builder: (_) => UploadProfile(),
                               ),
                             );
                           },
-                          child: StreamBuilder<Object>(
-                              stream: ProfilePhotoService(uid: uid)
-                                  .getProfilePhoto(),
-                              builder: (context, snapshot) {
-                                String photoUrl;
-                                if (snapshot.data != null)
-                                  photoUrl = snapshot.data;
-                                return Container(
-                                  margin: EdgeInsets.only(
-                                    top: 80,
-                                  ),
-                                  width: 120,
-                                  height: 120,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(
-                                      fit: BoxFit.fitWidth,
-                                      image: photoUrl != null
-                                          ? Image.network(photoUrl).image
-                                          : AssetImage(
-                                              'assets/images/unknown-profile.png'),
-                                    ),
-                                  ),
-                                  child: Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: Icon(
-                                      Icons.edit,
-                                      color: Colors.indigo,
-                                    ),
-                                  ),
-                                );
-                              }),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 15),
-                          child: Text(
-                            data.username,
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 10),
-                          child: Container(
-                            child: Text(
-                                'Hey ${userName.displayName}, you\'re looking great today! 😊'),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Spacer(
-                                flex: 2,
-                              ),
-                              FlatButton(
-                                textColor: Colors.black,
-                                onPressed: () {
-                                  Navigator.of(context).push(CupertinoPageRoute(
-                                      builder: (_) => DisplayFollow(
-                                          uid: uid, isFollowers: false)));
-                                },
-                                child: Text(
-                                  "Following: " +
-                                      (data.numberFollowing != null
-                                          ? data.numberFollowing.toString()
-                                          : '0'),
-                                ),
-                              ),
-                              Spacer(),
-                              FlatButton(
-                                textColor: Colors.black,
-                                onPressed: () {
-                                  Navigator.of(context).push(CupertinoPageRoute(
-                                      builder: (_) => DisplayFollow(
-                                          uid: uid, isFollowers: true)));
-                                },
-                                child: Text(
-                                  "Followers: " +
-                                      (data.numberFollowers != null
-                                          ? data.numberFollowers.toString()
-                                          : '0'),
-                                ),
-                              ),
-                              Spacer(
-                                flex: 2,
-                              ),
-                            ],
-                          ),
                         ),
                       ],
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 15),
+                      child: Text(
+                        data.username,
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10),
+                      child: Container(
+                        child: Text(
+                            'Hey ${userName.displayName}, you\'re looking great today! 😊'),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Spacer(
+                            flex: 2,
+                          ),
+                          FlatButton(
+                            textColor: Colors.black,
+                            onPressed: () {
+                              Navigator.of(context).push(CupertinoPageRoute(
+                                  builder: (_) => DisplayFollow(
+                                      uid: uid, isFollowers: false)));
+                            },
+                            child: Text(
+                              "Following: " +
+                                  (data.numberFollowing != null
+                                      ? data.numberFollowing.toString()
+                                      : '0'),
+                            ),
+                          ),
+                          Spacer(),
+                          FlatButton(
+                            textColor: Colors.black,
+                            onPressed: () {
+                              Navigator.of(context).push(CupertinoPageRoute(
+                                  builder: (_) => DisplayFollow(
+                                      uid: uid, isFollowers: true)));
+                            },
+                            child: Text(
+                              "Followers: " +
+                                  (data.numberFollowers != null
+                                      ? data.numberFollowers.toString()
+                                      : '0'),
+                            ),
+                          ),
+                          Spacer(
+                            flex: 2,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
