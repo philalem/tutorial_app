@@ -57,7 +57,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Expanded(
-                          flex: 5,
+                          flex: 6,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
@@ -71,25 +71,25 @@ class _ProfileFirstState extends State<ProfileFirst> {
                               SizedBox(
                                 height: 1 * SizeConfig.heightMultiplier,
                               ),
-                              Text(
-                                'Hello fellow CreAiders! I\'m Neil. ',
-                                softWrap: true,
-                                maxLines: 5,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 1.9 * SizeConfig.textMultiplier,
+                              Container(
+                                height: 10 * SizeConfig.heightMultiplier,
+                                child: Text(
+                                  'Hello fellow CreAiders! I\'m Neil. I really like making tutorials and sharing with my friends!',
+                                  softWrap: true,
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 1.9 * SizeConfig.textMultiplier,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(
-                                height: 6 * SizeConfig.heightMultiplier,
                               ),
                               Row(
                                 children: <Widget>[
                                   Column(
                                     children: <Widget>[
                                       Text(
-                                        "10.2K",
+                                        "543",
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontSize:
@@ -97,7 +97,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
-                                        "Protorix",
+                                        "Following",
                                         style: TextStyle(
                                           color: Colors.white70,
                                           fontSize:
@@ -112,7 +112,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                   Column(
                                     children: <Widget>[
                                       Text(
-                                        "543",
+                                        "10.2K",
                                         style: TextStyle(
                                             color: Colors.white,
                                             fontSize:
@@ -120,7 +120,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
-                                        "Following",
+                                        "Followers",
                                         style: TextStyle(
                                           color: Colors.white70,
                                           fontSize:
@@ -157,6 +157,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Row(
+                                    mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Text(
