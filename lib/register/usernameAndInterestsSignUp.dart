@@ -48,106 +48,112 @@ class _UsernameAndInterestsSignUpState
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Column(
+        child: ListView(
           children: <Widget>[
-            Align(
-              alignment: Alignment.topLeft,
-              child: IconButton(
-                icon: Icon(Icons.arrow_back_ios),
-                color: Colors.indigo,
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ),
-            Container(
-                padding: EdgeInsets.symmetric(vertical: 50.0, horizontal: 50.0),
-                child: Column(children: <Widget>[
-                  CreateUsername(
-                    enableForm: enableSubmitButton,
-                    disableForm: disableSubmitButton,
-                    controller: usernameHolder,
+            Column(
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_back_ios),
+                    color: Colors.indigo,
+                    onPressed: () => Navigator.of(context).pop(),
                   ),
-                  SizedBox(height: 20.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'What are you interested in?',
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22,
-                        ),
+                ),
+                Container(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 50.0, horizontal: 30.0),
+                    child: Column(children: <Widget>[
+                      CreateUsername(
+                        enableForm: enableSubmitButton,
+                        disableForm: disableSubmitButton,
+                        controller: usernameHolder,
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 20.0),
-                  Wrap(
-                      alignment: WrapAlignment.center,
-                      direction: Axis.horizontal,
-                      spacing: 12,
-                      children: topics.map(
-                        (topic) {
-                          bool added = topic.values.toList()[0];
-                          return CreaidButton(
-                            filled: added,
-                            color: added
-                                ? Colors.indigoAccent[700]
-                                : Colors.indigo,
-                            onPressed: () {
-                              _addOrRemoveInterest(topic);
+                      SizedBox(height: 20.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'What are you interested in?',
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 20.0),
+                      Wrap(
+                          alignment: WrapAlignment.center,
+                          direction: Axis.horizontal,
+                          spacing: 12,
+                          children: topics.map(
+                            (topic) {
+                              bool added = topic.values.toList()[0];
+                              return CreaidButton(
+                                filled: added,
+                                color: added
+                                    ? Colors.indigoAccent[700]
+                                    : Colors.indigo,
+                                onPressed: () {
+                                  _addOrRemoveInterest(topic);
+                                },
+                                shrink: true,
+                                children: <Widget>[
+                                  Text(topic.keys.toList()[0]),
+                                  SizedBox(
+                                    width: 4,
+                                  ),
+                                  added
+                                      ? Icon(
+                                          Icons.check,
+                                          size: 20,
+                                        )
+                                      : Icon(
+                                          Icons.add,
+                                          size: 20,
+                                        ),
+                                ],
+                              );
                             },
-                            shrink: true,
-                            children: <Widget>[
-                              Text(topic.keys.toList()[0]),
-                              SizedBox(
-                                width: 4,
-                              ),
-                              added
-                                  ? Icon(
-                                      Icons.check,
-                                      size: 20,
-                                    )
-                                  : Icon(
-                                      Icons.add,
-                                      size: 20,
-                                    ),
-                            ],
-                          );
-                        },
-                      ).toList()),
-                  SizedBox(height: 40.0),
-                  CreaidButton(
-                      disabled: _isSubmitDisabled,
-                      children: <Widget>[
-                        Text(
-                          'Done',
-                          style: TextStyle(fontSize: 16),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                      onPressed: () async {
-                        dynamic res = await _auth.registerWithEmailAndPassword(
-                            widget.email,
-                            usernameHolder.text,
-                            widget.password,
-                            widget.name,
-                            _interests);
+                          ).toList()),
+                      SizedBox(height: 40.0),
+                      CreaidButton(
+                          disabled: _isSubmitDisabled,
+                          children: <Widget>[
+                            Text(
+                              'Done',
+                              style: TextStyle(fontSize: 16),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                          onPressed: () async {
+                            dynamic res =
+                                await _auth.registerWithEmailAndPassword(
+                                    widget.email,
+                                    usernameHolder.text,
+                                    widget.password,
+                                    widget.name,
+                                    _interests);
 
-                        if (res != null) {
-                          res = await _auth.signInWithEmailAndPassword(
-                              widget.email, widget.password);
-                          Navigator.of(context).pop();
-                        }
-                        setState(() {
-                          error = 'Can not register this user';
-                        });
-                      }),
-                  SizedBox(height: 12.0),
-                  Text(
-                    error,
-                    style: TextStyle(color: Colors.red, fontSize: 14.0),
-                  )
-                ])),
+                            if (res != null) {
+                              res = await _auth.signInWithEmailAndPassword(
+                                  widget.email, widget.password);
+                              Navigator.of(context).pop();
+                            }
+                            setState(() {
+                              error = 'Can not register this user';
+                            });
+                          }),
+                      SizedBox(height: 12.0),
+                      Text(
+                        error,
+                        style: TextStyle(color: Colors.red, fontSize: 14.0),
+                      )
+                    ])),
+              ],
+            ),
           ],
         ),
       ),

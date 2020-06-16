@@ -18,6 +18,7 @@ class CreaidApp extends StatelessWidget {
         localizationsDelegates: [
           DefaultMaterialLocalizations.delegate,
         ],
+        debugShowCheckedModeBanner: false,
         home: Wrapper(),
         title: "Creaid",
         theme: CupertinoThemeData(

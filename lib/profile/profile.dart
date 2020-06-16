@@ -96,15 +96,15 @@ class _ProfileState extends State<Profile> {
                       child: Container(
                         width: screenWidth,
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
+                          gradient: SweepGradient(
                             colors: [
-                              Colors.white,
-                              Colors.black45,
-                            ], // whitish to gray
-                            tileMode: TileMode
-                                .repeated, // repeats the gradient over the canvas
+                              Colors.blue,
+                              Colors.green,
+                              Colors.yellow,
+                              Colors.red,
+                              Colors.blue
+                            ],
+                            stops: [0.0, 0.25, 0.5, 0.75, 1],
                           ),
                         ),
                       ),
