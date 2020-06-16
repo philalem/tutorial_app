@@ -18,6 +18,7 @@ class FeedVideoPlayer extends StatefulWidget {
 class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   int index = 0;
   bool _changeLock = false;
+  double _progress = 0;
   List<VideoPlayerController> _controllers = [];
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
   final interestHolder = TextEditingController();
