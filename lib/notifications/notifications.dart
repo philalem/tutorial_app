@@ -1,6 +1,7 @@
 import 'package:creaid/notifications/notificationsDbService.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -87,9 +88,9 @@ class _NotificationsState extends State<Notifications> {
     var uid = user.uid;
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
+      appBar: CupertinoNavigationBar(
+        backgroundColor: Colors.indigo,
+        middle: Text(
           'Notifications',
           textAlign: TextAlign.center,
         ),
@@ -112,15 +113,16 @@ class _NotificationsState extends State<Notifications> {
             }
 
             return ListView.separated(
-              padding: EdgeInsets.only(top: 10),
+              padding: EdgeInsets.only(top: 5),
               separatorBuilder: (context, index) => Divider(
+                height: 0,
                 color: Colors.grey[400],
               ),
               itemCount: data.length,
               itemBuilder: (context, index) => ListTile(
                 leading: Container(
-                  width: 50,
-                  height: 50,
+                  width: 30,
+                  height: 30,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
@@ -131,8 +133,24 @@ class _NotificationsState extends State<Notifications> {
                     ),
                   ),
                 ),
-                title: Text(
-                  '${data[index].name} ${getNotificationPhrase(data[index].type)}',
+                title: RichText(
+                  text: TextSpan(
+                    style: new TextStyle(
+                      fontSize: 14.0,
+                      color: Colors.black,
+                    ),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text:
+                            '${data[index].name} ${getNotificationPhrase(data[index].type)} ',
+                      ),
+                      data[index].comment != null && data[index].comment != ''
+                          ? TextSpan(
+                              text: '\n${data[index].comment}',
+                              style: TextStyle(fontWeight: FontWeight.bold))
+                          : TextSpan(),
+                    ],
+                  ),
                 ),
                 subtitle: _getProperDateTimeAgo(data[index].date),
               ),

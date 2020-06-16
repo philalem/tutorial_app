@@ -3,6 +3,7 @@ import 'package:creaid/profile/dynamicProfile.dart';
 import 'package:creaid/utility/algoliaService.dart';
 import 'package:creaid/video-player.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Explore extends StatefulWidget {
@@ -159,24 +160,33 @@ class _ExploreState extends State<Explore> {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
+    const IconData exit = const IconData(0xf2d7,
+        fontFamily: CupertinoIcons.iconFont,
+        fontPackage: CupertinoIcons.iconFontPackage);
 
     return Scaffold(
-      appBar: AppBar(
-        title: TextField(
+      resizeToAvoidBottomInset: false,
+      appBar: CupertinoNavigationBar(
+        padding: EdgeInsetsDirectional.only(end: 0, start: 0),
+        backgroundColor: Colors.indigo,
+        middle: TextField(
+          maxLines: 1,
+          minLines: 1,
           onChanged: (value) => _searchForUsers(),
           onTap: () {
+            focusNode.requestFocus();
             setState(() {
               _isSearching = true;
             });
           },
           cursorColor: Colors.white,
-          showCursor: _isSearching,
           controller: _searchController,
           focusNode: focusNode,
           decoration: InputDecoration(
+            isDense: true,
             contentPadding: EdgeInsets.symmetric(
               horizontal: 15,
-              vertical: 0,
+              vertical: 8,
             ),
             filled: true,
             fillColor: Colors.indigo[400],
@@ -203,23 +213,19 @@ class _ExploreState extends State<Explore> {
             color: Colors.white,
           ),
         ),
-        leading: IconButton(
+        trailing: IconButton(
           iconSize: 30,
-          icon: Icon((_isSearching ? Icons.close : Icons.search)),
+          icon: Icon(
+            (_isSearching ? exit : CupertinoIcons.search),
+            color: Colors.white,
+          ),
           onPressed: () {
-            focusNode.requestFocus();
+            focusNode.unfocus();
             setState(() {
               _isSearching = !_isSearching;
             });
           },
         ),
-        actions: <Widget>[
-          IconButton(
-            iconSize: 30,
-            icon: Icon(Icons.add),
-            onPressed: () {},
-          ),
-        ],
       ),
       body: _getSearchOrExplore(screenHeight, screenWidth),
     );

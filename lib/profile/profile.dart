@@ -1,9 +1,14 @@
+import 'dart:io' show Platform;
+
 import 'package:creaid/profile/DisplayFollow.dart';
 import 'package:creaid/profile/UploadProfile.dart';
+import 'package:creaid/profile/profilePhotoService.dart';
 import 'package:creaid/utility/UserData.dart';
+import 'package:creaid/utility/firebaseAuth.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -52,10 +57,25 @@ class _ProfileState extends State<Profile> {
     var screenWidth = size.width;
     final user = Provider.of<User>(context);
     var uid = user.uid;
+    const IconData signOut = const IconData(0xf220,
+        fontFamily: CupertinoIcons.iconFont,
+        fontPackage: CupertinoIcons.iconFontPackage);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_getLoadedName()),
+      appBar: CupertinoNavigationBar(
+        padding: EdgeInsetsDirectional.only(end: 0, start: 0),
+        backgroundColor: Colors.indigo,
+        middle: Text(
+          _getLoadedName(),
+          style: TextStyle(color: Colors.white),
+        ),
+        trailing: IconButton(
+            icon: Icon(
+              signOut,
+              size: 30,
+              color: Colors.white,
+            ),
+            onPressed: () => _showLogoutPopUp(context)),
       ),
       body: StreamBuilder<UserData>(
         stream: UserDbService(uid: uid).getNames(),
@@ -82,34 +102,42 @@ class _ProfileState extends State<Profile> {
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (_) => new UploadProfile(),
+                                builder: (_) => UploadProfile(),
                               ),
                             );
                           },
-                          child: Container(
-                            margin: EdgeInsets.only(
-                              top: 80,
-                            ),
-                            width: 120,
-                            height: 120,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                image: data.photoUrl != null &&
-                                        data.photoUrl != ''
-                                    ? Image.network(data.photoUrl).image
-                                    : AssetImage(
-                                        'assets/images/unknown-profile.png'),
-                              ),
-                            ),
-                            child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: Icon(
-                                Icons.edit,
-                                color: Colors.indigo,
-                              ),
-                            ),
-                          ),
+                          child: StreamBuilder<Object>(
+                              stream: ProfilePhotoService(uid: uid)
+                                  .getProfilePhoto(),
+                              builder: (context, snapshot) {
+                                String photoUrl;
+                                if (snapshot.data != null)
+                                  photoUrl = snapshot.data;
+                                return Container(
+                                  margin: EdgeInsets.only(
+                                    top: 80,
+                                  ),
+                                  width: 120,
+                                  height: 120,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: DecorationImage(
+                                      fit: BoxFit.fitWidth,
+                                      image: photoUrl != null
+                                          ? Image.network(photoUrl).image
+                                          : AssetImage(
+                                              'assets/images/unknown-profile.png'),
+                                    ),
+                                  ),
+                                  child: Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Icon(
+                                      Icons.edit,
+                                      color: Colors.indigo,
+                                    ),
+                                  ),
+                                );
+                              }),
                         ),
                         Padding(
                           padding: EdgeInsets.only(top: 15),
@@ -138,7 +166,8 @@ class _ProfileState extends State<Profile> {
                                 textColor: Colors.black,
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (_) => new DisplayFollow()));
+                                      builder: (_) => DisplayFollow(
+                                          uid: uid, isFollowers: false)));
                                 },
                                 child: Text(
                                   "Following: " +
@@ -152,7 +181,8 @@ class _ProfileState extends State<Profile> {
                                 textColor: Colors.black,
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (_) => new DisplayFollow()));
+                                      builder: (_) => DisplayFollow(
+                                          uid: uid, isFollowers: true)));
                                 },
                                 child: Text(
                                   "Followers: " +
@@ -197,5 +227,80 @@ class _ProfileState extends State<Profile> {
         },
       ),
     );
+  }
+}
+
+void _showLogoutPopUp(context) {
+  if (Platform.isAndroid) {
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Alert Dialog title"),
+          content: Text("Alert Dialog body"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            FlatButton(
+              padding: EdgeInsets.all(0),
+              child: Text(
+                "Log out",
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 16,
+                ),
+              ),
+              onPressed: () {
+                FireBaseAuthorization().signOut();
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              padding: EdgeInsets.all(0),
+              child: Text(
+                "Cancel",
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 16,
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  } else {
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: Text("Are you sure you want to log out?"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              CupertinoDialogAction(
+                child: Text(
+                  "Log out",
+                ),
+                onPressed: () {
+                  FireBaseAuthorization().signOut();
+                  Navigator.of(context).pop();
+                },
+              ),
+              CupertinoDialogAction(
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(
+                    color: Colors.red,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 }

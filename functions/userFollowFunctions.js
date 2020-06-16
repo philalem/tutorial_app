@@ -66,7 +66,6 @@ exports.incrementNewNotifications = async (userId) => {
 };
 
 exports.sendFollowNotification = async (snap, context) => {
-  const userId = context.params.userId;
   const followerUserId = context.params.followerId;
   const followerUserName = snap.data().name;
   const timestamp = new Date().getTime();
@@ -75,7 +74,7 @@ exports.sendFollowNotification = async (snap, context) => {
   });
   return await firestore
     .collection("notifications")
-    .doc(userId)
+    .doc()
     .collection("notifications")
     .doc(followerUserId)
     .set({

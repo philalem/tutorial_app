@@ -1,10 +1,9 @@
 import 'dart:io';
 
+import 'package:creaid/profile/profilePhotoService.dart';
 import 'package:creaid/utility/user.dart';
-import 'package:creaid/utility/userDBService.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +13,7 @@ class UploadProfile extends StatefulWidget {
 }
 
 class _UploadProfileState extends State<UploadProfile> {
+  final picker = ImagePicker();
   File _image;
   String _uploadedFileURL;
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -23,58 +23,58 @@ class _UploadProfileState extends State<UploadProfile> {
     final user = Provider.of<User>(context);
 
     return Scaffold(
-        backgroundColor: Colors.white,
-        key: _scaffoldKey,
-        body: Container(
-          padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 10.0),
-          child: Column(children: <Widget>[
-            RaisedButton(
+      backgroundColor: Colors.black87,
+      appBar: AppBar(
+        title: Text('Edit Your Profile Picture'),
+      ),
+      key: _scaffoldKey,
+      body: Column(children: <Widget>[
+        RaisedButton(
+            color: Colors.black,
+            child: Text(
+              'Choose Picture',
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () {
+              chooseFile();
+            }),
+        _image != null
+            ? RaisedButton(
                 color: Colors.black,
                 child: Text(
-                  'Choose Picture',
+                  'Upload Picture',
                   style: TextStyle(color: Colors.white),
                 ),
+                onPressed: () async {
+                  await uploadFile();
+                  print(_uploadedFileURL);
+                  if (_uploadedFileURL != null) {
+                    ProfilePhotoService(uid: user.uid)
+                        .uploadPhoto(_uploadedFileURL);
+                    Navigator.pop(context, true);
+                  } else {
+                    _showDialog();
+                  }
+                })
+            : new Container(),
+        SizedBox(height: 20.0),
+        _uploadedFileURL == null
+            ? RaisedButton(
+                color: Colors.black,
+                child: Text('Return to Profile',
+                    style: TextStyle(color: Colors.white)),
                 onPressed: () {
-                  chooseFile();
-                }),
-            _image != null
-                ? RaisedButton(
-                    color: Colors.black,
-                    child: Text(
-                      'Upload Picture',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    onPressed: () async {
-                      uploadFile();
-                      print(_uploadedFileURL);
-                      if (_uploadedFileURL != null) {
-                        UserDbService(uid: user.uid)
-                            .updatePhotoUrl(_uploadedFileURL);
-                        Navigator.pop(context, true);
-                      } else {
-                        _showDialog();
-                      }
-                    })
-                : new Container(),
-            SizedBox(height: 20.0),
-            _uploadedFileURL == null
-                ? RaisedButton(
-                    color: Colors.black,
-                    child: Text('Return to Profile',
-                        style: TextStyle(color: Colors.white)),
-                    onPressed: () {
-                      Navigator.pop(context, true);
-                    })
-                : new Container()
-          ]),
-        ));
+                  Navigator.pop(context, true);
+                })
+            : Container()
+      ]),
+    );
   }
 
   Future chooseFile() async {
-    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
-      setState(() {
-        _image = image;
-      });
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      _image = File(pickedFile.path);
     });
   }
 
@@ -85,7 +85,9 @@ class _UploadProfileState extends State<UploadProfile> {
     await uploadTask.onComplete;
     print('File Uploaded');
     String fileUrl = await storageReference.getDownloadURL();
-    _uploadedFileURL = fileUrl;
+    setState(() {
+      _uploadedFileURL = fileUrl;
+    });
   }
 
   void _showDialog() {
