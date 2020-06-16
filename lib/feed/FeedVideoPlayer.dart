@@ -2,6 +2,7 @@ import 'package:creaid/feed/FeedCommentObject.dart';
 import 'package:creaid/feed/VideoFeedObject.dart';
 import 'package:creaid/profile/profile.dart';
 import 'package:creaid/utility/userDBService.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -138,9 +139,8 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
+      appBar: CupertinoNavigationBar(
+        middle: Text(
           'Creaid',
           style: GoogleFonts.satisfy(
             fontSize: 34,

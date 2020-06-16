@@ -29,7 +29,7 @@ class _RegisterState extends State<Register> {
       statusBarBrightness: Brightness.light,
     ));
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       body: Center(
         child: ListView(
@@ -58,7 +58,7 @@ class _RegisterState extends State<Register> {
               ),
             ),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 50.0),
+              padding: EdgeInsets.symmetric(horizontal: 30.0),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -71,6 +71,23 @@ class _RegisterState extends State<Register> {
                               fontWeight: FontWeight.bold,
                               fontSize: 28,
                             )),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        FlatButton(
+                          padding: EdgeInsets.all(0),
+                          child: Text(
+                            'Already have an account?',
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
+                          onPressed: () {
+                            widget.toggleView();
+                          },
+                        ),
                       ],
                     ),
                     CreaidTextField(

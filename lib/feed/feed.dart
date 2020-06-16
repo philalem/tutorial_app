@@ -16,30 +16,37 @@ class Feed extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           UserData userData = snapshot.data;
-          if (userData.feedId.length > 0) {
-            return StreamBuilder<List<VideoFeedObject>>(
-              stream: UserDbService(uid: user.uid).getUserFeed(userData.feedId),
-              builder:
-                  (context, AsyncSnapshot<List<VideoFeedObject>> snapshot) {
-                if (snapshot.hasData) {
-                  List<VideoFeedObject> userDatas = snapshot.data;
-                  if (userDatas.length > 0) {
-                    return FeedVideoPlayer(
-                      videos: userDatas,
-                      feedId: userData.feedId,
-                    );
+          if (userData.feedId != null) {
+            if (userData.feedId.length > 0) {
+              return StreamBuilder<List<VideoFeedObject>>(
+                stream:
+                    UserDbService(uid: user.uid).getUserFeed(userData.feedId),
+                builder:
+                    (context, AsyncSnapshot<List<VideoFeedObject>> snapshot) {
+                  if (snapshot.hasData) {
+                    List<VideoFeedObject> userDatas = snapshot.data;
+                    if (userDatas.length > 0) {
+                      return FeedVideoPlayer(
+                        videos: userDatas,
+                        feedId: userData.feedId,
+                      );
+                    } else {
+                      return Align(
+                          alignment: Alignment.center,
+                          child: CircularProgressIndicator());
+                    }
                   } else {
                     return Align(
                         alignment: Alignment.center,
                         child: CircularProgressIndicator());
                   }
-                } else {
-                  return Align(
-                      alignment: Alignment.center,
-                      child: CircularProgressIndicator());
-                }
-              },
-            );
+                },
+              );
+            } else {
+              return Align(
+                  alignment: Alignment.center,
+                  child: CircularProgressIndicator());
+            }
           } else {
             return Align(
                 alignment: Alignment.center,

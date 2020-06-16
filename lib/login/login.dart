@@ -27,25 +27,11 @@ class _LoginState extends State<Login> {
       statusBarBrightness: Brightness.light,
     ));
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       body: Center(
         child: ListView(
           children: <Widget>[
-            Align(
-              alignment: Alignment.topRight,
-              child: FlatButton(
-                child: Text(
-                  'Sign up',
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-                onPressed: () {
-                  widget.toggleView();
-                },
-              ),
-            ),
             Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 80.0),
@@ -56,7 +42,7 @@ class _LoginState extends State<Login> {
               ),
             ),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 50.0),
+              padding: EdgeInsets.symmetric(horizontal: 30.0),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -69,6 +55,23 @@ class _LoginState extends State<Login> {
                               fontWeight: FontWeight.bold,
                               fontSize: 28,
                             )),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        FlatButton(
+                          padding: EdgeInsets.all(0),
+                          child: Text(
+                            'Need to sign up?',
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
+                          onPressed: () {
+                            widget.toggleView();
+                          },
+                        ),
                       ],
                     ),
                     CreaidTextField(
