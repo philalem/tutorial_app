@@ -214,7 +214,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                       height: 3 * SizeConfig.heightMultiplier,
                     ),
                     Container(
-                      height: 37 * SizeConfig.heightMultiplier,
+                      height: 39 * SizeConfig.heightMultiplier,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: <Widget>[
