@@ -160,9 +160,6 @@ class _ExploreState extends State<Explore> {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    const IconData exit = const IconData(0xf2d7,
-        fontFamily: CupertinoIcons.iconFont,
-        fontPackage: CupertinoIcons.iconFontPackage);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
