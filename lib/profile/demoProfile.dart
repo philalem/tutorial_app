@@ -1,4 +1,3 @@
-import 'package:creaid/config/sizeConfig.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -12,8 +11,7 @@ class MyApp extends StatelessWidget {
       builder: (context, constraints) {
         return OrientationBuilder(
           builder: (context, orientation) {
-            SizeConfig().init(constraints, orientation);
-            return MaterialApp(
+            return CupertinoApp(
               debugShowCheckedModeBanner: false,
               title: 'HomeScreen App',
               home: ProfileFirst(),
@@ -39,17 +37,16 @@ class _ProfileFirstState extends State<ProfileFirst> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xffF8F8FA),
+      appBar: CupertinoNavigationBar(middle: Text('Profile Demo')),
       body: Stack(
         overflow: Overflow.visible,
+        fit: StackFit.expand,
         children: <Widget>[
           Container(
             color: Colors.blue[600],
-            height: 40 * SizeConfig.heightMultiplier,
+            height: 400,
             child: Padding(
-              padding: EdgeInsets.only(
-                  left: 30.0,
-                  right: 30.0,
-                  top: 10 * SizeConfig.heightMultiplier),
+              padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 50),
               child: Column(
                 children: <Widget>[
                   Expanded(
@@ -65,26 +62,27 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                 "Neil Sullivan Paul",
                                 style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 3 * SizeConfig.textMultiplier,
+                                    fontSize: 24,
                                     fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
-                                height: 1 * SizeConfig.heightMultiplier,
+                                height: 10,
                               ),
                               Container(
-                                height: 10 * SizeConfig.heightMultiplier,
+                                height: 95,
                                 child: Text(
                                   'Hello fellow CreAiders! I\'m Neil. I really like making tutorials and sharing with my friends!',
                                   softWrap: true,
-                                  maxLines: 3,
+                                  maxLines: 5,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     color: Colors.white70,
-                                    fontSize: 1.9 * SizeConfig.textMultiplier,
+                                    fontSize: 14,
                                   ),
                                 ),
                               ),
                               Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
                                   Column(
                                     children: <Widget>[
@@ -92,43 +90,38 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                         "543",
                                         style: TextStyle(
                                             color: Colors.white,
-                                            fontSize:
-                                                3 * SizeConfig.textMultiplier,
+                                            fontSize: 20,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
                                         "Following",
                                         style: TextStyle(
                                           color: Colors.white70,
-                                          fontSize:
-                                              1.9 * SizeConfig.textMultiplier,
+                                          fontSize: 14,
                                         ),
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
-                                    width: 7 * SizeConfig.widthMultiplier,
-                                  ),
+                                  Spacer(),
                                   Column(
                                     children: <Widget>[
                                       Text(
                                         "10.2K",
                                         style: TextStyle(
                                             color: Colors.white,
-                                            fontSize:
-                                                3 * SizeConfig.textMultiplier,
+                                            fontSize: 20,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
                                         "Followers",
                                         style: TextStyle(
                                           color: Colors.white70,
-                                          fontSize:
-                                              1.9 * SizeConfig.textMultiplier,
+                                          fontSize: 14,
                                         ),
                                       ),
                                     ],
                                   ),
+                                  Spacer(),
                                 ],
                               ),
                             ],
@@ -143,11 +136,11 @@ class _ProfileFirstState extends State<ProfileFirst> {
                           child: Column(
                             children: <Widget>[
                               CircleAvatar(
-                                  radius: 6 * SizeConfig.heightMultiplier,
+                                  radius: 54,
                                   backgroundImage: AssetImage(
                                       'assets/images/phillip_profile.jpg')),
                               SizedBox(
-                                height: 3 * SizeConfig.heightMultiplier,
+                                height: 28,
                               ),
                               Container(
                                 decoration: BoxDecoration(
@@ -164,13 +157,12 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                         "Edit ",
                                         style: TextStyle(
                                             color: Colors.white60,
-                                            fontSize: 1.8 *
-                                                SizeConfig.textMultiplier),
+                                            fontSize: 14),
                                       ),
                                       Icon(
                                         CupertinoIcons.pencil,
                                         color: Colors.white60,
-                                        size: 1.8 * SizeConfig.textMultiplier,
+                                        size: 14,
                                       ),
                                     ],
                                   ),
@@ -186,114 +178,118 @@ class _ProfileFirstState extends State<ProfileFirst> {
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(top: 35 * SizeConfig.heightMultiplier),
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(30.0),
-                    topLeft: Radius.circular(30.0),
-                  )),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(
-                          left: 30.0, top: 3 * SizeConfig.heightMultiplier),
-                      child: Text(
-                        "My Albums",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 2.2 * SizeConfig.textMultiplier),
+          DraggableScrollableSheet(
+            initialChildSize: 0.65,
+            maxChildSize: 1,
+            minChildSize: 0.65,
+            builder: (BuildContext context, ScrollController scrollController) {
+              return Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(30.0),
+                      topLeft: Radius.circular(30.0),
+                    )),
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(left: 30, top: 30),
+                        child: Text(
+                          "My Albums",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22),
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 3 * SizeConfig.heightMultiplier,
-                    ),
-                    Container(
-                      height: 39 * SizeConfig.heightMultiplier,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: <Widget>[
-                          _myAlbumCard(
-                              "assets/images/phillip_profile.jpg",
-                              "assets/images/phillip_profile.jpg",
-                              "assets/images/phillip_profile.jpg",
-                              "assets/images/phillip_profile.jpg",
-                              "+178",
-                              "Best Trip"),
-                          _myAlbumCard(
-                              "assets/images/phillip_profile.jpg",
-                              "assets/images/phillip_profile.jpg",
-                              "assets/images/phillip_profile.jpg",
-                              "assets/images/phillip_profile.jpg",
-                              "+18",
-                              "Hill Lake Tourism"),
-                          _myAlbumCard(
-                              "assets/images/phillip_profile.jpg",
-                              "assets/images/phillip_profile.jpg",
-                              "assets/images/phillip_profile.jpg",
-                              "assets/images/phillip_profile.jpg",
-                              "+1288",
-                              "The Grand Canyon"),
-                          SizedBox(
-                            width: 10 * SizeConfig.widthMultiplier,
-                          ),
-                        ],
+                      SizedBox(
+                        height: 30,
                       ),
-                    ),
-                    SizedBox(
-                      height: 3 * SizeConfig.heightMultiplier,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 30.0, right: 30.0),
-                      child: Row(
-                        children: <Widget>[
-                          Text(
-                            "Favourite places",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 2.2 * SizeConfig.textMultiplier),
-                          ),
-                          Spacer(),
-                          Text(
-                            "View All",
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 1.7 * SizeConfig.textMultiplier),
-                          ),
-                        ],
+                      Container(
+                        height: 300,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: <Widget>[
+                            _myAlbumCard(
+                                "assets/images/phillip_profile.jpg",
+                                "assets/images/phillip_profile.jpg",
+                                "assets/images/phillip_profile.jpg",
+                                "assets/images/phillip_profile.jpg",
+                                "+178",
+                                "Best Trip"),
+                            _myAlbumCard(
+                                "assets/images/phillip_profile.jpg",
+                                "assets/images/phillip_profile.jpg",
+                                "assets/images/phillip_profile.jpg",
+                                "assets/images/phillip_profile.jpg",
+                                "+18",
+                                "Hill Lake Tourism"),
+                            _myAlbumCard(
+                                "assets/images/phillip_profile.jpg",
+                                "assets/images/phillip_profile.jpg",
+                                "assets/images/phillip_profile.jpg",
+                                "assets/images/phillip_profile.jpg",
+                                "+1288",
+                                "The Grand Canyon"),
+                            SizedBox(
+                              width: 100,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 3 * SizeConfig.heightMultiplier,
-                    ),
-                    Container(
-                      height: 20 * SizeConfig.heightMultiplier,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: <Widget>[
-                          _favoriteCard("assets/images/creaid_app_icon.png"),
-                          _favoriteCard("assets/images/creaid_app_icon.png"),
-                          _favoriteCard("assets/images/creaid_app_icon.png"),
-                          SizedBox(
-                            width: 10 * SizeConfig.widthMultiplier,
-                          )
-                        ],
+                      SizedBox(
+                        height: 30,
                       ),
-                    ),
-                    SizedBox(
-                      height: 3 * SizeConfig.heightMultiplier,
-                    )
-                  ],
+                      Padding(
+                        padding: EdgeInsets.only(left: 30.0, right: 30.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: <Widget>[
+                            Text(
+                              "Favourite places",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 22),
+                            ),
+                            Spacer(),
+                            Text(
+                              "View All",
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Container(
+                        height: 200,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: <Widget>[
+                            _favoriteCard("assets/images/phillip_profile.jpg"),
+                            _favoriteCard("assets/images/phillip_profile.jpg"),
+                            _favoriteCard("assets/images/phillip_profile.jpg"),
+                            SizedBox(
+                              width: 100,
+                            )
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            ),
-          )
+              );
+            },
+          ),
         ],
       ),
     );
@@ -304,8 +300,8 @@ class _ProfileFirstState extends State<ProfileFirst> {
     return Padding(
       padding: const EdgeInsets.only(left: 40.0),
       child: Container(
-        height: 37 * SizeConfig.heightMultiplier,
-        width: 60 * SizeConfig.widthMultiplier,
+        height: 370,
+        width: 250,
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.0),
@@ -321,8 +317,8 @@ class _ProfileFirstState extends State<ProfileFirst> {
                     borderRadius: BorderRadius.circular(10.0),
                     child: Image.asset(
                       asset1,
-                      height: 27 * SizeConfig.imageSizeMultiplier,
-                      width: 27 * SizeConfig.imageSizeMultiplier,
+                      height: 110,
+                      width: 110,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -331,15 +327,15 @@ class _ProfileFirstState extends State<ProfileFirst> {
                     borderRadius: BorderRadius.circular(10.0),
                     child: Image.asset(
                       asset2,
-                      height: 27 * SizeConfig.imageSizeMultiplier,
-                      width: 27 * SizeConfig.imageSizeMultiplier,
+                      height: 110,
+                      width: 110,
                       fit: BoxFit.cover,
                     ),
                   ),
                 ],
               ),
               SizedBox(
-                height: 1 * SizeConfig.heightMultiplier,
+                height: 10,
               ),
               Row(
                 children: <Widget>[
@@ -347,8 +343,8 @@ class _ProfileFirstState extends State<ProfileFirst> {
                     borderRadius: BorderRadius.circular(10.0),
                     child: Image.asset(
                       asset3,
-                      height: 27 * SizeConfig.imageSizeMultiplier,
-                      width: 27 * SizeConfig.imageSizeMultiplier,
+                      height: 110,
+                      width: 110,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -360,15 +356,15 @@ class _ProfileFirstState extends State<ProfileFirst> {
                         borderRadius: BorderRadius.circular(10.0),
                         child: Image.asset(
                           asset4,
-                          height: 27 * SizeConfig.imageSizeMultiplier,
-                          width: 27 * SizeConfig.imageSizeMultiplier,
+                          height: 110,
+                          width: 110,
                           fit: BoxFit.cover,
                         ),
                       ),
                       Positioned(
                         child: Container(
-                          height: 27 * SizeConfig.imageSizeMultiplier,
-                          width: 27 * SizeConfig.imageSizeMultiplier,
+                          height: 110,
+                          width: 110,
                           decoration: BoxDecoration(
                               color: Colors.black38,
                               borderRadius: BorderRadius.circular(10.0)),
@@ -377,7 +373,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                               more,
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 2.5 * SizeConfig.textMultiplier,
+                                fontSize: 24,
                               ),
                             ),
                           ),
@@ -388,13 +384,12 @@ class _ProfileFirstState extends State<ProfileFirst> {
                 ],
               ),
               Padding(
-                padding: EdgeInsets.only(
-                    left: 10.0, top: 2 * SizeConfig.heightMultiplier),
+                padding: EdgeInsets.only(left: 10.0, top: 20),
                 child: Text(
                   name,
                   style: TextStyle(
                       color: Colors.black,
-                      fontSize: 2 * SizeConfig.textMultiplier,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold),
                 ),
               )
@@ -412,8 +407,8 @@ class _ProfileFirstState extends State<ProfileFirst> {
         borderRadius: BorderRadius.circular(15.0),
         child: Image.asset(
           s,
-          height: 20 * SizeConfig.heightMultiplier,
-          width: 70 * SizeConfig.widthMultiplier,
+          height: 200,
+          width: 300,
           fit: BoxFit.cover,
         ),
       ),
