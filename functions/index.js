@@ -4,6 +4,7 @@ const userFunctions = require("./userFunctions");
 const algoliaFunctions = require("./algoliaFunctions");
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
+const feedFunction = require("./feedFunctions")
 admin.initializeApp();
 const db = admin.firestore();
 
@@ -35,6 +36,19 @@ exports.sendFollowNotification = functions
     return followFunctions.sendFollowNotification(snap, context);
   });
 
+exports.sendLikeNotifications = functions
+  .region("us-east4")
+  .firestore.document("posts/{feedId}/following-posts/{videoId}/liked/{uid}")
+  .onCreate((snap, context) => {
+    return feedFunction.sendLikeNotifications(snap, context);
+  });
+
+exports.sendCommentNotification = functions
+  .region("us-east4")
+  .firestore.document("posts/{feedId}/following-posts/{videoId}/comments/{randomId}")
+  .onCreate((snap, context) => {
+    return feedFunction.sendCommentNotifications(snap, context);
+  });
 // Shelving this for now.
 //
 // exports.generateThumbnailFromPost = functions.storage
