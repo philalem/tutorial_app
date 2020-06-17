@@ -37,13 +37,19 @@ class _ProfileFirstState extends State<ProfileFirst> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xffF8F8FA),
-      appBar: CupertinoNavigationBar(middle: Text('Profile Demo')),
+      appBar: CupertinoNavigationBar(
+        backgroundColor: Colors.indigo,
+        middle: Text(
+          'Profile Demo',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
       body: Stack(
         overflow: Overflow.visible,
         fit: StackFit.expand,
         children: <Widget>[
           Container(
-            color: Colors.blue[600],
+            color: Colors.grey[200],
             height: 400,
             child: Padding(
               padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 50),
@@ -61,7 +67,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                               Text(
                                 "Neil Sullivan Paul",
                                 style: TextStyle(
-                                    color: Colors.white,
+                                    color: Colors.black,
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold),
                               ),
@@ -76,7 +82,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                   maxLines: 5,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    color: Colors.white70,
+                                    color: Colors.black87,
                                     fontSize: 14,
                                   ),
                                 ),
@@ -89,14 +95,14 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                       Text(
                                         "543",
                                         style: TextStyle(
-                                            color: Colors.white,
+                                            color: Colors.black,
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
                                         "Following",
                                         style: TextStyle(
-                                          color: Colors.white70,
+                                          color: Colors.black87,
                                           fontSize: 14,
                                         ),
                                       ),
@@ -108,14 +114,14 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                       Text(
                                         "10.2K",
                                         style: TextStyle(
-                                            color: Colors.white,
+                                            color: Colors.black,
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       Text(
                                         "Followers",
                                         style: TextStyle(
-                                          color: Colors.white70,
+                                          color: Colors.black87,
                                           fontSize: 14,
                                         ),
                                       ),
@@ -136,15 +142,19 @@ class _ProfileFirstState extends State<ProfileFirst> {
                           child: Column(
                             children: <Widget>[
                               CircleAvatar(
-                                  radius: 54,
-                                  backgroundImage: AssetImage(
-                                      'assets/images/phillip_profile.jpg')),
+                                backgroundColor: Colors.indigoAccent,
+                                radius: 55,
+                                child: CircleAvatar(
+                                    radius: 50,
+                                    backgroundImage: AssetImage(
+                                        'assets/images/phillip_profile.jpg')),
+                              ),
                               SizedBox(
                                 height: 28,
                               ),
                               Container(
                                 decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.white60),
+                                  border: Border.all(color: Colors.black87),
                                   borderRadius: BorderRadius.circular(5.0),
                                 ),
                                 child: Padding(
@@ -156,12 +166,12 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                       Text(
                                         "Edit ",
                                         style: TextStyle(
-                                            color: Colors.white60,
+                                            color: Colors.black87,
                                             fontSize: 14),
                                       ),
                                       Icon(
                                         CupertinoIcons.pencil,
-                                        color: Colors.white60,
+                                        color: Colors.black87,
                                         size: 14,
                                       ),
                                     ],
@@ -204,7 +214,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                   child: Column(
                     children: <Widget>[
                       Padding(
-                        padding: EdgeInsets.only(left: 30, top: 30),
+                        padding: EdgeInsets.only(top: 30),
                         child: Text(
                           "Collections",
                           style: TextStyle(
@@ -301,16 +311,24 @@ class _ProfileFirstState extends State<ProfileFirst> {
   _myAlbumCard(String asset1, String asset2, String asset3, String asset4,
       String more, String name) {
     return Padding(
-      padding: const EdgeInsets.only(left: 40.0),
+      padding: const EdgeInsets.only(left: 40.0, bottom: 10),
       child: Container(
         height: 370,
         width: 250,
         decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20.0),
-            border: Border.all(color: Colors.grey, width: 0.2)),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20.0),
+          border: Border.all(color: Colors.grey, width: 0.2),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black54,
+              offset: Offset(0.0, 3.0),
+              blurRadius: 5.0,
+            ),
+          ],
+        ),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -369,8 +387,9 @@ class _ProfileFirstState extends State<ProfileFirst> {
                           height: 110,
                           width: 110,
                           decoration: BoxDecoration(
-                              color: Colors.black38,
-                              borderRadius: BorderRadius.circular(10.0)),
+                            color: Colors.black38,
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
                           child: Center(
                             child: Text(
                               more,
@@ -387,7 +406,10 @@ class _ProfileFirstState extends State<ProfileFirst> {
                 ],
               ),
               Padding(
-                padding: EdgeInsets.only(left: 10.0, top: 20),
+                padding: EdgeInsets.only(
+                  left: 10.0,
+                  top: 10,
+                ),
                 child: Text(
                   name,
                   style: TextStyle(
@@ -395,7 +417,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                       fontSize: 20,
                       fontWeight: FontWeight.bold),
                 ),
-              )
+              ),
             ],
           ),
         ),
