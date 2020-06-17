@@ -427,14 +427,25 @@ class _ProfileFirstState extends State<ProfileFirst> {
 
   _favoriteCard(String s) {
     return Padding(
-      padding: const EdgeInsets.only(left: 40.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(15.0),
-        child: Image.asset(
-          s,
-          height: 200,
-          width: 300,
-          fit: BoxFit.cover,
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+      child: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black54,
+              offset: Offset(0.0, 3.0),
+              blurRadius: 10.0,
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(15.0),
+          child: Image.asset(
+            s,
+            height: 200,
+            width: 300,
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );
