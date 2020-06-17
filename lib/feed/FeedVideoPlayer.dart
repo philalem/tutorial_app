@@ -239,7 +239,9 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                                             .addComment(
                                                 widget.videos[index].documentId,
                                                 widget.feedId,
-                                                value),
+                                                value,
+                                                widget.videos[index].author
+                                                ),
                                         interestHolder.clear()
                                       },
                                   validator: (val) => val.isEmpty
@@ -334,10 +336,11 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
           SizedBox(
             width: MediaQuery.of(context).size.width * .05,
           ),
-          FloatingActionButton(
+          FloatingActionButton.extended(
             onPressed: () => UserDbService(uid: widget.videos[index].uid)
-                .addLike(widget.videos[index].documentId, widget.feedId),
-            child: StreamBuilder<VideoFeedObject>(
+                .addLike(widget.videos[index].documentId, widget.feedId, widget.videos[index].author),
+
+            label: StreamBuilder<VideoFeedObject>(
               stream: UserDbService(uid: widget.videos[index].uid)
                   .getVideo(widget.feedId, widget.videos[index].documentId),
               builder: (context, snapshot) {
@@ -349,6 +352,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                 }
               },
             ),
+            icon: Icon(Icons.thumb_up)
           ),
         ],
       ),
