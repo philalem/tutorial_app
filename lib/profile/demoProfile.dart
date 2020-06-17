@@ -179,18 +179,26 @@ class _ProfileFirstState extends State<ProfileFirst> {
             ),
           ),
           DraggableScrollableSheet(
-            initialChildSize: 0.65,
-            maxChildSize: 1,
-            minChildSize: 0.65,
+            initialChildSize: 0.68,
+            maxChildSize: 0.99,
+            minChildSize: 0.68,
             builder: (BuildContext context, ScrollController scrollController) {
               return Container(
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(30.0),
-                      topLeft: Radius.circular(30.0),
-                    )),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(30.0),
+                    topLeft: Radius.circular(30.0),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black54,
+                      offset: Offset(0.0, 3.0),
+                      blurRadius: 10.0,
+                    ),
+                  ],
+                ),
                 child: SingleChildScrollView(
                   controller: scrollController,
                   child: Column(
