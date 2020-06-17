@@ -1,5 +1,6 @@
 class FeedCommentObject {
   String comment;
+  String name;
 
-  FeedCommentObject({this.comment});
+  FeedCommentObject({this.comment, this.name});
 }
