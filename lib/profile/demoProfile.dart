@@ -206,7 +206,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                       Padding(
                         padding: EdgeInsets.only(left: 30, top: 30),
                         child: Text(
-                          "My Albums",
+                          "Collections",
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
@@ -254,20 +254,15 @@ class _ProfileFirstState extends State<ProfileFirst> {
                       Padding(
                         padding: EdgeInsets.only(left: 30.0, right: 30.0),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: <Widget>[
                             Text(
-                              "Favourite places",
+                              "All Posts",
                               style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 22),
-                            ),
-                            Spacer(),
-                            Text(
-                              "View All",
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 14),
                             ),
                           ],
                         ),
