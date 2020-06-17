@@ -15,6 +15,9 @@ class CreaidApp extends StatelessWidget {
     return StreamProvider<User>.value(
       value: FireBaseAuthorization().user,
       child: CupertinoApp(
+        localizationsDelegates: [
+          DefaultMaterialLocalizations.delegate,
+        ],
         home: Wrapper(),
         title: "Creaid",
         theme: CupertinoThemeData(

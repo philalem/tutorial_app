@@ -57,7 +57,7 @@ class UserDbService {
     List<FeedCommentObject> res = new List();
 
     snapshot.documents.forEach(
-        (comment) => res.add(FeedCommentObject(comment: comment['comment'])));
+        (comment) => res.add(FeedCommentObject(comment: comment['comment'], name: comment['name'])));
 
     return res;
   }
@@ -105,20 +105,20 @@ class UserDbService {
         .map(_mapFeedCommentObject);
   }
 
-  addComment(String videoId, String feedId, String comment) async {
+  addComment(String videoId, String feedId, String comment, String author) async {
     await feedInfoCollection
         .document(feedId)
         .collection('following-posts')
         .document(videoId)
         .collection('comments')
-        .add({'comment': comment});
+        .add({'comment': comment, 'name' : author, 'uid' : uid});
   }
 
-  addLike(String videoId, String feedId) async {
+  addLike(String videoId, String feedId, String author) async {
     final likeDocument = await feedInfoCollection.document(feedId).collection('following-posts').document(videoId).collection('liked').document(uid).get();
 
     if (likeDocument == null || !likeDocument.exists) {
-      await feedInfoCollection.document(feedId).collection('following-posts').document(videoId).collection('liked').document(uid).setData({'liker-id' : uid});
+      await feedInfoCollection.document(feedId).collection('following-posts').document(videoId).collection('liked').document(uid).setData({'liker-id' : uid, "name" : author});
       await feedInfoCollection.document(feedId).collection('following-posts').document(videoId).updateData({'likes' : FieldValue.increment(1)});
     }
   }
@@ -126,4 +126,5 @@ class UserDbService {
   Stream<VideoFeedObject> getVideo(String feedId, String videoId) {
     return feedInfoCollection.document(feedId).collection('following-posts').document(videoId).snapshots().map(_mapSingleVideoFeedObject);
   }
+
 }
