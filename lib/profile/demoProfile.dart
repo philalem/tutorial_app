@@ -1,3 +1,4 @@
+import 'package:creaid/profile/editProfile.dart';
 import 'package:creaid/profile/profilePhotoService.dart';
 import 'package:creaid/utility/UserData.dart';
 import 'package:creaid/utility/user.dart';
@@ -40,6 +41,7 @@ class ProfileFirst extends StatefulWidget {
 
 class _ProfileFirstState extends State<ProfileFirst> {
   FirebaseUser userName;
+  String photoUrl;
 
   @override
   void initState() {
@@ -150,30 +152,43 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                   ),
                                 ),
                                 Spacer(),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.black87),
-                                    borderRadius: BorderRadius.circular(5.0),
+                                FlatButton(
+                                  padding: EdgeInsets.all(0),
+                                  onPressed: () => Navigator.of(context).push(
+                                    CupertinoPageRoute(
+                                      builder: (context) => EditProfile(
+                                        name: data.name,
+                                        username: data.username,
+                                        email: userName.email,
+                                        profileImage: NetworkImage(photoUrl),
+                                      ),
+                                    ),
                                   ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Text(
-                                          "Edit ",
-                                          style: TextStyle(
-                                              color: Colors.black87,
-                                              fontSize: 16),
-                                        ),
-                                        Icon(
-                                          CupertinoIcons.pencil,
-                                          color: Colors.black87,
-                                          size: 16,
-                                        ),
-                                      ],
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.black87),
+                                      borderRadius: BorderRadius.circular(5.0),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Text(
+                                            "Edit ",
+                                            style: TextStyle(
+                                                color: Colors.black87,
+                                                fontSize: 16),
+                                          ),
+                                          Icon(
+                                            CupertinoIcons.pencil,
+                                            color: Colors.black87,
+                                            size: 16,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -203,7 +218,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                               child:
                                                   CircularProgressIndicator(),
                                             );
-                                          String photoUrl = snapshot.data;
+                                          photoUrl = snapshot.data;
                                           return CircleAvatar(
                                             radius: 70,
                                             backgroundImage: photoUrl != null
