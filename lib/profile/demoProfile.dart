@@ -4,7 +4,6 @@ import 'package:creaid/utility/userDBService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(MyApp());
@@ -70,7 +69,6 @@ class _ProfileFirstState extends State<ProfileFirst> {
     Size size = MediaQuery.of(context).size;
     double height = size.height;
     double width = size.width;
-    ScreenUtil.init(context);
     final user = Provider.of<User>(context);
     var uid = user.uid;
     const IconData signOut = const IconData(0xf220,
