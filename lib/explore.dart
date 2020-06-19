@@ -198,6 +198,7 @@ class _ExploreState extends State<Explore> {
               ),
             ),
             placeholder: 'Search',
+            placeholderStyle: TextStyle(color: Colors.white54),
             decoration: BoxDecoration(
               color: Colors.indigo[400],
               borderRadius: BorderRadius.circular(10),
