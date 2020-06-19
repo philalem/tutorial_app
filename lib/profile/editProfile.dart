@@ -48,9 +48,9 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      statusBarBrightness: Brightness.light,
-    ));
+    Size size = MediaQuery.of(context).size;
+    double height = size.height;
+    double width = size.width;
     return Scaffold(
       appBar: CupertinoNavigationBar(
         backgroundColor: Colors.indigo,
@@ -68,118 +68,154 @@ class _EditProfileState extends State<EditProfile> {
       body: Center(
         child: ListView(
           children: <Widget>[
+            SizedBox(
+              height: height * 0.02,
+            ),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 30.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: <Widget>[
-                    FittedBox(
-                      fit: BoxFit.contain,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.indigoAccent,
-                        radius: 75,
-                        child: CircleAvatar(
-                          radius: 70,
-                          backgroundImage: widget.profileImage != null
-                              ? NetworkImage(widget.profileImage)
-                              : AssetImage('assets/images/unknown-profile.png'),
+              margin: EdgeInsets.symmetric(
+                horizontal: width * 0.1,
+              ),
+              child: Card(
+                color: Colors.grey[200],
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(
+                        height: height * 0.01,
+                      ),
+                      FittedBox(
+                        fit: BoxFit.contain,
+                        child: Stack(
+                          children: <Widget>[
+                            CircleAvatar(
+                              backgroundColor: Colors.indigoAccent,
+                              radius: 75,
+                              child: CircleAvatar(
+                                radius: 70,
+                                backgroundImage: widget.profileImage != null
+                                    ? NetworkImage(widget.profileImage)
+                                    : AssetImage(
+                                        'assets/images/unknown-profile.png'),
+                              ),
+                            ),
+                            Positioned(
+                              width: 150,
+                              bottom: 10,
+                              child: Icon(
+                                CupertinoIcons.pencil,
+                                color: Colors.white,
+                              ),
+                            )
+                          ],
                         ),
                       ),
-                    ),
-                    CupertinoTextField(
-                      controller: nameController,
-                      textAlignVertical: TextAlignVertical.center,
-                      textInputAction: TextInputAction.done,
-                      onSubmitted: (value) {
-                        setState(() {});
-                      },
-                      maxLines: 1,
-                      minLines: 1,
-                      onTap: () {
-                        setState(() {});
-                      },
-                      cursorColor: Colors.white,
-                      placeholder: 'Search',
-                      placeholderStyle: TextStyle(color: Colors.white54),
-                      decoration: BoxDecoration(
-                        color: Colors.indigo[400],
-                        borderRadius: BorderRadius.circular(10),
+                      SizedBox(
+                        height: height * 0.05,
                       ),
-                      style: TextStyle(
-                        color: Colors.white,
+                      CupertinoTextField(
+                        controller: nameController,
+                        textAlignVertical: TextAlignVertical.center,
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (value) {
+                          setState(() {});
+                        },
+                        maxLines: 1,
+                        minLines: 1,
+                        onTap: () {
+                          setState(() {});
+                        },
+                        cursorColor: Colors.white,
+                        placeholder: 'Search',
+                        placeholderStyle: TextStyle(color: Colors.white54),
+                        decoration: BoxDecoration(
+                          color: Colors.indigo[400],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                    CupertinoTextField(
-                      controller: biographyController,
-                      textAlignVertical: TextAlignVertical.center,
-                      textInputAction: TextInputAction.done,
-                      onSubmitted: (value) {
-                        setState(() {});
-                      },
-                      maxLines: 1,
-                      minLines: 1,
-                      onTap: () {
-                        setState(() {});
-                      },
-                      cursorColor: Colors.white,
-                      placeholder: 'Search',
-                      placeholderStyle: TextStyle(color: Colors.white54),
-                      decoration: BoxDecoration(
-                        color: Colors.indigo[400],
-                        borderRadius: BorderRadius.circular(10),
+                      SizedBox(
+                        height: height * 0.1,
                       ),
-                      style: TextStyle(
-                        color: Colors.white,
+                      CupertinoTextField(
+                        controller: biographyController,
+                        textAlignVertical: TextAlignVertical.center,
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (value) {
+                          setState(() {});
+                        },
+                        maxLines: 5,
+                        minLines: 1,
+                        onTap: () {
+                          setState(() {});
+                        },
+                        cursorColor: Colors.white,
+                        placeholder: 'Search',
+                        placeholderStyle: TextStyle(color: Colors.white54),
+                        decoration: BoxDecoration(
+                          color: Colors.indigo[400],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                    CupertinoTextField(
-                      controller: usernameController,
-                      textAlignVertical: TextAlignVertical.center,
-                      textInputAction: TextInputAction.done,
-                      onSubmitted: (value) {
-                        setState(() {});
-                      },
-                      maxLines: 1,
-                      minLines: 1,
-                      onTap: () {
-                        setState(() {});
-                      },
-                      cursorColor: Colors.white,
-                      placeholder: 'Search',
-                      placeholderStyle: TextStyle(color: Colors.white54),
-                      decoration: BoxDecoration(
-                        color: Colors.indigo[400],
-                        borderRadius: BorderRadius.circular(10),
+                      SizedBox(
+                        height: height * 0.1,
                       ),
-                      style: TextStyle(
-                        color: Colors.white,
+                      CupertinoTextField(
+                        controller: usernameController,
+                        textAlignVertical: TextAlignVertical.center,
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (value) {
+                          setState(() {});
+                        },
+                        maxLines: 1,
+                        minLines: 1,
+                        onTap: () {
+                          setState(() {});
+                        },
+                        cursorColor: Colors.white,
+                        placeholder: 'Search',
+                        placeholderStyle: TextStyle(color: Colors.white54),
+                        decoration: BoxDecoration(
+                          color: Colors.indigo[400],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                    CupertinoTextField(
-                      controller: emailController,
-                      textAlignVertical: TextAlignVertical.center,
-                      textInputAction: TextInputAction.done,
-                      onSubmitted: (value) {
-                        setState(() {});
-                      },
-                      maxLines: 1,
-                      minLines: 1,
-                      onTap: () {
-                        setState(() {});
-                      },
-                      cursorColor: Colors.white,
-                      placeholder: 'Search',
-                      placeholderStyle: TextStyle(color: Colors.white54),
-                      decoration: BoxDecoration(
-                        color: Colors.indigo[400],
-                        borderRadius: BorderRadius.circular(10),
+                      SizedBox(
+                        height: height * 0.1,
                       ),
-                      style: TextStyle(
-                        color: Colors.white,
+                      CupertinoTextField(
+                        controller: emailController,
+                        textAlignVertical: TextAlignVertical.center,
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (value) {
+                          setState(() {});
+                        },
+                        maxLines: 1,
+                        minLines: 1,
+                        onTap: () {
+                          setState(() {});
+                        },
+                        cursorColor: Colors.white,
+                        placeholder: 'Search',
+                        placeholderStyle: TextStyle(color: Colors.white54),
+                        decoration: BoxDecoration(
+                          color: Colors.indigo[400],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
