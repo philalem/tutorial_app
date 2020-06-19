@@ -130,16 +130,15 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                   height: height * 0.008,
                                 ),
                                 Container(
-                                  height: height * 0.1,
                                   child: Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Expanded(
                                         child: Text(
-                                          'Hello fellow CreAiders! I\'m Neil. I really like making tutorials and sharing with my friends!',
+                                          'Hello fellow Cre fsdf sg ssgfgsfhsf hdhdfgfsgdfdg dgdf hdf hd hd fhd g df g dgd g fgf g d h dhd fhgdf hfg hf hf hfg h fh fgh fg hf ghfg Aiders! I\'m Neil. I really like making tutorials and sharing with my friends!',
                                           softWrap: true,
-                                          maxLines: 5,
+                                          maxLines: 6,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
                                             color: Colors.black87,
@@ -151,8 +150,73 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                   ),
                                 ),
                                 Spacer(),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.black87),
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text(
+                                          "Edit ",
+                                          style: TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 16),
+                                        ),
+                                        Icon(
+                                          CupertinoIcons.pencil,
+                                          color: Colors.black87,
+                                          size: 16,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: SizedBox(),
+                          ),
+                          Expanded(
+                            flex: 4,
+                            child: Column(
+                              children: <Widget>[
+                                FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.indigoAccent,
+                                    radius: 75,
+                                    child: StreamBuilder<Object>(
+                                        stream: ProfilePhotoService(uid: uid)
+                                            .getProfilePhoto(),
+                                        builder: (context, snapshot) {
+                                          if (!snapshot.hasData)
+                                            return Align(
+                                              alignment: Alignment.center,
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          String photoUrl = snapshot.data;
+                                          return CircleAvatar(
+                                            radius: 70,
+                                            backgroundImage: photoUrl != null
+                                                ? Image.network(photoUrl).image
+                                                : AssetImage(
+                                                    'assets/images/unknown-profile.png'),
+                                          );
+                                        }),
+                                  ),
+                                ),
+                                Spacer(),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     FittedBox(
                                       fit: BoxFit.contain,
@@ -162,7 +226,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                             data.numberFollowing.toString(),
                                             style: TextStyle(
                                                 color: Colors.black,
-                                                fontSize: 18,
+                                                fontSize: 24,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           Text(
@@ -184,7 +248,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                             data.numberFollowers.toString(),
                                             style: TextStyle(
                                                 color: Colors.black,
-                                                fontSize: 18,
+                                                fontSize: 24,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           Text(
@@ -197,73 +261,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                         ],
                                       ),
                                     ),
-                                    Spacer(),
                                   ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: SizedBox(),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Column(
-                              children: <Widget>[
-                                FittedBox(
-                                  fit: BoxFit.contain,
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.indigoAccent,
-                                    radius: 55,
-                                    child: StreamBuilder<Object>(
-                                        stream: ProfilePhotoService(uid: uid)
-                                            .getProfilePhoto(),
-                                        builder: (context, snapshot) {
-                                          if (!snapshot.hasData)
-                                            return Align(
-                                              alignment: Alignment.center,
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            );
-                                          String photoUrl = snapshot.data;
-                                          return CircleAvatar(
-                                            radius: 50,
-                                            backgroundImage: photoUrl != null
-                                                ? Image.network(photoUrl).image
-                                                : AssetImage(
-                                                    'assets/images/unknown-profile.png'),
-                                          );
-                                        }),
-                                  ),
-                                ),
-                                Spacer(),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.black87),
-                                    borderRadius: BorderRadius.circular(5.0),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Text(
-                                          "Edit ",
-                                          style: TextStyle(
-                                              color: Colors.black87,
-                                              fontSize: 12),
-                                        ),
-                                        Icon(
-                                          CupertinoIcons.pencil,
-                                          color: Colors.black87,
-                                          size: 12,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
                                 ),
                               ],
                             ),
