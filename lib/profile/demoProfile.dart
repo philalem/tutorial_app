@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sticky_headers/sticky_headers.dart';
 
 void main() => runApp(MyApp());
 
@@ -279,7 +280,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
             ),
             DraggableScrollableSheet(
               initialChildSize: 0.65,
-              maxChildSize: 0.95,
+              maxChildSize: 0.97,
               minChildSize: 0.65,
               builder:
                   (BuildContext context, ScrollController scrollController) {
@@ -305,21 +306,29 @@ class _ProfileFirstState extends State<ProfileFirst> {
                       topLeft: Radius.circular(30.0),
                       topRight: Radius.circular(30.0),
                     ),
-                    child: CustomScrollView(
+                    child: ListView(
                       controller: scrollController,
-                      slivers: <Widget>[
-                        CupertinoSliverNavigationBar(
-                          largeTitle: Text(
-                            "Collections",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
+                      children: <Widget>[
+                        SizedBox(
+                          height: height * 0.01,
+                        ),
+                        StickyHeader(
+                          header: Container(
+                            height: 50.0,
+                            color: Colors.white,
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.center,
+                            child: Text(
+                              "Collections",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24,
+                              ),
                             ),
                           ),
-                        ),
-                        SliverList(
-                          delegate: SliverChildListDelegate(
-                            [
+                          content: Column(
+                            children: <Widget>[
                               SizedBox(
                                 height: 30,
                               ),
@@ -358,23 +367,28 @@ class _ProfileFirstState extends State<ProfileFirst> {
                               SizedBox(
                                 height: 30,
                               ),
-                              Padding(
-                                padding:
-                                    EdgeInsets.only(left: 30.0, right: 30.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: <Widget>[
-                                    Text(
-                                      "All Posts",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: height * 0.01,
+                        ),
+                        StickyHeader(
+                          header: Container(
+                            height: 50.0,
+                            color: Colors.white,
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.center,
+                            child: Text(
+                              "All Posts",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 24),
+                            ),
+                          ),
+                          content: Column(
+                            children: <Widget>[
                               SizedBox(
                                 height: 30,
                               ),
