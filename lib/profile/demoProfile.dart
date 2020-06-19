@@ -1,3 +1,4 @@
+import 'package:creaid/profile/profilePhotoService.dart';
 import 'package:creaid/utility/UserData.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/userDBService.dart';
@@ -81,7 +82,11 @@ class _ProfileFirstState extends State<ProfileFirst> {
         backgroundColor: Colors.indigo,
         middle: Text(
           _getLoadedName(),
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.normal,
+          ),
         ),
       ),
       body: StreamBuilder<UserData>(
@@ -93,293 +98,332 @@ class _ProfileFirstState extends State<ProfileFirst> {
                 child: CircularProgressIndicator());
           }
           UserData data = snapshot.data;
-          return Stack(
-            overflow: Overflow.visible,
-            children: <Widget>[
-              Container(
-                color: Colors.grey[200],
-                height: height * 0.4,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 30),
-                  child: Column(
-                    children: <Widget>[
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Expanded(
-                              flex: 6,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  FittedBox(
-                                    fit: BoxFit.contain,
-                                    child: Text(
-                                      "Neil Sullivan Paul",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 26,
-                                          fontWeight: FontWeight.bold),
-                                    ),
+          return Stack(overflow: Overflow.visible, children: <Widget>[
+            Container(
+              color: Colors.grey[200],
+              height: height * 0.4,
+              child: Padding(
+                padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 30),
+                child: Column(
+                  children: <Widget>[
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Expanded(
+                            flex: 6,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: Text(
+                                    data.username,
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 26,
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                  SizedBox(
-                                    height: height * 0.008,
-                                  ),
-                                  Container(
-                                    height: height * 0.1,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Text(
-                                            'Hello fellow CreAiders! I\'m Neil. I really like making tutorials and sharing with my friends!',
-                                            softWrap: true,
-                                            maxLines: 5,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              color: Colors.black87,
-                                              fontSize: 14,
-                                            ),
+                                ),
+                                SizedBox(
+                                  height: height * 0.008,
+                                ),
+                                Container(
+                                  height: height * 0.1,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Text(
+                                          'Hello fellow CreAiders! I\'m Neil. I really like making tutorials and sharing with my friends!',
+                                          softWrap: true,
+                                          maxLines: 5,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 14,
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      FittedBox(
-                                        fit: BoxFit.contain,
-                                        child: Column(
-                                          children: <Widget>[
-                                            Text(
-                                              data.numberFollowing.toString(),
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(
-                                              "Following",
-                                              style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
                                       ),
-                                      Spacer(),
-                                      FittedBox(
-                                        fit: BoxFit.contain,
-                                        child: Column(
-                                          children: <Widget>[
-                                            Text(
-                                              data.numberFollowers.toString(),
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(
-                                              "Followers",
-                                              style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Spacer(),
                                     ],
                                   ),
-                                ],
-                              ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: SizedBox(),
-                            ),
-                            Expanded(
-                              flex: 3,
-                              child: Column(
-                                children: <Widget>[
-                                  FittedBox(
-                                    fit: BoxFit.contain,
-                                    child: CircleAvatar(
-                                      backgroundColor: Colors.indigoAccent,
-                                      radius: 55,
-                                      child: CircleAvatar(
-                                          radius: 50,
-                                          backgroundImage: AssetImage(
-                                              'assets/images/phillip_profile.jpg')),
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.black87),
-                                      borderRadius: BorderRadius.circular(5.0),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                ),
+                                Spacer(),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    FittedBox(
+                                      fit: BoxFit.contain,
+                                      child: Column(
                                         children: <Widget>[
                                           Text(
-                                            "Edit ",
+                                            data.numberFollowing.toString(),
                                             style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 12),
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
                                           ),
-                                          Icon(
-                                            CupertinoIcons.pencil,
-                                            color: Colors.black87,
-                                            size: 12,
+                                          Text(
+                                            "Following",
+                                            style: TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 12,
+                                            ),
                                           ),
                                         ],
                                       ),
                                     ),
+                                    Spacer(),
+                                    FittedBox(
+                                      fit: BoxFit.contain,
+                                      child: Column(
+                                        children: <Widget>[
+                                          Text(
+                                            data.numberFollowers.toString(),
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            "Followers",
+                                            style: TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Spacer(),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: SizedBox(),
+                          ),
+                          Expanded(
+                            flex: 3,
+                            child: Column(
+                              children: <Widget>[
+                                FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.indigoAccent,
+                                    radius: 55,
+                                    child: StreamBuilder<Object>(
+                                        stream: ProfilePhotoService(uid: uid)
+                                            .getProfilePhoto(),
+                                        builder: (context, snapshot) {
+                                          if (!snapshot.hasData)
+                                            return Align(
+                                              alignment: Alignment.center,
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          String photoUrl = snapshot.data;
+                                          return CircleAvatar(
+                                            radius: 50,
+                                            backgroundImage: photoUrl != null
+                                                ? Image.network(photoUrl).image
+                                                : AssetImage(
+                                                    'assets/images/unknown-profile.png'),
+                                          );
+                                        }),
                                   ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: height * 0.15,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              DraggableScrollableSheet(
-                initialChildSize: 0.65,
-                maxChildSize: 0.95,
-                minChildSize: 0.65,
-                builder:
-                    (BuildContext context, ScrollController scrollController) {
-                  return Container(
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(30.0),
-                        topLeft: Radius.circular(30.0),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black54,
-                          offset: Offset(0.0, 3.0),
-                          blurRadius: 10.0,
-                        ),
-                      ],
-                    ),
-                    child: SingleChildScrollView(
-                      controller: scrollController,
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(top: 30),
-                            child: Text(
-                              "Collections",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          Container(
-                            height: 300,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: <Widget>[
-                                _myAlbumCard(
-                                    "assets/images/phillip_profile.jpg",
-                                    "assets/images/phillip_profile.jpg",
-                                    "assets/images/phillip_profile.jpg",
-                                    "assets/images/phillip_profile.jpg",
-                                    "+178",
-                                    "Best Trip"),
-                                _myAlbumCard(
-                                    "assets/images/phillip_profile.jpg",
-                                    "assets/images/phillip_profile.jpg",
-                                    "assets/images/phillip_profile.jpg",
-                                    "assets/images/phillip_profile.jpg",
-                                    "+18",
-                                    "Hill Lake Tourism"),
-                                _myAlbumCard(
-                                    "assets/images/phillip_profile.jpg",
-                                    "assets/images/phillip_profile.jpg",
-                                    "assets/images/phillip_profile.jpg",
-                                    "assets/images/phillip_profile.jpg",
-                                    "+1288",
-                                    "The Grand Canyon"),
-                                SizedBox(
-                                  width: 100,
+                                ),
+                                Spacer(),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.black87),
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text(
+                                          "Edit ",
+                                          style: TextStyle(
+                                              color: Colors.black87,
+                                              fontSize: 12),
+                                        ),
+                                        Icon(
+                                          CupertinoIcons.pencil,
+                                          color: Colors.black87,
+                                          size: 12,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 30.0, right: 30.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: <Widget>[
-                                Text(
-                                  "All Posts",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          Container(
-                            height: 200,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: <Widget>[
-                                _favoriteCard(
-                                    "assets/images/phillip_profile.jpg"),
-                                _favoriteCard(
-                                    "assets/images/phillip_profile.jpg"),
-                                _favoriteCard(
-                                    "assets/images/phillip_profile.jpg"),
-                                SizedBox(
-                                  width: 100,
-                                )
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 30,
-                          )
                         ],
                       ),
                     ),
-                  );
-                },
+                    SizedBox(
+                      height: height * 0.15,
+                    ),
+                  ],
+                ),
               ),
-            ],
-          );
+            ),
+            DraggableScrollableSheet(
+              initialChildSize: 0.65,
+              maxChildSize: 0.95,
+              minChildSize: 0.65,
+              builder:
+                  (BuildContext context, ScrollController scrollController) {
+                return Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(30.0),
+                      topLeft: Radius.circular(30.0),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black54,
+                        offset: Offset(0.0, 3.0),
+                        blurRadius: 10.0,
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    clipBehavior: Clip.hardEdge,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30.0),
+                      topRight: Radius.circular(30.0),
+                    ),
+                    child: CustomScrollView(
+                      controller: scrollController,
+                      slivers: <Widget>[
+                        CupertinoSliverNavigationBar(
+                          largeTitle: Text(
+                            "Collections",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        SliverList(
+                          delegate: SliverChildListDelegate(
+                            [
+                              SizedBox(
+                                height: 30,
+                              ),
+                              Container(
+                                height: 300,
+                                child: ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  children: <Widget>[
+                                    _myAlbumCard(
+                                        "assets/images/phillip_profile.jpg",
+                                        "assets/images/phillip_profile.jpg",
+                                        "assets/images/phillip_profile.jpg",
+                                        "assets/images/phillip_profile.jpg",
+                                        "+178",
+                                        "Best Trip"),
+                                    _myAlbumCard(
+                                        "assets/images/phillip_profile.jpg",
+                                        "assets/images/phillip_profile.jpg",
+                                        "assets/images/phillip_profile.jpg",
+                                        "assets/images/phillip_profile.jpg",
+                                        "+18",
+                                        "Hill Lake Tourism"),
+                                    _myAlbumCard(
+                                        "assets/images/phillip_profile.jpg",
+                                        "assets/images/phillip_profile.jpg",
+                                        "assets/images/phillip_profile.jpg",
+                                        "assets/images/phillip_profile.jpg",
+                                        "+1288",
+                                        "The Grand Canyon"),
+                                    SizedBox(
+                                      width: 100,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(left: 30.0, right: 30.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: <Widget>[
+                                    Text(
+                                      "All Posts",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: 30,
+                              ),
+                              GridView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: 5.0,
+                                  mainAxisSpacing: 5.0,
+                                ),
+                                itemCount: 18,
+                                itemBuilder: (context, index) {
+                                  return Container(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      child:
+                                          Center(child: Text("Index: $index")),
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey,
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      border: Border.all(
+                                          color: Colors.grey, width: 0.2),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black54,
+                                          offset: Offset(-1.0, 1.0),
+                                          blurRadius: 1.0,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                              SizedBox(
+                                height: 30,
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            )
+          ]);
         },
       ),
     );
