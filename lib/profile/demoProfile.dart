@@ -160,7 +160,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                         name: data.name,
                                         username: data.username,
                                         email: userName.email,
-                                        profileImage: NetworkImage(photoUrl),
+                                        profileImage: photoUrl,
                                       ),
                                     ),
                                   ),
