@@ -322,13 +322,10 @@ class _ProfileFirstState extends State<ProfileFirst> {
                     child: ListView(
                       controller: scrollController,
                       children: <Widget>[
-                        SizedBox(
-                          height: height * 0.01,
-                        ),
                         StickyHeader(
                           header: Container(
-                            height: 50.0,
                             color: Colors.white,
+                            height: 50.0,
                             padding: EdgeInsets.symmetric(horizontal: 16.0),
                             alignment: Alignment.center,
                             child: Text(
@@ -471,7 +468,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
             BoxShadow(
               color: Colors.black54,
               offset: Offset(0.0, 3.0),
-              blurRadius: 5.0,
+              blurRadius: 3.0,
             ),
           ],
         ),
@@ -480,6 +477,19 @@ class _ProfileFirstState extends State<ProfileFirst> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(
+                  left: 10.0,
+                  bottom: 10,
+                ),
+                child: Text(
+                  name,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
               Row(
                 children: <Widget>[
                   ClipRRect(
@@ -552,19 +562,6 @@ class _ProfileFirstState extends State<ProfileFirst> {
                     ],
                   ),
                 ],
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  left: 10.0,
-                  top: 10,
-                ),
-                child: Text(
-                  name,
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
               ),
             ],
           ),
