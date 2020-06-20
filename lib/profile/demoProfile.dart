@@ -325,7 +325,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                         StickyHeader(
                           header: Container(
                             color: Colors.white,
-                            height: 50.0,
+                            height: height * 0.08,
                             padding: EdgeInsets.symmetric(horizontal: 16.0),
                             alignment: Alignment.center,
                             child: Text(
@@ -380,12 +380,9 @@ class _ProfileFirstState extends State<ProfileFirst> {
                             ],
                           ),
                         ),
-                        SizedBox(
-                          height: height * 0.01,
-                        ),
                         StickyHeader(
                           header: Container(
-                            height: 50.0,
+                            height: height * 0.08,
                             color: Colors.white,
                             padding: EdgeInsets.symmetric(horizontal: 16.0),
                             alignment: Alignment.center,
