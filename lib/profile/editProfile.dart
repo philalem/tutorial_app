@@ -1,3 +1,4 @@
+import 'package:creaid/profile/UploadProfile.dart';
 import 'package:creaid/register/usernameAndInterestsSignUp.dart';
 import 'package:creaid/utility/algoliaService.dart';
 import 'package:creaid/utility/creaidButton.dart';
@@ -85,43 +86,51 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                     FittedBox(
                       fit: BoxFit.contain,
-                      child: Stack(
-                        children: <Widget>[
-                          Card(
-                            elevation: 14,
-                            shape: CircleBorder(),
-                            child: CircleAvatar(
-                              backgroundColor: Colors.indigoAccent,
-                              radius: 75,
-                              child: CircleAvatar(
-                                radius: 70,
-                                backgroundImage: widget.profileImage != null
-                                    ? NetworkImage(widget.profileImage)
-                                    : AssetImage(
-                                        'assets/images/unknown-profile.png'),
-                              ),
-                            ),
+                      child: FlatButton(
+                        onPressed: () => Navigator.of(context).push(
+                          CupertinoPageRoute(
+                            builder: (_) => UploadProfile(),
                           ),
-                          Positioned(
-                            right: 0,
-                            bottom: 0,
-                            child: Card(
-                              color: Colors.indigo,
+                        ),
+                        child: Stack(
+                          children: <Widget>[
+                            Card(
                               elevation: 14,
                               shape: CircleBorder(),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(
-                                  child: Icon(
-                                    camera,
-                                    color: Colors.grey[200],
-                                    size: 30,
-                                  ),
+                              child: CircleAvatar(
+                                backgroundColor: Colors.indigoAccent,
+                                radius: 75,
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.transparent,
+                                  radius: 70,
+                                  backgroundImage: widget.profileImage != null
+                                      ? NetworkImage(widget.profileImage)
+                                      : AssetImage(
+                                          'assets/images/unknown-profile.png'),
                                 ),
                               ),
                             ),
-                          )
-                        ],
+                            Positioned(
+                              right: 0,
+                              bottom: 0,
+                              child: Card(
+                                color: Colors.indigo,
+                                elevation: 14,
+                                shape: CircleBorder(),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.camera_alt,
+                                      color: Colors.grey[200],
+                                      size: 30,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(

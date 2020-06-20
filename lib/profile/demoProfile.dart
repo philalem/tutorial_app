@@ -219,12 +219,22 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                                   CircularProgressIndicator(),
                                             );
                                           photoUrl = snapshot.data;
-                                          return CircleAvatar(
-                                            radius: 70,
-                                            backgroundImage: photoUrl != null
-                                                ? Image.network(photoUrl).image
-                                                : AssetImage(
-                                                    'assets/images/unknown-profile.png'),
+                                          return ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(25.0),
+                                            child: Container(
+                                              height: 140,
+                                              width: 140,
+                                              child: photoUrl != null
+                                                  ? FadeInImage(
+                                                      image: NetworkImage(
+                                                          photoUrl),
+                                                      placeholder: AssetImage(
+                                                          'assets/images/unknown-profile.png'),
+                                                    )
+                                                  : AssetImage(
+                                                      'assets/images/unknown-profile.png'),
+                                            ),
                                           );
                                         }),
                                   ),
