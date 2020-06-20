@@ -138,7 +138,11 @@ class _ProfileState extends State<Profile> {
                                     image: DecorationImage(
                                       fit: BoxFit.fitWidth,
                                       image: photoUrl != null
-                                          ? Image.network(photoUrl).image
+                                          ? FadeInImage(
+                                              image: NetworkImage(photoUrl),
+                                              placeholder: AssetImage(
+                                                  'assets/images/unknown-profile.png'),
+                                            )
                                           : AssetImage(
                                               'assets/images/unknown-profile.png'),
                                     ),
