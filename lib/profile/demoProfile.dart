@@ -219,9 +219,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                                   CircularProgressIndicator(),
                                             );
                                           photoUrl = snapshot.data;
-                                          return ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(25.0),
+                                          return ClipOval(
                                             child: Container(
                                               height: 140,
                                               width: 140,
