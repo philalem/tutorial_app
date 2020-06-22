@@ -98,7 +98,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
           if (!snapshot.hasData) {
             return Align(
                 alignment: Alignment.center,
-                child: CircularProgressIndicator());
+                child: CupertinoActivityIndicator());
           }
           UserData data = snapshot.data;
           return ListView(
@@ -120,109 +120,123 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
-                                  FittedBox(
-                                    fit: BoxFit.contain,
-                                    child: Text(
-                                      data.username,
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 26,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  Container(
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        FittedBox(
-                                          fit: BoxFit.contain,
-                                          child: Column(
-                                            children: <Widget>[
-                                              Text(
-                                                data.numberFollowing.toString(),
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Text(
-                                                "Following",
-                                                style: TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Spacer(),
-                                        FittedBox(
-                                          fit: BoxFit.contain,
-                                          child: Column(
-                                            children: <Widget>[
-                                              Text(
-                                                data.numberFollowers.toString(),
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Text(
-                                                "Followers",
-                                                style: TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Spacer(),
-                                      ],
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  FlatButton(
-                                    padding: EdgeInsets.all(0),
-                                    onPressed: () => Navigator.of(context).push(
-                                      CupertinoPageRoute(
-                                        builder: (context) => EditProfile(
-                                          name: data.name,
-                                          username: data.username,
-                                          email: userName.email,
-                                          profileImage: photoUrl,
-                                        ),
+                                  Expanded(
+                                    flex: 3,
+                                    child: FittedBox(
+                                      fit: BoxFit.contain,
+                                      child: Text(
+                                        data.username,
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 26,
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ),
+                                  ),
+                                  Expanded(
+                                    flex: 4,
                                     child: Container(
-                                      decoration: BoxDecoration(
-                                        border:
-                                            Border.all(color: Colors.black87),
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
+                                      margin: EdgeInsets.only(top: 4),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          FittedBox(
+                                            fit: BoxFit.contain,
+                                            child: Column(
+                                              children: <Widget>[
+                                                Text(
+                                                  data.numberFollowing
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  "Following",
+                                                  style: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Spacer(),
+                                          FittedBox(
+                                            fit: BoxFit.contain,
+                                            child: Column(
+                                              children: <Widget>[
+                                                Text(
+                                                  data.numberFollowers
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  "Followers",
+                                                  style: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Spacer(),
+                                        ],
                                       ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 3,
+                                    child: FlatButton(
+                                      padding: EdgeInsets.only(top: 4),
+                                      onPressed: () =>
+                                          Navigator.of(context).push(
+                                        CupertinoPageRoute(
+                                          builder: (context) => EditProfile(
+                                            name: data.name,
+                                            username: data.username,
+                                            email: userName.email,
+                                            profileImage: photoUrl,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          border:
+                                              Border.all(color: Colors.black87),
+                                          borderRadius:
+                                              BorderRadius.circular(5.0),
+                                        ),
                                         child: Row(
                                           mainAxisSize: MainAxisSize.max,
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: <Widget>[
-                                            Text(
-                                              "Edit ",
-                                              style: TextStyle(
-                                                  color: Colors.black87,
-                                                  fontSize: 16),
+                                            FittedBox(
+                                              fit: BoxFit.contain,
+                                              child: Text(
+                                                "Edit ",
+                                                style: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontSize: 16),
+                                              ),
                                             ),
-                                            Icon(
-                                              CupertinoIcons.pencil,
-                                              color: Colors.black87,
-                                              size: 16,
+                                            FittedBox(
+                                              fit: BoxFit.contain,
+                                              child: Icon(
+                                                CupertinoIcons.pencil,
+                                                color: Colors.black87,
+                                                size: 16,
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -233,12 +247,10 @@ class _ProfileFirstState extends State<ProfileFirst> {
                               ),
                             ),
                             Expanded(
-                              child: SizedBox(),
-                            ),
-                            Expanded(
-                              flex: 8,
+                              flex: 5,
                               child: FittedBox(
                                 fit: BoxFit.contain,
+                                alignment: Alignment.centerRight,
                                 child: CircleAvatar(
                                   backgroundColor: Colors.indigoAccent,
                                   radius: 75,
