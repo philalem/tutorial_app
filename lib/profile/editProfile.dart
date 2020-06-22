@@ -1,8 +1,5 @@
 import 'package:creaid/profile/UploadProfile.dart';
-import 'package:creaid/register/usernameAndInterestsSignUp.dart';
 import 'package:creaid/utility/algoliaService.dart';
-import 'package:creaid/utility/creaidButton.dart';
-import 'package:creaid/utility/creaidTextField.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -149,12 +146,8 @@ class _EditProfileState extends State<EditProfile> {
                         setState(() {});
                       },
                       cursorColor: Colors.white,
-                      placeholder: 'Search',
+                      placeholder: 'Name',
                       placeholderStyle: TextStyle(color: Colors.white54),
-                      decoration: BoxDecoration(
-                        color: Colors.indigo[400],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
                       style: TextStyle(
                         color: Colors.black,
                       ),
@@ -175,12 +168,8 @@ class _EditProfileState extends State<EditProfile> {
                         setState(() {});
                       },
                       cursorColor: Colors.white,
-                      placeholder: 'Search',
+                      placeholder: 'Profile Description',
                       placeholderStyle: TextStyle(color: Colors.white54),
-                      decoration: BoxDecoration(
-                        color: Colors.indigo[400],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
                       style: TextStyle(
                         color: Colors.black,
                       ),
@@ -201,12 +190,8 @@ class _EditProfileState extends State<EditProfile> {
                         setState(() {});
                       },
                       cursorColor: Colors.white,
-                      placeholder: 'Search',
+                      placeholder: 'Username',
                       placeholderStyle: TextStyle(color: Colors.white54),
-                      decoration: BoxDecoration(
-                        color: Colors.indigo[400],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
                       style: TextStyle(
                         color: Colors.black,
                       ),
@@ -227,12 +212,8 @@ class _EditProfileState extends State<EditProfile> {
                         setState(() {});
                       },
                       cursorColor: Colors.white,
-                      placeholder: 'Search',
+                      placeholder: 'email',
                       placeholderStyle: TextStyle(color: Colors.white54),
-                      decoration: BoxDecoration(
-                        color: Colors.indigo[400],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
                       style: TextStyle(
                         color: Colors.black,
                       ),
