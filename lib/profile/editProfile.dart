@@ -54,6 +54,7 @@ class _EditProfileState extends State<EditProfile> {
         fontPackage: CupertinoIcons.iconFontPackage);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: CupertinoNavigationBar(
         backgroundColor: Colors.indigo,
         middle: Text(
@@ -72,7 +73,6 @@ class _EditProfileState extends State<EditProfile> {
           ),
         ),
       ),
-      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.grey[200],
       body: Center(
         child: ListView(
@@ -144,7 +144,7 @@ class _EditProfileState extends State<EditProfile> {
                         Text(
                           'Name',
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -165,7 +165,6 @@ class _EditProfileState extends State<EditProfile> {
                           onTap: () {
                             setState(() {});
                           },
-                          cursorColor: Colors.white,
                           placeholder: 'Name',
                           placeholderStyle: TextStyle(color: Colors.white54),
                           style: TextStyle(
@@ -178,11 +177,12 @@ class _EditProfileState extends State<EditProfile> {
                         Text(
                           'Profile Description',
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         CupertinoTextField(
+                          // TODO: add focus node to request focus
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius:
@@ -199,7 +199,6 @@ class _EditProfileState extends State<EditProfile> {
                           onTap: () {
                             setState(() {});
                           },
-                          cursorColor: Colors.white,
                           placeholder: 'Profile Description',
                           placeholderStyle: TextStyle(color: Colors.white54),
                           style: TextStyle(
@@ -212,7 +211,7 @@ class _EditProfileState extends State<EditProfile> {
                         Text(
                           'Username',
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -233,7 +232,6 @@ class _EditProfileState extends State<EditProfile> {
                           onTap: () {
                             setState(() {});
                           },
-                          cursorColor: Colors.white,
                           placeholder: 'Username',
                           placeholderStyle: TextStyle(color: Colors.white54),
                           style: TextStyle(
@@ -246,7 +244,7 @@ class _EditProfileState extends State<EditProfile> {
                         Text(
                           'Email',
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -267,7 +265,6 @@ class _EditProfileState extends State<EditProfile> {
                           onTap: () {
                             setState(() {});
                           },
-                          cursorColor: Colors.white,
                           placeholder: 'Email',
                           placeholderStyle: TextStyle(color: Colors.white54),
                           style: TextStyle(
