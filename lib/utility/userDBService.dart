@@ -117,7 +117,7 @@ class UserDbService {
         .add({'comment': comment, 'name': author, 'uid': uid});
   }
 
-  addLike(String videoId, String feedId) async {
+  addLike(String videoId, String feedId, String author) async {
     final likeDocument = await feedInfoCollection
         .document(feedId)
         .collection('following-posts')
@@ -133,7 +133,7 @@ class UserDbService {
           .document(videoId)
           .collection('liked')
           .document(uid)
-          .setData({'liker-id': uid});
+          .setData({'liker-id': uid, "name": author});
       await feedInfoCollection
           .document(feedId)
           .collection('following-posts')
