@@ -328,7 +328,12 @@ class _ProfileFirstState extends State<ProfileFirst> {
                     children: <Widget>[
                       StickyHeader(
                         header: Container(
-                          color: Colors.white,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Colors.grey[200], width: 1)),
+                          ),
                           height: 50,
                           padding: EdgeInsets.symmetric(horizontal: 16.0),
                           alignment: Alignment.center,
@@ -387,7 +392,12 @@ class _ProfileFirstState extends State<ProfileFirst> {
                       StickyHeader(
                         header: Container(
                           height: 50,
-                          color: Colors.white,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Colors.grey[200], width: 1)),
+                          ),
                           padding: EdgeInsets.symmetric(horizontal: 16.0),
                           alignment: Alignment.center,
                           child: Text(
