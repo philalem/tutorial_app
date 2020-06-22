@@ -125,7 +125,7 @@ class _CameraScreenState extends State<CameraScreen> {
                         });
                       }
                       Navigator.of(context).push(
-                        MaterialPageRoute(
+                        CupertinoPageRoute(
                           builder: (context) =>
                               PreviewImageScreen(paths: paths),
                         ),
@@ -157,7 +157,7 @@ class _CameraScreenState extends State<CameraScreen> {
                       }
                       if (paths.isEmpty) return;
                       Navigator.of(context).push(
-                        MaterialPageRoute(
+                        CupertinoPageRoute(
                           builder: (context) =>
                               PreviewImageScreen(paths: paths),
                         ),

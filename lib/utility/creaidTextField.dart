@@ -7,11 +7,13 @@ class CreaidTextField extends StatelessWidget {
       this.obsecure = false,
       this.validator,
       this.onChanged,
-      this.controller});
+      this.controller,
+      this.autofocus = false});
   final FormFieldSetter<String> onChanged;
   final Icon icon;
   final String hint;
   final bool obsecure;
+  final bool autofocus;
   final FormFieldValidator<String> validator;
   final TextEditingController controller;
   @override
@@ -20,7 +22,7 @@ class CreaidTextField extends StatelessWidget {
       controller: controller != null ? controller : TextEditingController(),
       onChanged: onChanged,
       validator: validator,
-      autofocus: true,
+      autofocus: autofocus,
       obscureText: obsecure,
       style: TextStyle(
         fontSize: 16,

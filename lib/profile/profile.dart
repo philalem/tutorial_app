@@ -67,7 +67,10 @@ class _ProfileState extends State<Profile> {
         backgroundColor: Colors.indigo,
         middle: Text(
           _getLoadedName(),
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.normal,
+          ),
         ),
         trailing: IconButton(
             icon: Icon(
@@ -88,11 +91,22 @@ class _ProfileState extends State<Profile> {
                 Stack(
                   children: <Widget>[
                     Positioned(
-                      top: 140,
+                      top: 0,
                       bottom: 0,
                       child: Container(
-                        color: Colors.grey[300],
                         width: screenWidth,
+                        decoration: BoxDecoration(
+                          gradient: SweepGradient(
+                            colors: [
+                              Colors.blue,
+                              Colors.green,
+                              Colors.yellow,
+                              Colors.red,
+                              Colors.blue
+                            ],
+                            stops: [0.0, 0.25, 0.5, 0.75, 1],
+                          ),
+                        ),
                       ),
                     ),
                     Column(
@@ -101,7 +115,7 @@ class _ProfileState extends State<Profile> {
                           key: profileKey,
                           onTap: () {
                             Navigator.of(context).push(
-                              MaterialPageRoute(
+                              CupertinoPageRoute(
                                 builder: (_) => UploadProfile(),
                               ),
                             );
@@ -124,7 +138,11 @@ class _ProfileState extends State<Profile> {
                                     image: DecorationImage(
                                       fit: BoxFit.fitWidth,
                                       image: photoUrl != null
-                                          ? Image.network(photoUrl).image
+                                          ? FadeInImage(
+                                              image: NetworkImage(photoUrl),
+                                              placeholder: AssetImage(
+                                                  'assets/images/unknown-profile.png'),
+                                            )
                                           : AssetImage(
                                               'assets/images/unknown-profile.png'),
                                     ),
@@ -165,7 +183,7 @@ class _ProfileState extends State<Profile> {
                               FlatButton(
                                 textColor: Colors.black,
                                 onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
+                                  Navigator.of(context).push(CupertinoPageRoute(
                                       builder: (_) => DisplayFollow(
                                           uid: uid, isFollowers: false)));
                                 },
@@ -180,7 +198,7 @@ class _ProfileState extends State<Profile> {
                               FlatButton(
                                 textColor: Colors.black,
                                 onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
+                                  Navigator.of(context).push(CupertinoPageRoute(
                                       builder: (_) => DisplayFollow(
                                           uid: uid, isFollowers: true)));
                                 },
@@ -230,14 +248,13 @@ class _ProfileState extends State<Profile> {
   }
 }
 
-void _showLogoutPopUp(context) {
+_showLogoutPopUp(context) {
   if (Platform.isAndroid) {
     showCupertinoDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Alert Dialog title"),
-          content: Text("Alert Dialog body"),
+          title: Text("Are you sure you want to log out?"),
           actions: <Widget>[
             // usually buttons at the bottom of the dialog
             FlatButton(
@@ -272,35 +289,34 @@ void _showLogoutPopUp(context) {
       },
     );
   } else {
-    showCupertinoDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return CupertinoAlertDialog(
-            title: Text("Are you sure you want to log out?"),
-            actions: <Widget>[
-              // usually buttons at the bottom of the dialog
-              CupertinoDialogAction(
-                child: Text(
-                  "Log out",
-                ),
-                onPressed: () {
-                  FireBaseAuthorization().signOut();
-                  Navigator.of(context).pop();
-                },
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) {
+        return CupertinoActionSheet(
+          title: Text("Are you sure you want to log out?"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            CupertinoActionSheetAction(
+              child: Text(
+                "Log out",
               ),
-              CupertinoDialogAction(
-                child: Text(
-                  "Cancel",
-                  style: TextStyle(
-                    color: Colors.red,
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
+              onPressed: () {
+                FireBaseAuthorization().signOut();
+                Navigator.of(context).pop();
+              },
+              isDestructiveAction: true,
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            child: Text(
+              "Cancel",
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        );
+      },
+    );
   }
 }
