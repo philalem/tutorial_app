@@ -101,22 +101,21 @@ class _ProfileFirstState extends State<ProfileFirst> {
                 child: CircularProgressIndicator());
           }
           UserData data = snapshot.data;
-          return Stack(overflow: Overflow.visible, children: <Widget>[
-            Container(
-              color: Colors.grey[200],
-              height: height * 0.4,
-              child: Padding(
-                padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 30),
-                child: Column(
-                  children: <Widget>[
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          return ListView(
+            children: <Widget>[
+              Container(
+                color: Colors.grey[200],
+                width: width,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 30),
+                  child: Column(
+                    children: <Widget>[
+                      Row(
                         children: <Widget>[
                           Expanded(
-                            flex: 6,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 FittedBox(
                                   fit: BoxFit.contain,
@@ -132,26 +131,58 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                   height: height * 0.008,
                                 ),
                                 Container(
+                                  width: width,
                                   child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
-                                      Expanded(
-                                        child: Text(
-                                          'Hello fellow Cre fsdf sg ssgfgsfhsf hdhdfgfsgdfdg dgdf hdf hd hd fhd g df g dgd g fgf g d h dhd fhgdf hfg hf hf hfg h fh fgh fg hf ghfg Aiders! I\'m Neil. I really like making tutorials and sharing with my friends!',
-                                          softWrap: true,
-                                          maxLines: 6,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            color: Colors.black87,
-                                            fontSize: 14,
-                                          ),
+                                      FittedBox(
+                                        fit: BoxFit.contain,
+                                        child: Column(
+                                          children: <Widget>[
+                                            Text(
+                                              data.numberFollowing.toString(),
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                              "Following",
+                                              style: TextStyle(
+                                                color: Colors.black87,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
+                                      Spacer(),
+                                      FittedBox(
+                                        fit: BoxFit.contain,
+                                        child: Column(
+                                          children: <Widget>[
+                                            Text(
+                                              data.numberFollowers.toString(),
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                              "Followers",
+                                              style: TextStyle(
+                                                color: Colors.black87,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Spacer(),
                                     ],
                                   ),
                                 ),
-                                Spacer(),
                                 FlatButton(
                                   padding: EdgeInsets.all(0),
                                   onPressed: () => Navigator.of(context).push(
@@ -196,12 +227,8 @@ class _ProfileFirstState extends State<ProfileFirst> {
                             ),
                           ),
                           Expanded(
-                            flex: 1,
-                            child: SizedBox(),
-                          ),
-                          Expanded(
-                            flex: 4,
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
                                 FittedBox(
                                   fit: BoxFit.contain,
@@ -237,222 +264,172 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                         }),
                                   ),
                                 ),
-                                Spacer(),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Text(
-                                            data.numberFollowing.toString(),
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Text(
-                                            "Following",
-                                            style: TextStyle(
-                                              color: Colors.black87,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Text(
-                                            data.numberFollowers.toString(),
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Text(
-                                            "Followers",
-                                            style: TextStyle(
-                                              color: Colors.black87,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
                               ],
                             ),
                           ),
                         ],
                       ),
-                    ),
-                    SizedBox(
-                      height: height * 0.15,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            DraggableScrollableSheet(
-              initialChildSize: 0.65,
-              maxChildSize: 0.97,
-              minChildSize: 0.65,
-              builder:
-                  (BuildContext context, ScrollController scrollController) {
-                return Container(
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(30.0),
-                      topLeft: Radius.circular(30.0),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black54,
-                        offset: Offset(0.0, 3.0),
-                        blurRadius: 10.0,
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: Text(
+                          'Hello fellow Cre fsdf sg ssgfgsfhsf hdhdfgfsgdfdg dgdf hdf hd hd fhd g df g dgd g fgf g d h dhd fhgdf hfg hf hf hfg h fh fgh fg hf ghfg Aiders! I\'m Neil. I really like making tutorials and sharing with my friends!',
+                          softWrap: true,
+                          maxLines: null,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 14,
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                  child: ClipRRect(
-                    clipBehavior: Clip.hardEdge,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30.0),
-                      topRight: Radius.circular(30.0),
+                ),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(30.0),
+                    topLeft: Radius.circular(30.0),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black54,
+                      offset: Offset(0.0, 3.0),
+                      blurRadius: 10.0,
                     ),
-                    child: ListView(
-                      controller: scrollController,
-                      children: <Widget>[
-                        StickyHeader(
-                          header: Container(
-                            color: Colors.white,
-                            height: height * 0.08,
-                            padding: EdgeInsets.symmetric(horizontal: 16.0),
-                            alignment: Alignment.center,
-                            child: Text(
-                              "Collections",
-                              style: TextStyle(
+                  ],
+                ),
+                child: ClipRRect(
+                  clipBehavior: Clip.hardEdge,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30.0),
+                    topRight: Radius.circular(30.0),
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      StickyHeader(
+                        header: Container(
+                          color: Colors.white,
+                          height: 50,
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Collections",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                            ),
+                          ),
+                        ),
+                        content: Column(
+                          children: <Widget>[
+                            SizedBox(
+                              height: 30,
+                            ),
+                            Container(
+                              height: 300,
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: <Widget>[
+                                  _myAlbumCard(
+                                      "assets/images/phillip_profile.jpg",
+                                      "assets/images/phillip_profile.jpg",
+                                      "assets/images/phillip_profile.jpg",
+                                      "assets/images/phillip_profile.jpg",
+                                      "+178",
+                                      "Best Trip"),
+                                  _myAlbumCard(
+                                      "assets/images/phillip_profile.jpg",
+                                      "assets/images/phillip_profile.jpg",
+                                      "assets/images/phillip_profile.jpg",
+                                      "assets/images/phillip_profile.jpg",
+                                      "+18",
+                                      "Hill Lake Tourism"),
+                                  _myAlbumCard(
+                                      "assets/images/phillip_profile.jpg",
+                                      "assets/images/phillip_profile.jpg",
+                                      "assets/images/phillip_profile.jpg",
+                                      "assets/images/phillip_profile.jpg",
+                                      "+1288",
+                                      "The Grand Canyon"),
+                                  SizedBox(
+                                    width: 100,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: 30,
+                            ),
+                          ],
+                        ),
+                      ),
+                      StickyHeader(
+                        header: Container(
+                          height: 50,
+                          color: Colors.white,
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          alignment: Alignment.center,
+                          child: Text(
+                            "All Posts",
+                            style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 24,
-                              ),
-                            ),
-                          ),
-                          content: Column(
-                            children: <Widget>[
-                              SizedBox(
-                                height: 30,
-                              ),
-                              Container(
-                                height: 300,
-                                child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  children: <Widget>[
-                                    _myAlbumCard(
-                                        "assets/images/phillip_profile.jpg",
-                                        "assets/images/phillip_profile.jpg",
-                                        "assets/images/phillip_profile.jpg",
-                                        "assets/images/phillip_profile.jpg",
-                                        "+178",
-                                        "Best Trip"),
-                                    _myAlbumCard(
-                                        "assets/images/phillip_profile.jpg",
-                                        "assets/images/phillip_profile.jpg",
-                                        "assets/images/phillip_profile.jpg",
-                                        "assets/images/phillip_profile.jpg",
-                                        "+18",
-                                        "Hill Lake Tourism"),
-                                    _myAlbumCard(
-                                        "assets/images/phillip_profile.jpg",
-                                        "assets/images/phillip_profile.jpg",
-                                        "assets/images/phillip_profile.jpg",
-                                        "assets/images/phillip_profile.jpg",
-                                        "+1288",
-                                        "The Grand Canyon"),
-                                    SizedBox(
-                                      width: 100,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                height: 30,
-                              ),
-                            ],
+                                fontSize: 24),
                           ),
                         ),
-                        StickyHeader(
-                          header: Container(
-                            height: height * 0.08,
-                            color: Colors.white,
-                            padding: EdgeInsets.symmetric(horizontal: 16.0),
-                            alignment: Alignment.center,
-                            child: Text(
-                              "All Posts",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 24),
+                        content: Column(
+                          children: <Widget>[
+                            SizedBox(
+                              height: 30,
                             ),
-                          ),
-                          content: Column(
-                            children: <Widget>[
-                              SizedBox(
-                                height: 30,
+                            GridView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 5.0,
+                                mainAxisSpacing: 5.0,
                               ),
-                              GridView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 3,
-                                  crossAxisSpacing: 5.0,
-                                  mainAxisSpacing: 5.0,
-                                ),
-                                itemCount: 18,
-                                itemBuilder: (context, index) {
-                                  return Container(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      child:
-                                          Center(child: Text("Index: $index")),
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey,
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      border: Border.all(
-                                          color: Colors.grey, width: 0.2),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black54,
-                                          offset: Offset(-1.0, 1.0),
-                                          blurRadius: 1.0,
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
-                              SizedBox(
-                                height: 30,
-                              )
-                            ],
-                          ),
+                              itemCount: 18,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: Center(child: Text("Index: $index")),
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey,
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    border: Border.all(
+                                        color: Colors.grey, width: 0.2),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black54,
+                                        offset: Offset(-1.0, 1.0),
+                                        blurRadius: 1.0,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                            SizedBox(
+                              height: 30,
+                            )
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                );
-              },
-            )
-          ]);
+                ),
+              ),
+            ],
+          );
         },
       ),
     );
