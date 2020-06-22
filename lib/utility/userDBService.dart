@@ -48,6 +48,8 @@ class UserDbService {
           likes: document['likes'],
           comments: List.from(document['comments']),
           documentId: document.documentID,
+          title: document['title'],
+          description: document['description'],
           uid: uid,
         )));
     return res;
