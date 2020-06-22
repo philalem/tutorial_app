@@ -64,25 +64,29 @@ class _EditProfileState extends State<EditProfile> {
             fontWeight: FontWeight.normal,
           ),
         ),
+        trailing: GestureDetector(
+          onTap: () => print('Pressed save for profile settings'),
+          child: Text(
+            'Save',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
       ),
       resizeToAvoidBottomInset: true,
       backgroundColor: Colors.grey[200],
       body: Center(
         child: ListView(
           children: <Widget>[
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: width * 0.1,
-              ),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: height * 0.01,
-                    ),
-                    FittedBox(
-                      fit: BoxFit.contain,
+            Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    color: Colors.black87,
+                    width: width,
+                    height: height * 0.33,
+                    child: Container(
+                      height: height * 0.3,
                       child: FlatButton(
                         onPressed: () => Navigator.of(context).push(
                           CupertinoPageRoute(
@@ -91,20 +95,16 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                         child: Stack(
                           children: <Widget>[
-                            Card(
-                              elevation: 14,
-                              shape: CircleBorder(),
+                            CircleAvatar(
+                              backgroundColor: Colors.indigoAccent,
+                              radius: 85,
                               child: CircleAvatar(
-                                backgroundColor: Colors.indigoAccent,
-                                radius: 75,
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.transparent,
-                                  radius: 70,
-                                  backgroundImage: widget.profileImage != null
-                                      ? NetworkImage(widget.profileImage)
-                                      : AssetImage(
-                                          'assets/images/unknown-profile.png'),
-                                ),
+                                backgroundColor: Colors.transparent,
+                                radius: 80,
+                                backgroundImage: widget.profileImage != null
+                                    ? NetworkImage(widget.profileImage)
+                                    : AssetImage(
+                                        'assets/images/unknown-profile.png'),
                               ),
                             ),
                             Positioned(
@@ -112,7 +112,7 @@ class _EditProfileState extends State<EditProfile> {
                               bottom: 0,
                               child: Card(
                                 color: Colors.indigo,
-                                elevation: 14,
+                                elevation: 0,
                                 shape: CircleBorder(),
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -130,96 +130,134 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: height * 0.05,
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: width * 0.1,
                     ),
-                    CupertinoTextField(
-                      controller: nameController,
-                      textAlignVertical: TextAlignVertical.center,
-                      textInputAction: TextInputAction.done,
-                      onSubmitted: (value) {
-                        setState(() {});
-                      },
-                      maxLines: 1,
-                      minLines: 1,
-                      onTap: () {
-                        setState(() {});
-                      },
-                      cursorColor: Colors.white,
-                      placeholder: 'Name',
-                      placeholderStyle: TextStyle(color: Colors.white54),
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 24,
+                        ),
+                        Text(
+                          'Name',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        CupertinoTextField(
+                          controller: nameController,
+                          textAlignVertical: TextAlignVertical.center,
+                          textInputAction: TextInputAction.done,
+                          onSubmitted: (value) {
+                            setState(() {});
+                          },
+                          maxLines: 1,
+                          minLines: 1,
+                          onTap: () {
+                            setState(() {});
+                          },
+                          cursorColor: Colors.white,
+                          placeholder: 'Name',
+                          placeholderStyle: TextStyle(color: Colors.white54),
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 14,
+                        ),
+                        Text(
+                          'Profile Description',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        CupertinoTextField(
+                          controller: biographyController,
+                          textAlignVertical: TextAlignVertical.center,
+                          textInputAction: TextInputAction.done,
+                          onSubmitted: (value) {
+                            setState(() {});
+                          },
+                          maxLines: 5,
+                          minLines: 1,
+                          onTap: () {
+                            setState(() {});
+                          },
+                          cursorColor: Colors.white,
+                          placeholder: 'Profile Description',
+                          placeholderStyle: TextStyle(color: Colors.white54),
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 14,
+                        ),
+                        Text(
+                          'Username',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        CupertinoTextField(
+                          controller: usernameController,
+                          textAlignVertical: TextAlignVertical.center,
+                          textInputAction: TextInputAction.done,
+                          onSubmitted: (value) {
+                            setState(() {});
+                          },
+                          maxLines: 1,
+                          minLines: 1,
+                          onTap: () {
+                            setState(() {});
+                          },
+                          cursorColor: Colors.white,
+                          placeholder: 'Username',
+                          placeholderStyle: TextStyle(color: Colors.white54),
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 14,
+                        ),
+                        Text(
+                          'Email',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        CupertinoTextField(
+                          controller: emailController,
+                          textAlignVertical: TextAlignVertical.center,
+                          textInputAction: TextInputAction.done,
+                          onSubmitted: (value) {
+                            setState(() {});
+                          },
+                          maxLines: 1,
+                          minLines: 1,
+                          onTap: () {
+                            setState(() {});
+                          },
+                          cursorColor: Colors.white,
+                          placeholder: 'Email',
+                          placeholderStyle: TextStyle(color: Colors.white54),
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(
-                      height: height * 0.1,
-                    ),
-                    CupertinoTextField(
-                      controller: biographyController,
-                      textAlignVertical: TextAlignVertical.center,
-                      textInputAction: TextInputAction.done,
-                      onSubmitted: (value) {
-                        setState(() {});
-                      },
-                      maxLines: 5,
-                      minLines: 1,
-                      onTap: () {
-                        setState(() {});
-                      },
-                      cursorColor: Colors.white,
-                      placeholder: 'Profile Description',
-                      placeholderStyle: TextStyle(color: Colors.white54),
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
-                    SizedBox(
-                      height: height * 0.1,
-                    ),
-                    CupertinoTextField(
-                      controller: usernameController,
-                      textAlignVertical: TextAlignVertical.center,
-                      textInputAction: TextInputAction.done,
-                      onSubmitted: (value) {
-                        setState(() {});
-                      },
-                      maxLines: 1,
-                      minLines: 1,
-                      onTap: () {
-                        setState(() {});
-                      },
-                      cursorColor: Colors.white,
-                      placeholder: 'Username',
-                      placeholderStyle: TextStyle(color: Colors.white54),
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
-                    SizedBox(
-                      height: height * 0.1,
-                    ),
-                    CupertinoTextField(
-                      controller: emailController,
-                      textAlignVertical: TextAlignVertical.center,
-                      textInputAction: TextInputAction.done,
-                      onSubmitted: (value) {
-                        setState(() {});
-                      },
-                      maxLines: 1,
-                      minLines: 1,
-                      onTap: () {
-                        setState(() {});
-                      },
-                      cursorColor: Colors.white,
-                      placeholder: 'email',
-                      placeholderStyle: TextStyle(color: Colors.white54),
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ],
