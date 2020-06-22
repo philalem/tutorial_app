@@ -150,6 +150,11 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                         CupertinoTextField(
                           controller: nameController,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(5.0)),
+                          ),
                           textAlignVertical: TextAlignVertical.center,
                           textInputAction: TextInputAction.done,
                           onSubmitted: (value) {
@@ -178,6 +183,11 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                         ),
                         CupertinoTextField(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(5.0)),
+                          ),
                           controller: biographyController,
                           textAlignVertical: TextAlignVertical.center,
                           textInputAction: TextInputAction.done,
@@ -207,6 +217,11 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                         ),
                         CupertinoTextField(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(5.0)),
+                          ),
                           controller: usernameController,
                           textAlignVertical: TextAlignVertical.center,
                           textInputAction: TextInputAction.done,
@@ -236,6 +251,11 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                         ),
                         CupertinoTextField(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(5.0)),
+                          ),
                           controller: emailController,
                           textAlignVertical: TextAlignVertical.center,
                           textInputAction: TextInputAction.done,

@@ -201,6 +201,7 @@ class _ExploreState extends State<Explore> {
             placeholderStyle: TextStyle(color: Colors.white54),
             decoration: BoxDecoration(
               color: Colors.indigo[400],
+              borderRadius: BorderRadius.all(Radius.circular(5.0)),
             ),
             style: TextStyle(
               color: Colors.white,

@@ -107,11 +107,11 @@ class _ProfileFirstState extends State<ProfileFirst> {
                 color: Colors.grey[200],
                 width: width,
                 child: Padding(
-                  padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 30),
+                  padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 15),
                   child: Column(
                     children: <Widget>[
                       Container(
-                        height: height * 0.14,
+                        height: height * 0.18,
                         child: Row(
                           children: <Widget>[
                             Expanded(
@@ -216,29 +216,33 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                           borderRadius:
                                               BorderRadius.circular(5.0),
                                         ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            FittedBox(
-                                              fit: BoxFit.contain,
-                                              child: Text(
-                                                "Edit ",
-                                                style: TextStyle(
-                                                    color: Colors.black87,
-                                                    fontSize: 16),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 4.0),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              FittedBox(
+                                                fit: BoxFit.contain,
+                                                child: Text(
+                                                  "Edit ",
+                                                  style: TextStyle(
+                                                      color: Colors.black87,
+                                                      fontSize: 16),
+                                                ),
                                               ),
-                                            ),
-                                            FittedBox(
-                                              fit: BoxFit.contain,
-                                              child: Icon(
-                                                CupertinoIcons.pencil,
-                                                color: Colors.black87,
-                                                size: 16,
+                                              FittedBox(
+                                                fit: BoxFit.contain,
+                                                child: Icon(
+                                                  CupertinoIcons.pencil,
+                                                  color: Colors.black87,
+                                                  size: 16,
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
