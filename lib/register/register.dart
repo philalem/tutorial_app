@@ -2,6 +2,7 @@ import 'package:creaid/register/usernameAndInterestsSignUp.dart';
 import 'package:creaid/utility/algoliaService.dart';
 import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/creaidTextField.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -34,20 +35,6 @@ class _RegisterState extends State<Register> {
       body: Center(
         child: ListView(
           children: <Widget>[
-            Align(
-              alignment: Alignment.topRight,
-              child: FlatButton(
-                child: Text(
-                  'Already have an account?',
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-                onPressed: () {
-                  widget.toggleView();
-                },
-              ),
-            ),
             Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 80.0),
@@ -126,7 +113,7 @@ class _RegisterState extends State<Register> {
                           _formKey.currentState.save();
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
+                            CupertinoPageRoute(
                                 builder: (context) =>
                                     UsernameAndInterestsSignUp(
                                         email: email,

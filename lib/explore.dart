@@ -126,7 +126,7 @@ class _ExploreState extends State<Explore> {
               title: Text(snap.data['name']),
               onTap: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(
+                  CupertinoPageRoute(
                     builder: (context) => DynamicProfile(
                       uid: snap.objectID,
                       name: snap.data['name'],
@@ -144,7 +144,7 @@ class _ExploreState extends State<Explore> {
 
   _navigateToVideo() {
     Navigator.of(context).push(
-      MaterialPageRoute(
+      CupertinoPageRoute(
         builder: (context) => VideoPlayerScreen(),
       ),
     );
@@ -160,71 +160,53 @@ class _ExploreState extends State<Explore> {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
-    const IconData exit = const IconData(0xf2d7,
-        fontFamily: CupertinoIcons.iconFont,
-        fontPackage: CupertinoIcons.iconFontPackage);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: CupertinoNavigationBar(
+        leading: SizedBox(width: 20),
+        trailing: SizedBox(width: 20),
         padding: EdgeInsetsDirectional.only(end: 0, start: 0),
         backgroundColor: Colors.indigo,
-        middle: TextField(
-          maxLines: 1,
-          minLines: 1,
-          onChanged: (value) => _searchForUsers(),
-          onTap: () {
-            focusNode.requestFocus();
-            setState(() {
-              _isSearching = true;
-            });
-          },
-          cursorColor: Colors.white,
-          controller: _searchController,
-          focusNode: focusNode,
-          decoration: InputDecoration(
-            isDense: true,
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 15,
-              vertical: 8,
-            ),
-            filled: true,
-            fillColor: Colors.indigo[400],
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(
-                width: 0,
-                style: BorderStyle.none,
+        middle: IntrinsicHeight(
+          child: CupertinoTextField(
+            textAlignVertical: TextAlignVertical.center,
+            textInputAction: TextInputAction.done,
+            onSubmitted: (value) {
+              focusNode.unfocus();
+              setState(() {
+                _isSearching = false;
+              });
+            },
+            maxLines: 1,
+            minLines: 1,
+            onChanged: (value) => _searchForUsers(),
+            onTap: () {
+              focusNode.requestFocus();
+              setState(() {
+                _isSearching = true;
+              });
+            },
+            cursorColor: Colors.white,
+            controller: _searchController,
+            focusNode: focusNode,
+            prefix: Padding(
+              padding: const EdgeInsets.only(left: 6),
+              child: Icon(
+                CupertinoIcons.search,
+                color: Colors.white,
               ),
             ),
-            focusedBorder: OutlineInputBorder(
+            placeholder: 'Search',
+            placeholderStyle: TextStyle(color: Colors.white54),
+            decoration: BoxDecoration(
+              color: Colors.indigo[400],
               borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(
-                width: 0,
-                style: BorderStyle.none,
-              ),
             ),
-            hintText: 'Search...',
-            hintStyle: TextStyle(
+            style: TextStyle(
               color: Colors.white,
             ),
           ),
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-        trailing: IconButton(
-          iconSize: 30,
-          icon: Icon(
-            (_isSearching ? exit : CupertinoIcons.search),
-            color: Colors.white,
-          ),
-          onPressed: () {
-            focusNode.unfocus();
-            setState(() {
-              _isSearching = !_isSearching;
-            });
-          },
         ),
       ),
       body: _getSearchOrExplore(screenHeight, screenWidth),

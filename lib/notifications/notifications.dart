@@ -3,6 +3,7 @@ import 'package:creaid/utility/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class Notifications extends StatefulWidget {
@@ -63,7 +64,8 @@ class _NotificationsState extends State<Notifications> {
     int days = difference.inDays;
     String differencePhrase = 'Just now.';
     if (days > 7) {
-      differencePhrase = date.toString();
+      differencePhrase =
+          DateFormat('MMMMd').format(date) + ', ' + date.year.toString();
     } else if (days > 1) {
       differencePhrase = '$days days ago.';
     } else if (hours > 23) {
@@ -93,6 +95,11 @@ class _NotificationsState extends State<Notifications> {
         middle: Text(
           'Notifications',
           textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.normal,
+          ),
         ),
       ),
       body: StreamBuilder<List<dynamic>>(
