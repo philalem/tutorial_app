@@ -113,6 +113,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                       Row(
                         children: <Widget>[
                           Expanded(
+                            flex: 8,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
@@ -227,6 +228,10 @@ class _ProfileFirstState extends State<ProfileFirst> {
                             ),
                           ),
                           Expanded(
+                            child: SizedBox(),
+                          ),
+                          Expanded(
+                            flex: 8,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
