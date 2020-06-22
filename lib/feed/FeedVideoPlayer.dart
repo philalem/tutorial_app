@@ -1,6 +1,8 @@
 import 'package:creaid/feed/FeedCommentObject.dart';
 import 'package:creaid/feed/VideoFeedObject.dart';
+import 'package:creaid/notifications/notificationsDbService.dart';
 import 'package:creaid/profile/profile.dart';
+import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +22,10 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   int index = 0;
   bool _changeLock = false;
   double _progress = 0;
+  String shareId = "";
   List<VideoPlayerController> _controllers = [];
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _formKey = GlobalKey<FormState>();
   final interestHolder = TextEditingController();
 
   clearTextInput() {
@@ -135,6 +139,26 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
     });
   }
 
+  showDescription(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            elevation: 15,
+            child: Container(
+              color: Colors.black12,
+              height: 100,
+              child: Center(
+                child: Text(
+                  widget.videos[index].description,
+                  style: TextStyle(color: Colors.black, fontSize: 20),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -150,48 +174,66 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
       body: Stack(
         children: <Widget>[
           SizedBox(
+              //video
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               child: Center(child: VideoPlayer(_controllers[1]))),
           Positioned(
+            //swipe
             right: 0,
             child: SizedBox(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               child: GestureDetector(onPanUpdate: (details) {
-              if (details.delta.dy > 1.6) {
-                // swiping in right direction
-                setState(() {
-                  nextVideo();
-                });
-              }
-              else if(details.delta.dy < -1.6){
-                setState(() {
-                  previousVideo();
-                });
-              }
-            }
-            ),
+                if (details.delta.dy > 1.6) {
+                  // swiping in right direction
+                  setState(() {
+                    nextVideo();
+                  });
+                } else if (details.delta.dy < -1.6) {
+                  setState(() {
+                    previousVideo();
+                  });
+                }
+              }),
             ),
           ),
           Positioned(
+              //title/description
+              child: Container(
+                  height: 45,
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.black12,
+                  child: Align(
+                    alignment: FractionalOffset.bottomCenter,
+                    child: InkWell(
+                      onTap: () {
+                        showDescription(context);
+                      },
+                      child: Text(
+                        widget.videos[index].title,
+                        style: TextStyle(color: Colors.black, fontSize: 20),
+                      ),
+                    ),
+                  ))),
+          Positioned(
+            //user
             child: Container(
               height: 25,
               width: MediaQuery.of(context).size.width,
-              color: Colors.blue,
+              color: Colors.white,
               child: Align(
-                alignment: FractionalOffset.bottomCenter,
+                alignment: FractionalOffset.bottomLeft,
                 child: InkWell(
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => Profile(uid: widget.videos[index].uid, name: widget.videos[index].author)));
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => Profile(
+                            uid: widget.videos[index].uid,
+                            name: widget.videos[index].author)));
                   },
                   child: Text(
                     widget.videos[index].author,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20
-                    ),
-                    
+                    style: TextStyle(color: Colors.black, fontSize: 20),
                   ),
                 ),
               ),
@@ -202,7 +244,74 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
+          //share button
           FloatingActionButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return Dialog(
+                    child: Container(
+                      height: 200.0,
+                      width: 360.0,
+                      child: ListView(children: <Widget>[
+                        Center(
+                          child: Text(
+                            "Send this video to:",
+                            style: TextStyle(
+                                fontSize: 24,
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: TextFormField(
+                            key: _formKey,
+                            onFieldSubmitted: (value) => {shareId = value},
+                            validator: (val) =>
+                                val.isEmpty ? "Enter valid user" : null,
+                            decoration: InputDecoration(
+                              hintStyle: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: Theme.of(context).primaryColor),
+                              hintText: 'User',
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                          child: CreaidButton(
+                            children: <Widget>[
+                              Text(
+                                'Send',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ],
+                            onPressed: () async {
+                              if (_formKey.currentState.validate()) {
+                                 _formKey.currentState.save();
+                                 NotificationsDbService(uid: widget.videos[index].uid).sendShareVideoNotification(widget.videos[index].author);
+                              }
+                            },
+                          ),
+                        ),
+                      ]),
+                    ),
+                  );
+                },
+              );
+            },
+            child: Icon(Icons.share),
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * .05,
+          ),
+          FloatingActionButton(
+              //comment button
               onPressed: () {
                 showDialog(
                   context: context,
@@ -240,8 +349,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                                                 widget.videos[index].documentId,
                                                 widget.feedId,
                                                 value,
-                                                widget.videos[index].author
-                                                ),
+                                                widget.videos[index].author),
                                         interestHolder.clear()
                                       },
                                   validator: (val) => val.isEmpty
@@ -337,23 +445,23 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
             width: MediaQuery.of(context).size.width * .05,
           ),
           FloatingActionButton.extended(
-            onPressed: () => UserDbService(uid: widget.videos[index].uid)
-                .addLike(widget.videos[index].documentId, widget.feedId, widget.videos[index].author),
-
-            label: StreamBuilder<VideoFeedObject>(
-              stream: UserDbService(uid: widget.videos[index].uid)
-                  .getVideo(widget.feedId, widget.videos[index].documentId),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  VideoFeedObject video = snapshot.data;
-                  return Text(video.likes.toString());
-                } else {
-                  return Text('0');
-                }
-              },
-            ),
-            icon: Icon(Icons.thumb_up)
-          ),
+              //like button
+              onPressed: () => UserDbService(uid: widget.videos[index].uid)
+                  .addLike(widget.videos[index].documentId, widget.feedId,
+                      widget.videos[index].author),
+              label: StreamBuilder<VideoFeedObject>(
+                stream: UserDbService(uid: widget.videos[index].uid)
+                    .getVideo(widget.feedId, widget.videos[index].documentId),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    VideoFeedObject video = snapshot.data;
+                    return Text(video.likes.toString());
+                  } else {
+                    return Text('0');
+                  }
+                },
+              ),
+              icon: Icon(Icons.thumb_up)),
         ],
       ),
     );

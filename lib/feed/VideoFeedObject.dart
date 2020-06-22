@@ -5,6 +5,8 @@ class VideoFeedObject {
   List<String> comments;
   String documentId;
   String uid;
+  String title;
+  String description;
 
   VideoFeedObject(
     {this.author,
@@ -12,7 +14,9 @@ class VideoFeedObject {
     this.likes,
     this.comments,
     this.documentId,
-    this.uid
+    this.uid,
+    this.title,
+    this.description
     }
   );
 }
