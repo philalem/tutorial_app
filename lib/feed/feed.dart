@@ -33,28 +33,28 @@ class Feed extends StatelessWidget {
                     } else {
                       return Align(
                           alignment: Alignment.center,
-                          child: CircularProgressIndicator());
+                          child: CupertinoActivityIndicator());
                     }
                   } else {
                     return Align(
                         alignment: Alignment.center,
-                        child: CircularProgressIndicator());
+                        child: CupertinoActivityIndicator());
                   }
                 },
               );
             } else {
               return Align(
                   alignment: Alignment.center,
-                  child: CircularProgressIndicator());
+                  child: CupertinoActivityIndicator());
             }
           } else {
             return Align(
                 alignment: Alignment.center,
-                child: CircularProgressIndicator());
+                child: CupertinoActivityIndicator());
           }
         } else {
           return Align(
-              alignment: Alignment.center, child: CircularProgressIndicator());
+              alignment: Alignment.center, child: CupertinoActivityIndicator());
         }
       },
     );

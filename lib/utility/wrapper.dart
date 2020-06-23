@@ -20,7 +20,7 @@ class Wrapper extends StatelessWidget {
         } else {
           return Scaffold(
             body: Center(
-              child: CircularProgressIndicator(),
+              child: CupertinoActivityIndicator(),
             ),
           );
         }

@@ -201,7 +201,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
           } else {
             return Align(
                 alignment: Alignment.center,
-                child: CircularProgressIndicator());
+                child: CupertinoActivityIndicator());
           }
         },
       ),
