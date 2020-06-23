@@ -125,7 +125,7 @@ class _HomeState extends State<Home> {
         fontPackage: CupertinoIcons.iconFontPackage);
 
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: true,
       body: IndexedStack(
         index: _navBarItemIndex,
         children: _pages,
