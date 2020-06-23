@@ -30,6 +30,7 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController usernameController;
   TextEditingController emailController;
   AlgoliaService algoliaService = AlgoliaService();
+  FocusNode focusNode;
   String emailError;
   String email = '';
   String password = '';
@@ -37,6 +38,7 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   void initState() {
+    focusNode = FocusNode();
     nameController = TextEditingController(text: widget.name);
     biographyController = TextEditingController(text: widget.biography);
     usernameController = TextEditingController(text: widget.username);
@@ -53,9 +55,9 @@ class _EditProfileState extends State<EditProfile> {
         fontFamily: CupertinoIcons.iconFont,
         fontPackage: CupertinoIcons.iconFontPackage);
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: CupertinoNavigationBar(
+    return CupertinoPageScaffold(
+      resizeToAvoidBottomInset: true,
+      navigationBar: CupertinoNavigationBar(
         backgroundColor: Colors.indigo,
         middle: Text(
           'Edit Your Profile',
@@ -74,7 +76,7 @@ class _EditProfileState extends State<EditProfile> {
         ),
       ),
       backgroundColor: Colors.grey[200],
-      body: Center(
+      child: Center(
         child: ListView(
           children: <Widget>[
             Form(
@@ -84,7 +86,7 @@ class _EditProfileState extends State<EditProfile> {
                   Container(
                     color: Colors.black87,
                     width: width,
-                    height: height * 0.33,
+                    height: height * 0.28,
                     child: Container(
                       height: height * 0.3,
                       child: FlatButton(
@@ -93,40 +95,46 @@ class _EditProfileState extends State<EditProfile> {
                             builder: (_) => UploadProfile(),
                           ),
                         ),
-                        child: Stack(
-                          children: <Widget>[
-                            CircleAvatar(
-                              backgroundColor: Colors.indigoAccent,
-                              radius: 85,
-                              child: CircleAvatar(
-                                backgroundColor: Colors.transparent,
-                                radius: 80,
-                                backgroundImage: widget.profileImage != null
-                                    ? NetworkImage(widget.profileImage)
-                                    : AssetImage(
-                                        'assets/images/unknown-profile.png'),
-                              ),
-                            ),
-                            Positioned(
-                              right: 0,
-                              bottom: 0,
-                              child: Card(
-                                color: Colors.indigo,
-                                elevation: 0,
-                                shape: CircleBorder(),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Center(
-                                    child: Icon(
-                                      Icons.camera_alt,
-                                      color: Colors.grey[200],
-                                      size: 30,
-                                    ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(25.0),
+                          child: FittedBox(
+                            fit: BoxFit.contain,
+                            child: Stack(
+                              children: <Widget>[
+                                CircleAvatar(
+                                  backgroundColor: Colors.indigoAccent,
+                                  radius: 85,
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                                    radius: 80,
+                                    backgroundImage: widget.profileImage != null
+                                        ? NetworkImage(widget.profileImage)
+                                        : AssetImage(
+                                            'assets/images/unknown-profile.png'),
                                   ),
                                 ),
-                              ),
-                            )
-                          ],
+                                Positioned(
+                                  right: 0,
+                                  bottom: 0,
+                                  child: Card(
+                                    color: Colors.indigo,
+                                    elevation: 0,
+                                    shape: CircleBorder(),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(
+                                        child: Icon(
+                                          Icons.camera_alt,
+                                          color: Colors.grey[200],
+                                          size: 30,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -158,13 +166,15 @@ class _EditProfileState extends State<EditProfile> {
                           textAlignVertical: TextAlignVertical.center,
                           textInputAction: TextInputAction.done,
                           onSubmitted: (value) {
+                            focusNode.unfocus();
+                            setState(() {});
+                          },
+                          onTap: () {
+                            focusNode.requestFocus();
                             setState(() {});
                           },
                           maxLines: 1,
                           minLines: 1,
-                          onTap: () {
-                            setState(() {});
-                          },
                           placeholder: 'Name',
                           placeholderStyle: TextStyle(color: Colors.white54),
                           style: TextStyle(
@@ -183,22 +193,26 @@ class _EditProfileState extends State<EditProfile> {
                         ),
                         CupertinoTextField(
                           // TODO: add focus node to request focus
+                          controller: biographyController,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius:
                                 BorderRadius.all(Radius.circular(5.0)),
                           ),
-                          controller: biographyController,
+                          onSubmitted: (value) {
+                            focusNode.unfocus();
+                            setState(() {});
+                          },
+                          onTap: () {
+                            focusNode.requestFocus();
+                            setState(() {});
+                          },
                           textAlignVertical: TextAlignVertical.center,
                           textInputAction: TextInputAction.done,
-                          onSubmitted: (value) {
-                            setState(() {});
-                          },
+
                           maxLines: 5,
                           minLines: 1,
-                          onTap: () {
-                            setState(() {});
-                          },
+
                           placeholder: 'Profile Description',
                           placeholderStyle: TextStyle(color: Colors.white54),
                           style: TextStyle(
@@ -216,22 +230,24 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                         ),
                         CupertinoTextField(
+                          controller: usernameController,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius:
                                 BorderRadius.all(Radius.circular(5.0)),
                           ),
-                          controller: usernameController,
+                          onSubmitted: (value) {
+                            focusNode.unfocus();
+                            setState(() {});
+                          },
+                          onTap: () {
+                            focusNode.requestFocus();
+                            setState(() {});
+                          },
                           textAlignVertical: TextAlignVertical.center,
                           textInputAction: TextInputAction.done,
-                          onSubmitted: (value) {
-                            setState(() {});
-                          },
                           maxLines: 1,
                           minLines: 1,
-                          onTap: () {
-                            setState(() {});
-                          },
                           placeholder: 'Username',
                           placeholderStyle: TextStyle(color: Colors.white54),
                           style: TextStyle(
@@ -249,22 +265,24 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                         ),
                         CupertinoTextField(
+                          controller: emailController,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius:
                                 BorderRadius.all(Radius.circular(5.0)),
                           ),
-                          controller: emailController,
+                          onSubmitted: (value) {
+                            focusNode.unfocus();
+                            setState(() {});
+                          },
+                          onTap: () {
+                            focusNode.requestFocus();
+                            setState(() {});
+                          },
                           textAlignVertical: TextAlignVertical.center,
                           textInputAction: TextInputAction.done,
-                          onSubmitted: (value) {
-                            setState(() {});
-                          },
                           maxLines: 1,
                           minLines: 1,
-                          onTap: () {
-                            setState(() {});
-                          },
                           placeholder: 'Email',
                           placeholderStyle: TextStyle(color: Colors.white54),
                           style: TextStyle(

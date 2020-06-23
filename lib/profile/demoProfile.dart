@@ -111,7 +111,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                   child: Column(
                     children: <Widget>[
                       Container(
-                        height: height * 0.18,
+                        height: height * 0.15,
                         child: Row(
                           children: <Widget>[
                             Expanded(
@@ -128,7 +128,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                         data.username,
                                         style: TextStyle(
                                             color: Colors.black,
-                                            fontSize: 26,
+                                            fontSize: 22,
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ),
@@ -151,7 +151,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                                       .toString(),
                                                   style: TextStyle(
                                                       color: Colors.black,
-                                                      fontSize: 20,
+                                                      fontSize: 22,
                                                       fontWeight:
                                                           FontWeight.bold),
                                                 ),
@@ -175,7 +175,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                                       .toString(),
                                                   style: TextStyle(
                                                       color: Colors.black,
-                                                      fontSize: 20,
+                                                      fontSize: 22,
                                                       fontWeight:
                                                           FontWeight.bold),
                                                 ),
@@ -251,13 +251,13 @@ class _ProfileFirstState extends State<ProfileFirst> {
                               ),
                             ),
                             Expanded(
-                              flex: 5,
+                              flex: 6,
                               child: FittedBox(
                                 fit: BoxFit.contain,
                                 alignment: Alignment.centerRight,
                                 child: CircleAvatar(
                                   backgroundColor: Colors.indigoAccent,
-                                  radius: 75,
+                                  radius: 85,
                                   child: StreamBuilder<Object>(
                                       stream: ProfilePhotoService(uid: uid)
                                           .getProfilePhoto(),
@@ -270,8 +270,8 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                         photoUrl = snapshot.data;
                                         return ClipOval(
                                           child: Container(
-                                            height: 140,
-                                            width: 140,
+                                            height: 160,
+                                            width: 160,
                                             child: photoUrl != null
                                                 ? FadeInImage(
                                                     image:
@@ -291,7 +291,10 @@ class _ProfileFirstState extends State<ProfileFirst> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10),
+                        padding: EdgeInsets.only(
+                          top: 10,
+                          bottom: 20,
+                        ),
                         child: Text(
                           'Hello fellow Cre fsdf sg ssgfgsfhsf hdhdfgfsgdfdg dgdf hdf hd hd fhd g df g dgd g fgf g d h dhd fhgdf hfg hf hf hfg h fh fgh fg hf ghfg Aiders! I\'m Neil. I really like making tutorials and sharing with my friends!',
                           softWrap: true,
