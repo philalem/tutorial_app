@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:creaid/profile/UploadProfile.dart';
 import 'package:creaid/utility/algoliaService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditProfile extends StatefulWidget {
   final String name;
@@ -24,6 +28,10 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  final picker = ImagePicker();
+  File _image;
+  String _uploadedFileURL;
+  var _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   TextEditingController nameController;
   TextEditingController biographyController;
@@ -90,11 +98,13 @@ class _EditProfileState extends State<EditProfile> {
                     child: Container(
                       height: height * 0.3,
                       child: FlatButton(
-                        onPressed: () => Navigator.of(context).push(
-                          CupertinoPageRoute(
-                            builder: (_) => UploadProfile(),
-                          ),
-                        ),
+                        onPressed: () async {
+                          await chooseFile();
+                          File croppedImage = await cropImageView();
+                          setState(() {
+                            _image = croppedImage;
+                          });
+                        },
                         child: Padding(
                           padding: const EdgeInsets.all(25.0),
                           child: FittedBox(
@@ -107,10 +117,7 @@ class _EditProfileState extends State<EditProfile> {
                                   child: CircleAvatar(
                                     backgroundColor: Colors.transparent,
                                     radius: 80,
-                                    backgroundImage: widget.profileImage != null
-                                        ? NetworkImage(widget.profileImage)
-                                        : AssetImage(
-                                            'assets/images/unknown-profile.png'),
+                                    backgroundImage: _getProfileImage(_image),
                                   ),
                                 ),
                                 Positioned(
@@ -192,7 +199,6 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                         ),
                         CupertinoTextField(
-                          // TODO: add focus node to request focus
                           controller: biographyController,
                           decoration: BoxDecoration(
                             color: Colors.white,
@@ -209,10 +215,8 @@ class _EditProfileState extends State<EditProfile> {
                           },
                           textAlignVertical: TextAlignVertical.center,
                           textInputAction: TextInputAction.done,
-
                           maxLines: 5,
                           minLines: 1,
-
                           placeholder: 'Profile Description',
                           placeholderStyle: TextStyle(color: Colors.white54),
                           style: TextStyle(
@@ -299,6 +303,36 @@ class _EditProfileState extends State<EditProfile> {
         ),
       ),
     );
+  }
+
+  _getProfileImage(File image) {
+    if (widget.profileImage != null) {
+      if (image != null) return FileImage(image);
+      return NetworkImage(widget.profileImage);
+    }
+    return AssetImage('assets/images/unknown-profile.png');
+  }
+
+  Future<File> cropImageView() {
+    return ImageCropper.cropImage(
+        sourcePath: _image.path,
+        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Crop your Profile Picture',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+          title: 'Crop your Profile Picture',
+        ));
+  }
+
+  Future chooseFile() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    setState(() {
+      _image = File(pickedFile.path);
+    });
   }
 
   Future _isValidEmail(String value) async {
