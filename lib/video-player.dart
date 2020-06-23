@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -98,7 +99,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                   } else {
                     // If the VideoPlayerController is still initializing, show a
                     // loading spinner.
-                    return Center(child: CircularProgressIndicator());
+                    return Center(child: CupertinoActivityIndicator());
                   }
                 },
               ),

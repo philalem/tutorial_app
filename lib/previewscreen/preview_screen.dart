@@ -215,7 +215,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
           isSaving
               ? Container(
                   alignment: Alignment.center,
-                  child: CircularProgressIndicator(),
+                  child: CupertinoActivityIndicator(),
                 )
               : Container(),
         ],

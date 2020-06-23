@@ -240,7 +240,7 @@ class _ProfileState extends State<Profile> {
           } else {
             return Align(
                 alignment: Alignment.center,
-                child: CircularProgressIndicator());
+                child: CupertinoActivityIndicator());
           }
         },
       ),

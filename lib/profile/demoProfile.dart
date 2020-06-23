@@ -265,7 +265,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                         if (!snapshot.hasData)
                                           return Align(
                                             alignment: Alignment.center,
-                                            child: CircularProgressIndicator(),
+                                            child: CupertinoActivityIndicator(),
                                           );
                                         photoUrl = snapshot.data;
                                         return ClipOval(
