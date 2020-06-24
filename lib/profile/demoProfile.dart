@@ -502,7 +502,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                   name,
                   style: TextStyle(
                       color: Colors.black,
-                      fontSize: 20,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold),
                 ),
               ),
