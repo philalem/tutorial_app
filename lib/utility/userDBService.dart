@@ -39,10 +39,10 @@ class UserDbService {
     EmailsDbService(uid: uid).populateEmail(email);
     return await userInfoCollection.document(uid).setData(
       {
-        'username': username,
-        'name': name,
-        'biography': biography,
-        'photoUrl': uploadedFileUrl,
+        'username': username != null ? username : FieldValue,
+        'name': name != null ? name : FieldValue,
+        'biography': biography != null ? biography : FieldValue,
+        'photoUrl': uploadedFileUrl != null ? uploadedFileUrl : FieldValue,
       },
       merge: true,
     );

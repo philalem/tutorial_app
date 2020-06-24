@@ -126,6 +126,7 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
+      //TODO: turn this into cupertino tab view
       body: IndexedStack(
         index: _navBarItemIndex,
         children: _pages,
