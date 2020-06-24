@@ -21,7 +21,10 @@ class Wrapper extends StatelessWidget {
         } else {
           return Scaffold(
             body: Center(
-              child: CupertinoActivityIndicator(),
+              child: Image.asset(
+                'assets/images/creaid_app_icon.png',
+                scale: 12,
+              ),
             ),
           );
         }
