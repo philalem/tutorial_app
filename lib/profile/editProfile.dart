@@ -4,6 +4,7 @@ import 'package:creaid/profile/UploadProfile.dart';
 import 'package:creaid/profile/profilePhotoService.dart';
 import 'package:creaid/utility/algoliaService.dart';
 import 'package:creaid/utility/user.dart';
+import 'package:creaid/utility/userDBService.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -70,6 +71,7 @@ class _EditProfileState extends State<EditProfile> {
         fontPackage: CupertinoIcons.iconFontPackage);
 
     return CupertinoPageScaffold(
+      key: _scaffoldKey,
       resizeToAvoidBottomInset: true,
       navigationBar: CupertinoNavigationBar(
         backgroundColor: Colors.indigo,
@@ -82,22 +84,7 @@ class _EditProfileState extends State<EditProfile> {
           ),
         ),
         trailing: GestureDetector(
-          onTap: () async {
-            setState(() {
-              _isLoading = true;
-            });
-            await uploadFile();
-            print(_uploadedFileURL);
-            setState(() {
-              _isLoading = false;
-            });
-            if (_uploadedFileURL != null) {
-              ProfilePhotoService(uid: user.uid).uploadPhoto(_uploadedFileURL);
-              Navigator.pop(context, true);
-            } else {
-              _showDialog();
-            }
-          },
+          onTap: () => _saveUserEditedData(user, context),
           child: Text(
             'Save',
             style: TextStyle(color: Colors.white),
@@ -121,17 +108,7 @@ class _EditProfileState extends State<EditProfile> {
                         child: Container(
                           height: height * 0.3,
                           child: FlatButton(
-                            onPressed: () async {
-                              setState(() {
-                                _isLoading = true;
-                              });
-                              await chooseFile();
-                              File croppedImage = await cropImageView();
-                              setState(() {
-                                _isLoading = false;
-                                _image = croppedImage;
-                              });
-                            },
+                            onPressed: () => _changeProfileImage(),
                             child: Padding(
                               padding: const EdgeInsets.all(25.0),
                               child: FittedBox(
@@ -221,42 +198,6 @@ class _EditProfileState extends State<EditProfile> {
                               height: 14,
                             ),
                             Text(
-                              'Profile Description',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            CupertinoTextField(
-                              controller: biographyController,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
-                              ),
-                              onSubmitted: (value) {
-                                focusNode.unfocus();
-                                setState(() {});
-                              },
-                              onTap: () {
-                                focusNode.requestFocus();
-                                setState(() {});
-                              },
-                              textAlignVertical: TextAlignVertical.center,
-                              textInputAction: TextInputAction.done,
-                              maxLines: 5,
-                              minLines: 1,
-                              placeholder: 'Profile Description',
-                              placeholderStyle:
-                                  TextStyle(color: Colors.white54),
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 14,
-                            ),
-                            Text(
                               'Username',
                               style: TextStyle(
                                 fontSize: 20,
@@ -283,6 +224,42 @@ class _EditProfileState extends State<EditProfile> {
                               maxLines: 1,
                               minLines: 1,
                               placeholder: 'Username',
+                              placeholderStyle:
+                                  TextStyle(color: Colors.white54),
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 14,
+                            ),
+                            Text(
+                              'Profile Description',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            CupertinoTextField(
+                              controller: biographyController,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5.0)),
+                              ),
+                              onSubmitted: (value) {
+                                focusNode.unfocus();
+                                setState(() {});
+                              },
+                              onTap: () {
+                                focusNode.requestFocus();
+                                setState(() {});
+                              },
+                              textAlignVertical: TextAlignVertical.center,
+                              textInputAction: TextInputAction.done,
+                              maxLines: 5,
+                              minLines: 1,
+                              placeholder: 'Profile Description',
                               placeholderStyle:
                                   TextStyle(color: Colors.white54),
                               style: TextStyle(
@@ -345,6 +322,39 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
+  Future _saveUserEditedData(User user, BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
+    if (_image != null) {
+      await uploadFile(user);
+      print(_uploadedFileURL);
+      ProfilePhotoService(uid: user.uid).uploadPhoto(_uploadedFileURL);
+    }
+    await UserDbService(uid: user.uid).updateUserEditedInfo(
+        nameController.text,
+        usernameController.text,
+        emailController.text,
+        biographyController.text,
+        _uploadedFileURL);
+    setState(() {
+      _isLoading = false;
+    });
+    Navigator.pop(context, true);
+  }
+
+  Future _changeProfileImage() async {
+    setState(() {
+      _isLoading = true;
+    });
+    await chooseFile();
+    File croppedImage = await cropImageView();
+    setState(() {
+      _isLoading = false;
+      _image = croppedImage;
+    });
+  }
+
   _getProfileImage(File image) {
     if (widget.profileImage != null) {
       if (image != null) return FileImage(image);
@@ -375,13 +385,13 @@ class _EditProfileState extends State<EditProfile> {
     });
   }
 
-  Future uploadFile() async {
-    StorageReference storageReference =
-        FirebaseStorage.instance.ref().child('profilePictures/${_image.path}}');
-    StorageUploadTask uploadTask = storageReference.putFile(_image);
-    await uploadTask.onComplete;
-    print('File Uploaded');
-    String fileUrl = await storageReference.getDownloadURL();
+  Future uploadFile(User user) async {
+    String fileUrl = await ProfilePhotoService(uid: user.uid)
+        .uploadPhotoToCloudStore(_image)
+        .catchError((onError) {
+      print(onError);
+      _showDialog();
+    });
     setState(() {
       _uploadedFileURL = fileUrl;
     });

@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:creaid/feed/FeedCommentObject.dart';
-import 'package:creaid/profile/profilePhotoService.dart';
-import 'package:creaid/utility/UserData.dart';
 import 'package:creaid/feed/VideoFeedObject.dart';
+import 'package:creaid/utility/UserData.dart';
+import 'package:creaid/utility/emailsDbService.dart';
+import 'package:creaid/utility/firebaseAuth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:async/async.dart';
 
 class UserDbService {
   final String uid;
@@ -18,14 +18,34 @@ class UserDbService {
 
   UserDbService({this.uid});
 
-  Future<void> updateUserInfo(String name, String username, int numberFollowing,
-      int numberFollowers) async {
-    return await userInfoCollection.document(uid).setData({
-      'name': name,
-      'username': username,
-      'number-following': numberFollowing,
-      'number-followers': numberFollowers,
-    });
+  Future<void> updateUserInfo(
+      String name, String username, int numberFollowing, int numberFollowers,
+      {String photoUrl = ''}) async {
+    return await userInfoCollection.document(uid).setData(
+      {
+        'name': name,
+        'username': username,
+        'number-following': numberFollowing,
+        'number-followers': numberFollowers,
+        'photoUrl': photoUrl,
+      },
+      merge: true,
+    );
+  }
+
+  Future<void> updateUserEditedInfo(String name, String username, String email,
+      String biography, String uploadedFileUrl) async {
+    FireBaseAuthorization().updateUserEmail(email);
+    EmailsDbService(uid: uid).populateEmail(email);
+    return await userInfoCollection.document(uid).setData(
+      {
+        'username': username,
+        'name': name,
+        'biography': biography,
+        'photoUrl': uploadedFileUrl,
+      },
+      merge: true,
+    );
   }
 
   UserData _mapUserData(DocumentSnapshot snapshot) {
@@ -33,6 +53,7 @@ class UserDbService {
         username: snapshot['username'],
         name: snapshot['name'],
         photoUrl: snapshot['photo-url'],
+        bio: snapshot['biography'],
         numberFollowing: snapshot['number-following'],
         numberFollowers: snapshot['number-followers'],
         feedId: snapshot['feed-id']);

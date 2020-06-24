@@ -203,6 +203,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                         CupertinoPageRoute(
                                           builder: (context) => EditProfile(
                                             name: data.name,
+                                            biography: data.bio,
                                             username: data.username,
                                             email: userName.email,
                                             profileImage: photoUrl,
@@ -295,14 +296,23 @@ class _ProfileFirstState extends State<ProfileFirst> {
                           top: 10,
                           bottom: 20,
                         ),
-                        child: Text(
-                          'Hello fellow Cre fsdf sg ssgfgsfhsf hdhdfgfsgdfdg dgdf hdf hd hd fhd g df g dgd g fgf g d h dhd fhgdf hfg hf hf hfg h fh fgh fg hf ghfg Aiders! I\'m Neil. I really like making tutorials and sharing with my friends!',
-                          softWrap: true,
-                          maxLines: null,
-                          style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 14,
-                          ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Flexible(
+                              child: Text(
+                                data.bio != null
+                                    ? data.bio
+                                    : 'Welcome to my profile! 😊',
+                                softWrap: true,
+                                maxLines: null,
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
