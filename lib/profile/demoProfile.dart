@@ -341,7 +341,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                 bottom: BorderSide(
                                     color: Colors.grey[200], width: 1)),
                           ),
-                          height: 50,
+                          height: 40,
                           padding: EdgeInsets.symmetric(horizontal: 16.0),
                           alignment: Alignment.center,
                           child: Text(
@@ -349,7 +349,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
-                              fontSize: 24,
+                              fontSize: 18,
                             ),
                           ),
                         ),
@@ -398,7 +398,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                       ),
                       StickyHeader(
                         header: Container(
-                          height: 50,
+                          height: 40,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border(
@@ -412,7 +412,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                             style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 24),
+                                fontSize: 18),
                           ),
                         ),
                         content: Column(
