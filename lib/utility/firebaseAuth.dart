@@ -33,6 +33,16 @@ class FireBaseAuthorization {
     }
   }
 
+  Future updateUserEmail(String email) async {
+    try {
+      FirebaseUser user = await getCurrentUser();
+      user.updateEmail(email);
+    } catch (error) {
+      print(error.toString());
+      return null;
+    }
+  }
+
   Future updateUserName(String name, FirebaseUser user) async {
     var update = UserUpdateInfo();
     update.displayName = name;

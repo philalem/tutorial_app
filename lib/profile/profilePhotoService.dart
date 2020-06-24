@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ProfilePhotoService {
   final String uid;
@@ -22,5 +25,14 @@ class ProfilePhotoService {
         .handleError((e) {
       print(e);
     });
+  }
+
+  Future uploadPhotoToCloudStore(File image) async {
+    StorageReference storageReference =
+        FirebaseStorage.instance.ref().child('profilePictures/${image.path}}');
+    StorageUploadTask uploadTask = storageReference.putFile(image);
+    await uploadTask.onComplete;
+    print('File Uploaded');
+    return await storageReference.getDownloadURL();
   }
 }
