@@ -67,7 +67,7 @@ class _DisplayFollowState extends State<DisplayFollow> {
             } else {
               return Align(
                   alignment: Alignment.center,
-                  child: CircularProgressIndicator());
+                  child: CupertinoActivityIndicator());
             }
           }),
     );

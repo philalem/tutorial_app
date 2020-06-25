@@ -159,19 +159,17 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               child: GestureDetector(onPanUpdate: (details) {
-              if (details.delta.dy > 1.6) {
-                // swiping in right direction
-                setState(() {
-                  nextVideo();
-                });
-              }
-              else if(details.delta.dy < -1.6){
-                setState(() {
-                  previousVideo();
-                });
-              }
-            }
-            ),
+                if (details.delta.dy > 1.6) {
+                  // swiping in right direction
+                  setState(() {
+                    nextVideo();
+                  });
+                } else if (details.delta.dy < -1.6) {
+                  setState(() {
+                    previousVideo();
+                  });
+                }
+              }),
             ),
           ),
           Positioned(
@@ -183,15 +181,14 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                 alignment: FractionalOffset.bottomCenter,
                 child: InkWell(
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => Profile(uid: widget.videos[index].uid, name: widget.videos[index].author)));
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => Profile(
+                            uid: widget.videos[index].uid,
+                            name: widget.videos[index].author)));
                   },
                   child: Text(
                     widget.videos[index].author,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 20
-                    ),
-                    
+                    style: TextStyle(color: Colors.black, fontSize: 20),
                   ),
                 ),
               ),
@@ -240,8 +237,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                                                 widget.videos[index].documentId,
                                                 widget.feedId,
                                                 value,
-                                                widget.videos[index].author
-                                                ),
+                                                widget.videos[index].author),
                                         interestHolder.clear()
                                       },
                                   validator: (val) => val.isEmpty
@@ -321,7 +317,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                                     } else {
                                       return Align(
                                           alignment: Alignment.center,
-                                          child: CircularProgressIndicator());
+                                          child: CupertinoActivityIndicator());
                                     }
                                   },
                                 ))
@@ -337,23 +333,22 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
             width: MediaQuery.of(context).size.width * .05,
           ),
           FloatingActionButton.extended(
-            onPressed: () => UserDbService(uid: widget.videos[index].uid)
-                .addLike(widget.videos[index].documentId, widget.feedId, widget.videos[index].author),
-
-            label: StreamBuilder<VideoFeedObject>(
-              stream: UserDbService(uid: widget.videos[index].uid)
-                  .getVideo(widget.feedId, widget.videos[index].documentId),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  VideoFeedObject video = snapshot.data;
-                  return Text(video.likes.toString());
-                } else {
-                  return Text('0');
-                }
-              },
-            ),
-            icon: Icon(Icons.thumb_up)
-          ),
+              onPressed: () => UserDbService(uid: widget.videos[index].uid)
+                  .addLike(widget.videos[index].documentId, widget.feedId,
+                      widget.videos[index].author),
+              label: StreamBuilder<VideoFeedObject>(
+                stream: UserDbService(uid: widget.videos[index].uid)
+                    .getVideo(widget.feedId, widget.videos[index].documentId),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    VideoFeedObject video = snapshot.data;
+                    return Text(video.likes.toString());
+                  } else {
+                    return Text('0');
+                  }
+                },
+              ),
+              icon: Icon(Icons.thumb_up)),
         ],
       ),
     );

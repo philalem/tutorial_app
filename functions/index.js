@@ -4,7 +4,7 @@ const userFunctions = require("./userFunctions");
 const algoliaFunctions = require("./algoliaFunctions");
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const feedFunction = require("./feedFunctions")
+const feedFunction = require("./feedFunctions");
 admin.initializeApp();
 const db = admin.firestore();
 
@@ -45,7 +45,9 @@ exports.sendLikeNotifications = functions
 
 exports.sendCommentNotification = functions
   .region("us-east4")
-  .firestore.document("posts/{feedId}/following-posts/{videoId}/comments/{randomId}")
+  .firestore.document(
+    "posts/{feedId}/following-posts/{videoId}/comments/{randomId}"
+  )
   .onCreate((snap, context) => {
     return feedFunction.sendCommentNotifications(snap, context);
   });
@@ -119,3 +121,5 @@ exports.onEmailDeletion = functions
   .onDelete(async (snapshot, context) => {
     await algoliaFunctions.deleteEmailFromAlgolia(snapshot);
   });
+
+//TODO: add a function to move the original photo

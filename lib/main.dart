@@ -22,6 +22,7 @@ class CreaidApp extends StatelessWidget {
         home: Wrapper(),
         title: "Creaid",
         theme: CupertinoThemeData(
+          brightness: Brightness.light,
           primaryColor: Colors.indigo,
           textTheme: CupertinoTextThemeData(
             primaryColor: Colors.white,
