@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:creaid/profile/UploadProfile.dart';
 import 'package:creaid/profile/profilePhotoService.dart';
 import 'package:creaid/utility/algoliaService.dart';
+import 'package:creaid/utility/dialogErrorInfo.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -45,10 +46,7 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController emailController;
   AlgoliaService algoliaService = AlgoliaService();
   FocusNode focusNode;
-  String emailError;
-  String email = '';
-  String password = '';
-  String name = '';
+  String usernameError = '';
 
   @override
   void initState() {
@@ -84,7 +82,7 @@ class _EditProfileState extends State<EditProfile> {
           ),
         ),
         trailing: GestureDetector(
-          onTap: () => _saveUserEditedData(user, context),
+          onTap: () => _validateAndUploadForm(user),
           child: Text(
             'Save',
             style: TextStyle(color: Colors.white),
@@ -204,6 +202,18 @@ class _EditProfileState extends State<EditProfile> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
+                            usernameError != ''
+                                ? FittedBox(
+                                    fit: BoxFit.contain,
+                                    child: Text(
+                                      usernameError,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  )
+                                : SizedBox(),
                             CupertinoTextField(
                               controller: usernameController,
                               decoration: BoxDecoration(
@@ -211,6 +221,9 @@ class _EditProfileState extends State<EditProfile> {
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(5.0)),
                               ),
+                              onChanged: (value) {
+                                _isValidUsername(value);
+                              },
                               onSubmitted: (value) {
                                 focusNode.unfocus();
                                 setState(() {});
@@ -390,26 +403,25 @@ class _EditProfileState extends State<EditProfile> {
         .uploadPhotoToCloudStore(_image)
         .catchError((onError) {
       print(onError);
-      _showDialog();
+      _showDialog('Upload Failed.');
     });
     setState(() {
       _uploadedFileURL = fileUrl;
     });
   }
 
-  void _showDialog() {
+  void _showDialog(title) {
     if (Platform.isAndroid) {
       showDialog(
         context: _scaffoldKey.currentContext,
         builder: (BuildContext context) {
           // return object of type Dialog
           return AlertDialog(
-            title: Text("Upload failed"),
-            content: Text("Try Again"),
+            title: Text(title),
             actions: <Widget>[
               // usually buttons at the bottom of the dialog
               FlatButton(
-                child: Text("Close"),
+                child: Text("Okay"),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -424,11 +436,11 @@ class _EditProfileState extends State<EditProfile> {
         builder: (BuildContext context) {
           // return object of type Dialog
           return CupertinoAlertDialog(
-            title: Text("Upload failed. Please try again."),
+            title: Text(title),
             actions: <Widget>[
               // usually buttons at the bottom of the dialog
               CupertinoDialogAction(
-                child: Text("okay"),
+                child: Text("Okay"),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -440,14 +452,54 @@ class _EditProfileState extends State<EditProfile> {
     }
   }
 
-  Future _isValidEmail(String value) async {
-    bool isMatch = await algoliaService.isThereAnExactEmailMatch(value);
-    if (isMatch) {
-      emailError = 'Sorry, this email is taken already. Try another.';
-    } else if (value.isEmpty) {
-      emailError = 'Please enter an email';
-    } else {
-      emailError = null;
+  Future _validateAndUploadForm(User user) async {
+    DialogErrorInfo emailError = await _isValidEmail(emailController.text);
+    DialogErrorInfo nameError = await _isValidName(nameController.text);
+
+    if (emailError != null) {
+      _showDialog(emailError);
+      return;
     }
+    if (nameError != null) {
+      _showDialog(nameError);
+      return;
+    }
+    if (usernameError != '') {
+      _showDialog(usernameError);
+      return;
+    }
+    _saveUserEditedData(user, context);
+  }
+
+  Future _isValidName(String value) async {
+    String name = value.trim();
+    if (name.isEmpty || name.trim().length < 1) {
+      return 'Please enter your name.';
+    }
+    return null;
+  }
+
+  Future _isValidUsername(String value) async {
+    String username = value.trim();
+    bool isMatch = await algoliaService.isThereAnExactUsernameMatch(username);
+    if (isMatch && username.toLowerCase() != widget.username.toLowerCase()) {
+      usernameError = 'Sorry, the username is already taken.';
+    } else if (username.isEmpty) {
+      usernameError = 'Please enter a username.';
+    } else {
+      usernameError = '';
+    }
+    setState(() {});
+  }
+
+  Future _isValidEmail(String value) async {
+    String email = value.trim();
+    bool isMatch = await algoliaService.isThereAnExactEmailMatch(email);
+    if (isMatch && email.toLowerCase() != widget.email.toLowerCase()) {
+      return 'Sorry, this email is already taken.';
+    } else if (value.isEmpty) {
+      return 'Please enter an email.';
+    }
+    return null;
   }
 }
