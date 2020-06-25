@@ -1,12 +1,9 @@
 import 'dart:io';
 
-import 'package:creaid/profile/UploadProfile.dart';
 import 'package:creaid/profile/profilePhotoService.dart';
 import 'package:creaid/utility/algoliaService.dart';
-import 'package:creaid/utility/dialogErrorInfo.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/userDBService.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -453,8 +450,8 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future _validateAndUploadForm(User user) async {
-    DialogErrorInfo emailError = await _isValidEmail(emailController.text);
-    DialogErrorInfo nameError = await _isValidName(nameController.text);
+    String emailError = await _isValidEmail(emailController.text);
+    String nameError = await _isValidName(nameController.text);
 
     if (emailError != null) {
       _showDialog(emailError);
