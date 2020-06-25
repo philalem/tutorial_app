@@ -6,20 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(
-      CreaidApp(),
-    );
-
-class CreaidApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return StreamProvider<User>.value(
-      value: FireBaseAuthorization().user,
-      child: CupertinoApp(
+      CupertinoApp(
         localizationsDelegates: [
           DefaultMaterialLocalizations.delegate,
         ],
         debugShowCheckedModeBanner: false,
-        home: Wrapper(),
+        home: CreaidApp(),
         title: "Creaid",
         theme: CupertinoThemeData(
           brightness: Brightness.light,
@@ -29,6 +21,14 @@ class CreaidApp extends StatelessWidget {
           ),
         ),
       ),
+    );
+
+class CreaidApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamProvider<User>.value(
+      value: FireBaseAuthorization().user,
+      child: Wrapper(),
     );
   }
 }

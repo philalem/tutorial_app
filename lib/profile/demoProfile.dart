@@ -454,35 +454,38 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                     ),
                                     itemCount: posts.length,
                                     itemBuilder: (context, index) {
-                                      return Container(
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          child: posts[index].thumbnail !=
-                                                      null ||
-                                                  posts[index].thumbnail != ''
-                                              ? FadeInImage(
-                                                  image: NetworkImage(
-                                                      posts[index].thumbnail),
-                                                  placeholder: AssetImage(
-                                                      'assets/images/unknown-profile.png'),
-                                                )
-                                              : AssetImage(
-                                                  'assets/images/unknown-profile.png'),
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          border: Border.all(
-                                              color: Colors.grey, width: 0.2),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black54,
-                                              offset: Offset(-1.0, 1.0),
-                                              blurRadius: 1.0,
-                                            ),
-                                          ],
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Container(
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            child: posts[index].thumbnail !=
+                                                        null ||
+                                                    posts[index].thumbnail != ''
+                                                ? FadeInImage(
+                                                    image: NetworkImage(
+                                                        posts[index].thumbnail),
+                                                    placeholder: AssetImage(
+                                                        'assets/images/unknown-profile.png'),
+                                                  )
+                                                : AssetImage(
+                                                    'assets/images/unknown-profile.png'),
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey,
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                            border: Border.all(
+                                                color: Colors.grey, width: 0.2),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black54,
+                                                offset: Offset(-1.0, 1.0),
+                                                blurRadius: 1.0,
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       );
                                     },
