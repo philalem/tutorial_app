@@ -165,7 +165,7 @@ class _NotificationsState extends State<Notifications> {
           } else {
             return Align(
                 alignment: Alignment.center,
-                child: CircularProgressIndicator());
+                child: CupertinoActivityIndicator());
           }
         },
       ),

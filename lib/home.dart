@@ -125,7 +125,8 @@ class _HomeState extends State<Home> {
         fontPackage: CupertinoIcons.iconFontPackage);
 
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: true,
+      //TODO: turn this into cupertino tab view
       body: IndexedStack(
         index: _navBarItemIndex,
         children: _pages,

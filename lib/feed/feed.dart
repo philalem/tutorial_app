@@ -3,6 +3,7 @@ import 'package:creaid/utility/UserData.dart';
 import 'package:creaid/feed/VideoFeedObject.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/userDBService.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -33,28 +34,28 @@ class Feed extends StatelessWidget {
                     } else {
                       return Align(
                           alignment: Alignment.center,
-                          child: CircularProgressIndicator());
+                          child: CupertinoActivityIndicator());
                     }
                   } else {
                     return Align(
                         alignment: Alignment.center,
-                        child: CircularProgressIndicator());
+                        child: CupertinoActivityIndicator());
                   }
                 },
               );
             } else {
               return Align(
                   alignment: Alignment.center,
-                  child: CircularProgressIndicator());
+                  child: CupertinoActivityIndicator());
             }
           } else {
             return Align(
                 alignment: Alignment.center,
-                child: CircularProgressIndicator());
+                child: CupertinoActivityIndicator());
           }
         } else {
           return Align(
-              alignment: Alignment.center, child: CircularProgressIndicator());
+              alignment: Alignment.center, child: CupertinoActivityIndicator());
         }
       },
     );

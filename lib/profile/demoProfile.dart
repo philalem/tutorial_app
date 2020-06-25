@@ -98,7 +98,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
           if (!snapshot.hasData) {
             return Align(
                 alignment: Alignment.center,
-                child: CircularProgressIndicator());
+                child: CupertinoActivityIndicator());
           }
           UserData data = snapshot.data;
           return ListView(
@@ -107,183 +107,212 @@ class _ProfileFirstState extends State<ProfileFirst> {
                 color: Colors.grey[200],
                 width: width,
                 child: Padding(
-                  padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 30),
+                  padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 15),
                   child: Column(
                     children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            flex: 8,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                FittedBox(
-                                  fit: BoxFit.contain,
-                                  child: Text(
-                                    data.username,
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 26,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: height * 0.008,
-                                ),
-                                Container(
-                                  width: width,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      FittedBox(
-                                        fit: BoxFit.contain,
-                                        child: Column(
-                                          children: <Widget>[
-                                            Text(
-                                              data.numberFollowing.toString(),
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(
-                                              "Following",
-                                              style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Spacer(),
-                                      FittedBox(
-                                        fit: BoxFit.contain,
-                                        child: Column(
-                                          children: <Widget>[
-                                            Text(
-                                              data.numberFollowers.toString(),
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(
-                                              "Followers",
-                                              style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Spacer(),
-                                    ],
-                                  ),
-                                ),
-                                FlatButton(
-                                  padding: EdgeInsets.all(0),
-                                  onPressed: () => Navigator.of(context).push(
-                                    CupertinoPageRoute(
-                                      builder: (context) => EditProfile(
-                                        name: data.name,
-                                        username: data.username,
-                                        email: userName.email,
-                                        profileImage: photoUrl,
+                      Container(
+                        height: height * 0.15,
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              flex: 8,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 3,
+                                    child: FittedBox(
+                                      fit: BoxFit.contain,
+                                      child: Text(
+                                        data.username,
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ),
                                   ),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.black87),
-                                      borderRadius: BorderRadius.circular(5.0),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
+                                  Expanded(
+                                    flex: 4,
+                                    child: Container(
+                                      margin: EdgeInsets.only(top: 4),
                                       child: Row(
-                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisSize: MainAxisSize.min,
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: <Widget>[
-                                          Text(
-                                            "Edit ",
-                                            style: TextStyle(
-                                                color: Colors.black87,
-                                                fontSize: 16),
+                                          FittedBox(
+                                            fit: BoxFit.contain,
+                                            child: Column(
+                                              children: <Widget>[
+                                                Text(
+                                                  data.numberFollowing
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 22,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  "Following",
+                                                  style: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                          Icon(
-                                            CupertinoIcons.pencil,
-                                            color: Colors.black87,
-                                            size: 16,
+                                          Spacer(),
+                                          FittedBox(
+                                            fit: BoxFit.contain,
+                                            child: Column(
+                                              children: <Widget>[
+                                                Text(
+                                                  data.numberFollowers
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 22,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  "Followers",
+                                                  style: TextStyle(
+                                                    color: Colors.black87,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
+                                          Spacer(),
                                         ],
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: SizedBox(),
-                          ),
-                          Expanded(
-                            flex: 8,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                FittedBox(
-                                  fit: BoxFit.contain,
-                                  child: CircleAvatar(
-                                    backgroundColor: Colors.indigoAccent,
-                                    radius: 75,
-                                    child: StreamBuilder<Object>(
-                                        stream: ProfilePhotoService(uid: uid)
-                                            .getProfilePhoto(),
-                                        builder: (context, snapshot) {
-                                          if (!snapshot.hasData)
-                                            return Align(
-                                              alignment: Alignment.center,
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            );
-                                          photoUrl = snapshot.data;
-                                          return ClipOval(
-                                            child: Container(
-                                              height: 140,
-                                              width: 140,
-                                              child: photoUrl != null
-                                                  ? FadeInImage(
-                                                      image: NetworkImage(
-                                                          photoUrl),
-                                                      placeholder: AssetImage(
-                                                          'assets/images/unknown-profile.png'),
-                                                    )
-                                                  : AssetImage(
-                                                      'assets/images/unknown-profile.png'),
-                                            ),
-                                          );
-                                        }),
+                                  Expanded(
+                                    flex: 3,
+                                    child: FlatButton(
+                                      padding: EdgeInsets.only(top: 4),
+                                      onPressed: () =>
+                                          Navigator.of(context).push(
+                                        CupertinoPageRoute(
+                                          builder: (context) => EditProfile(
+                                            name: data.name,
+                                            biography: data.bio,
+                                            username: data.username,
+                                            email: userName.email,
+                                            profileImage: photoUrl,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          border:
+                                              Border.all(color: Colors.black87),
+                                          borderRadius:
+                                              BorderRadius.circular(5.0),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 4.0),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              FittedBox(
+                                                fit: BoxFit.contain,
+                                                child: Text(
+                                                  "Edit ",
+                                                  style: TextStyle(
+                                                      color: Colors.black87,
+                                                      fontSize: 16),
+                                                ),
+                                              ),
+                                              FittedBox(
+                                                fit: BoxFit.contain,
+                                                child: Icon(
+                                                  CupertinoIcons.pencil,
+                                                  color: Colors.black87,
+                                                  size: 16,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                            Expanded(
+                              flex: 6,
+                              child: FittedBox(
+                                fit: BoxFit.contain,
+                                alignment: Alignment.centerRight,
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.indigoAccent,
+                                  radius: 85,
+                                  child: StreamBuilder<Object>(
+                                      stream: ProfilePhotoService(uid: uid)
+                                          .getProfilePhoto(),
+                                      builder: (context, snapshot) {
+                                        if (!snapshot.hasData)
+                                          return Align(
+                                            alignment: Alignment.center,
+                                            child: CupertinoActivityIndicator(),
+                                          );
+                                        photoUrl = snapshot.data;
+                                        return ClipOval(
+                                          child: Container(
+                                            height: 160,
+                                            width: 160,
+                                            child: photoUrl != null
+                                                ? FadeInImage(
+                                                    image:
+                                                        NetworkImage(photoUrl),
+                                                    placeholder: AssetImage(
+                                                        'assets/images/unknown-profile.png'),
+                                                  )
+                                                : AssetImage(
+                                                    'assets/images/unknown-profile.png'),
+                                          ),
+                                        );
+                                      }),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10),
-                        child: Text(
-                          'Hello fellow Cre fsdf sg ssgfgsfhsf hdhdfgfsgdfdg dgdf hdf hd hd fhd g df g dgd g fgf g d h dhd fhgdf hfg hf hf hfg h fh fgh fg hf ghfg Aiders! I\'m Neil. I really like making tutorials and sharing with my friends!',
-                          softWrap: true,
-                          maxLines: null,
-                          style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 14,
-                          ),
+                        padding: EdgeInsets.only(
+                          top: 10,
+                          bottom: 20,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Flexible(
+                              child: Text(
+                                data.bio != null
+                                    ? data.bio
+                                    : 'Welcome to my profile! 😊',
+                                softWrap: true,
+                                maxLines: null,
+                                style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -316,8 +345,13 @@ class _ProfileFirstState extends State<ProfileFirst> {
                     children: <Widget>[
                       StickyHeader(
                         header: Container(
-                          color: Colors.white,
-                          height: 50,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Colors.grey[200], width: 1)),
+                          ),
+                          height: 40,
                           padding: EdgeInsets.symmetric(horizontal: 16.0),
                           alignment: Alignment.center,
                           child: Text(
@@ -325,7 +359,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
-                              fontSize: 24,
+                              fontSize: 18,
                             ),
                           ),
                         ),
@@ -374,8 +408,13 @@ class _ProfileFirstState extends State<ProfileFirst> {
                       ),
                       StickyHeader(
                         header: Container(
-                          height: 50,
-                          color: Colors.white,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Colors.grey[200], width: 1)),
+                          ),
                           padding: EdgeInsets.symmetric(horizontal: 16.0),
                           alignment: Alignment.center,
                           child: Text(
@@ -383,7 +422,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                             style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 24),
+                                fontSize: 18),
                           ),
                         ),
                         content: Column(
@@ -473,7 +512,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                   name,
                   style: TextStyle(
                       color: Colors.black,
-                      fontSize: 20,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold),
                 ),
               ),
