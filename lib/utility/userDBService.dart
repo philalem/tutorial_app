@@ -46,7 +46,6 @@ class UserDbService {
           author: document['author'],
           videoUrl: document['videoUrl'],
           likes: document['likes'],
-          comments: List.from(document['comments']),
           documentId: document.documentID,
           title: document['title'],
           description: document['description'],
