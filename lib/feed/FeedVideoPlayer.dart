@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:creaid/utility/algoliaService.dart';
 
 class FeedVideoPlayer extends StatefulWidget {
   final List<VideoFeedObject> videos;
@@ -25,8 +26,10 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   String shareId = "";
   List<VideoPlayerController> _controllers = [];
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
-  final _formKey = GlobalKey<FormState>();
+  final _formKey = new GlobalKey<FormState>();
   final interestHolder = TextEditingController();
+  final userHolder = TextEditingController();
+  AlgoliaService algoliaService = AlgoliaService();
 
   clearTextInput() {
     interestHolder.clear();
@@ -159,6 +162,46 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
         });
   }
 
+  successfulShare(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            elevation: 15,
+            child: Container(
+              color: Colors.black12,
+              height: 100,
+              child: Center(
+                child: Text(
+                  "Video Shared!",
+                  style: TextStyle(color: Colors.black, fontSize: 20),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  failedShare(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            elevation: 15,
+            child: Container(
+              color: Colors.black12,
+              height: 100,
+              child: Center(
+                child: Text(
+                  "User doesn't exist!",
+                  style: TextStyle(color: Colors.black, fontSize: 20),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -201,7 +244,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
           Positioned(
               //title/description
               child: Container(
-                  height: 45,
+                  height: 65,
                   width: MediaQuery.of(context).size.width,
                   color: Colors.black12,
                   child: Align(
@@ -212,18 +255,18 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                       },
                       child: Text(
                         widget.videos[index].title,
-                        style: TextStyle(color: Colors.black, fontSize: 20),
+                        style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
                     ),
                   ))),
           Positioned(
             //user
             child: Container(
-              height: 25,
+              height: 45,
               width: MediaQuery.of(context).size.width,
               color: Colors.white,
               child: Align(
-                alignment: FractionalOffset.bottomLeft,
+                alignment: FractionalOffset.centerLeft,
                 child: InkWell(
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -231,9 +274,12 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                             uid: widget.videos[index].uid,
                             name: widget.videos[index].author)));
                   },
-                  child: Text(
-                    widget.videos[index].author,
-                    style: TextStyle(color: Colors.black, fontSize: 20),
+                  child: Padding(
+                    padding: const EdgeInsets.all(1.0),
+                    child: Text(
+                      widget.videos[index].author,
+                      style: TextStyle(color: Colors.black, fontSize: 20),
+                    ),
                   ),
                 ),
               ),
@@ -242,9 +288,12 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
         ],
       ),
       floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           //share button
+          SizedBox(
+            width: MediaQuery.of(context).size.width * .08,
+          ),
           FloatingActionButton(
             onPressed: () {
               showDialog(
@@ -255,6 +304,9 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                       height: 200.0,
                       width: 360.0,
                       child: ListView(children: <Widget>[
+                        SizedBox(
+                          height: 20,
+                        ),
                         Center(
                           child: Text(
                             "Send this video to:",
@@ -268,7 +320,6 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           child: TextFormField(
-                            key: _formKey,
                             onFieldSubmitted: (value) => {shareId = value},
                             validator: (val) =>
                                 val.isEmpty ? "Enter valid user" : null,
@@ -277,13 +328,15 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,
                                   color: Theme.of(context).primaryColor),
-                              hintText: 'User',
+                              hintText: 'Enter username',
                             ),
+                            controller: userHolder,
                           ),
                         ),
                         SizedBox(height: 20),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 100.0),
                           child: CreaidButton(
                             children: <Widget>[
                               Text(
@@ -292,10 +345,19 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                               ),
                             ],
                             onPressed: () async {
-                              if (_formKey.currentState.validate()) {
-                                 _formKey.currentState.save();
-                                 NotificationsDbService(uid: widget.videos[index].uid).sendShareVideoNotification(widget.videos[index].author);
+                              bool valid = await algoliaService
+                                  .isThereAnExactUsernameMatch(userHolder.text);
+                              if (valid) {
+                                String uuid = await algoliaService
+                                    .getUserFromUserName(userHolder.text);
+                                NotificationsDbService(uid: uuid)
+                                    .sendShareVideoNotification(
+                                        userHolder.text);
+                                successfulShare(context);
+                              } else {
+                                failedShare(context);
                               }
+                              userHolder.clear();
                             },
                           ),
                         ),
@@ -305,10 +367,46 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                 },
               );
             },
-            child: Icon(Icons.share),
+            child: Icon(
+              Icons.share,
+              color: Colors.black,
+            ),
+            backgroundColor: Colors.white,
           ),
           SizedBox(
-            width: MediaQuery.of(context).size.width * .05,
+            width: MediaQuery.of(context).size.width * .25,
+          ),
+          FloatingActionButton.extended(
+            //like button
+            onPressed: () => UserDbService(uid: widget.videos[index].uid)
+                .addLike(widget.videos[index].documentId, widget.feedId,
+                    widget.videos[index].author),
+            label: StreamBuilder<VideoFeedObject>(
+              stream: UserDbService(uid: widget.videos[index].uid)
+                  .getVideo(widget.feedId, widget.videos[index].documentId),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  VideoFeedObject video = snapshot.data;
+                  return Text(
+                      video.likes.toString(),
+                      style: TextStyle(color: Colors.black),
+                    );
+                } else {
+                  return Text(
+                    '0',
+                    style: TextStyle(color: Colors.black),
+                  );
+                }
+              },
+            ),
+            icon: Icon(
+              Icons.thumb_up,
+              color: Colors.black,
+              ),
+            backgroundColor: Colors.white,
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * .15,
           ),
           FloatingActionButton(
               //comment button
@@ -440,28 +538,11 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                   },
                 );
               },
-              child: Icon(Icons.comment)),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * .05,
-          ),
-          FloatingActionButton.extended(
-              //like button
-              onPressed: () => UserDbService(uid: widget.videos[index].uid)
-                  .addLike(widget.videos[index].documentId, widget.feedId,
-                      widget.videos[index].author),
-              label: StreamBuilder<VideoFeedObject>(
-                stream: UserDbService(uid: widget.videos[index].uid)
-                    .getVideo(widget.feedId, widget.videos[index].documentId),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    VideoFeedObject video = snapshot.data;
-                    return Text(video.likes.toString());
-                  } else {
-                    return Text('0');
-                  }
-                },
+              child: Icon(
+                Icons.comment,
+                color: Colors.black,
               ),
-              icon: Icon(Icons.thumb_up)),
+              backgroundColor: Colors.white)
         ],
       ),
     );
