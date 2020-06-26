@@ -9,24 +9,16 @@ class PostsDbService {
 
   PostsDbService({this.uid});
 
-  Future<void> addPostToDb(
-      String title, String description, List<String> videoPaths) async {
+  Future<void> addPostToDb(String title, String description,
+      List<String> videoPaths, String thumbnail) async {
     print('Adding post information...');
     var date = DateTime.now();
-    final thumbnail = await VideoThumbnail.thumbnailFile(
-      video: videoPaths[0],
-      thumbnailPath: (await getTemporaryDirectory()).path,
-      imageFormat: ImageFormat.PNG,
-      maxHeight:
-          64, // specify the height of the thumbnail, let the width auto-scaled to keep the source aspect ratio
-      quality: 75,
-    );
     var postData = {
       'title': title,
       'description': description,
       'videos': videoPaths,
-      'number-likes': 0,
       'thumbnail': thumbnail,
+      'number-likes': 0,
       'date': date,
     };
     DocumentReference userRef = await postsCollection
