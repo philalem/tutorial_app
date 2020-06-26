@@ -32,7 +32,7 @@ class NotificationsDbService {
   sendShareVideoNotification(String name) async {
     await notificationsCollection.document(uid).updateData({'new-notifications' : FieldValue.increment(1)});
     await notificationsCollection.document(uid).collection('notifications').add({
-      'comment': name + 'wanted to share a video with you',
+      'comment': name + ' wanted to share a video with you',
       'date': new DateTime.now().millisecondsSinceEpoch,
       'name': name,
       'type': 'Video Share',

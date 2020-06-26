@@ -28,7 +28,7 @@ class Feed extends StatelessWidget {
                     if (userDatas.length > 0) {
                       return FeedVideoPlayer(
                         videos: userDatas,
-                        feedId: userData.feedId,
+                        feedId: user.uid,
                       );
                     } else {
                       return Align(
