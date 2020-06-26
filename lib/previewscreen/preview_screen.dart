@@ -1,17 +1,16 @@
-import 'dart:io';
 import 'dart:async';
-import 'dart:typed_data';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:creaid/utility/postsDbService.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
 
 class PreviewImageScreen extends StatefulWidget {
   final List<String> paths;
@@ -23,9 +22,11 @@ class PreviewImageScreen extends StatefulWidget {
 }
 
 class _PreviewImageScreenState extends State<PreviewImageScreen> {
+  final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
+  final FlutterFFmpegConfig _flutterFFmpegConfig = new FlutterFFmpegConfig();
   final List<StorageReference> storageReferences = [];
   StorageReference thumbnailReference;
-  String thumbnail;
+  String thumbnailPath;
   final titleTextController = TextEditingController();
   final descriptionTextController = TextEditingController();
   final databaseReference = Firestore.instance;
@@ -41,8 +42,8 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     super.initState();
     _paths = widget.paths;
     String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
-    thumbnail = widget.directoryPath + '/${timestamp()}.png';
-    thumbnailReference = FirebaseStorage.instance.ref().child(thumbnail);
+    thumbnailPath = '${widget.directoryPath}/${timestamp()}_thumb.png';
+    thumbnailReference = FirebaseStorage.instance.ref().child(thumbnailPath);
 
     for (var i = 0; i < _paths.length; i++) {
       storageReferences.add(FirebaseStorage.instance.ref().child(_paths[i]));
@@ -87,11 +88,22 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
         children: <Widget>[
           _getCamera(deviceRatio, _controllers[1]),
           Positioned(
-            bottom: isIOS ? height * 0.05 : 0.0,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: bottom),
-              child: Container(
-                width: width,
+            bottom: 0,
+            child: Container(
+              width: width,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Colors.black45,
+                    Colors.transparent,
+                  ],
+                  tileMode: TileMode.repeated,
+                ),
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 4),
                 child: Column(
                   children: <Widget>[
                     Row(
@@ -106,15 +118,6 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                           child: SizedBox(
                             width: width - 30 * 2,
                             child: Container(
-                              decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black54,
-                                    offset: Offset(0.0, 0.0),
-                                    blurRadius: 10.0,
-                                  ),
-                                ],
-                              ),
                               child: TextFormField(
                                 controller: titleTextController,
                                 style: TextStyle(
@@ -155,15 +158,6 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                           child: SizedBox(
                             width: width - 30 * 2,
                             child: Container(
-                              decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black54,
-                                    offset: Offset(0.0, 0.0),
-                                    blurRadius: 10.0,
-                                  ),
-                                ],
-                              ),
                               child: TextFormField(
                                 controller: descriptionTextController,
                                 style: TextStyle(
@@ -196,8 +190,8 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                       width: width,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
                         children: <Widget>[
-                          Spacer(flex: 1),
                           RaisedButton(
                             color: Colors.indigo,
                             onPressed: () => _savePost(user, context),
@@ -215,7 +209,6 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                               mainAxisSize: MainAxisSize.min,
                             ),
                           ),
-                          Spacer(flex: 1),
                         ],
                       ),
                     ),
@@ -234,6 +227,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                   color: Colors.white,
                 ),
                 onPressed: () {
+                  _controllers[1]?.pause();
                   Navigator.of(context).pop();
                 },
               ),
@@ -256,7 +250,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     });
     await _saveVideosToDb();
     PostsDbService(uid: user.uid).addPostToDb(titleTextController.text,
-        descriptionTextController.text, _paths, thumbnail);
+        descriptionTextController.text, _paths, thumbnailPath);
     setState(() {
       isSaving = false;
     });
@@ -399,7 +393,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       }
       print('Was video upload successful: ' + successfulUpload.toString());
     }
-    await _saveThumbnail();
+    //await _saveThumbnail();
 
     _controllers[0].dispose();
     _controllers[1].dispose();
@@ -407,15 +401,24 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   }
 
   Future _saveThumbnail() async {
-    print(widget.paths[0]);
-    Uint8List thumbnailBytes = await VideoThumbnail.thumbnailData(
-      video: widget.paths[0],
-      imageFormat: ImageFormat.PNG,
-      maxHeight: 100,
-      quality: 75,
-    ).catchError((onError) => print(onError));
-    StorageUploadTask uploadThumbnail = thumbnailReference.putData(
-      thumbnailBytes,
+    //TODO: add ffmpeg -ss 00:00:00.100
+    var arguments = [
+      "-y",
+      "-i",
+      "${widget.paths[0]}",
+      "-vframes",
+      "1",
+      "-an",
+      "-s",
+      "-ss",
+      "1",
+      "$thumbnailPath"
+    ];
+    await _flutterFFmpeg
+        .executeWithArguments(arguments)
+        .then((rc) => print("FFmpeg process exited with rc $rc"));
+    StorageUploadTask uploadThumbnail = thumbnailReference.putFile(
+      File(thumbnailPath),
       StorageMetadata(
         contentType: 'thumbnails/.png',
       ),

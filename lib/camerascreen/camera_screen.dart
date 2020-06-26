@@ -299,9 +299,9 @@ class _CameraScreenState extends State<CameraScreen> {
       FirebaseUser uid = await _auth.currentUser();
       final Directory extDir = await getApplicationDocumentsDirectory();
       final String dirPath = '${extDir.path}/${uid.uid.toString()}/user-posts';
-      directoryPath = dirPath;
       await Directory(dirPath).create(recursive: true);
       final String filePath = '$dirPath/${timestamp()}.mp4';
+      directoryPath = dirPath;
 
       if (_controller.value.isRecordingVideo) {
         print("stopping the recording");

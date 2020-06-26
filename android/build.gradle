@@ -12,6 +12,10 @@ buildscript {
     }
 }
 
+ext {
+    flutterFFmpegPackage = "min-gpl-lts"
+}
+
 allprojects {
     repositories {
         google()

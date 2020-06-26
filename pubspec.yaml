@@ -37,8 +37,8 @@ dependencies:
   flutter_launcher_icons: ^0.7.5
   image_cropper: ^1.2.3
   sticky_headers: ^0.1.8
-  video_thumbnail: ^0.2.2
   video_player: ">=0.10.11+1 <2.0.0"
+  flutter_ffmpeg: ^0.2.10
 
 flutter_icons:
   image_path_android: "assets/icon/creaid_icon.png"
