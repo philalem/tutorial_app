@@ -21,7 +21,7 @@ class Feed extends StatelessWidget {
             if (userData.feedId.length > 0) {
               return StreamBuilder<List<VideoFeedObject>>(
                 stream:
-                    UserDbService(uid: user.uid).getUserFeed(userData.feedId),
+                    UserDbService(uid: user.uid).getUserFeed(user.uid),
                 builder:
                     (context, AsyncSnapshot<List<VideoFeedObject>> snapshot) {
                   if (snapshot.hasData) {
@@ -29,7 +29,7 @@ class Feed extends StatelessWidget {
                     if (userDatas.length > 0) {
                       return FeedVideoPlayer(
                         videos: userDatas,
-                        feedId: userData.feedId,
+                        feedId: user.uid,
                       );
                     } else {
                       return Align(

@@ -1,11 +1,14 @@
 import 'package:creaid/feed/FeedCommentObject.dart';
 import 'package:creaid/feed/VideoFeedObject.dart';
+import 'package:creaid/notifications/notificationsDbService.dart';
 import 'package:creaid/profile/profile.dart';
+import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:creaid/utility/algoliaService.dart';
 
 class FeedVideoPlayer extends StatefulWidget {
   final List<VideoFeedObject> videos;
@@ -20,9 +23,13 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   int index = 0;
   bool _changeLock = false;
   double _progress = 0;
+  String shareId = "";
   List<VideoPlayerController> _controllers = [];
   var _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _formKey = new GlobalKey<FormState>();
   final interestHolder = TextEditingController();
+  final userHolder = TextEditingController();
+  AlgoliaService algoliaService = AlgoliaService();
 
   clearTextInput() {
     interestHolder.clear();
@@ -135,6 +142,66 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
     });
   }
 
+  showDescription(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            elevation: 15,
+            child: Container(
+              color: Colors.black12,
+              height: 100,
+              child: Center(
+                child: Text(
+                  widget.videos[index].description,
+                  style: TextStyle(color: Colors.black, fontSize: 20),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  successfulShare(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            elevation: 15,
+            child: Container(
+              color: Colors.black12,
+              height: 100,
+              child: Center(
+                child: Text(
+                  "Video Shared!",
+                  style: TextStyle(color: Colors.black, fontSize: 20),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  failedShare(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            elevation: 15,
+            child: Container(
+              color: Colors.black12,
+              height: 100,
+              child: Center(
+                child: Text(
+                  "User doesn't exist!",
+                  style: TextStyle(color: Colors.black, fontSize: 20),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -150,10 +217,12 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
       body: Stack(
         children: <Widget>[
           SizedBox(
+              //video
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               child: Center(child: VideoPlayer(_controllers[1]))),
           Positioned(
+            //swipe
             right: 0,
             child: SizedBox(
               height: MediaQuery.of(context).size.height,
@@ -173,12 +242,31 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
             ),
           ),
           Positioned(
+              //title/description
+              child: Container(
+                  height: 65,
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.black12,
+                  child: Align(
+                    alignment: FractionalOffset.bottomCenter,
+                    child: InkWell(
+                      onTap: () {
+                        showDescription(context);
+                      },
+                      child: Text(
+                        widget.videos[index].title,
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                    ),
+                  ))),
+          Positioned(
+            //user
             child: Container(
-              height: 25,
+              height: 45,
               width: MediaQuery.of(context).size.width,
-              color: Colors.blue,
+              color: Colors.white,
               child: Align(
-                alignment: FractionalOffset.bottomCenter,
+                alignment: FractionalOffset.centerLeft,
                 child: InkWell(
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
@@ -186,9 +274,12 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                             uid: widget.videos[index].uid,
                             name: widget.videos[index].author)));
                   },
-                  child: Text(
-                    widget.videos[index].author,
-                    style: TextStyle(color: Colors.black, fontSize: 20),
+                  child: Padding(
+                    padding: const EdgeInsets.all(1.0),
+                    child: Text(
+                      widget.videos[index].author,
+                      style: TextStyle(color: Colors.black, fontSize: 20),
+                    ),
                   ),
                 ),
               ),
@@ -197,9 +288,128 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
         ],
       ),
       floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
+          //share button
+          SizedBox(
+            width: MediaQuery.of(context).size.width * .08,
+          ),
           FloatingActionButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return Dialog(
+                    child: Container(
+                      height: 200.0,
+                      width: 360.0,
+                      child: ListView(children: <Widget>[
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Center(
+                          child: Text(
+                            "Send this video to:",
+                            style: TextStyle(
+                                fontSize: 24,
+                                color: Theme.of(context).primaryColor,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: TextFormField(
+                            onFieldSubmitted: (value) => {shareId = value},
+                            validator: (val) =>
+                                val.isEmpty ? "Enter valid user" : null,
+                            decoration: InputDecoration(
+                              hintStyle: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: Theme.of(context).primaryColor),
+                              hintText: 'Enter username',
+                            ),
+                            controller: userHolder,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Padding(
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 100.0),
+                          child: CreaidButton(
+                            children: <Widget>[
+                              Text(
+                                'Send',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ],
+                            onPressed: () async {
+                              bool valid = await algoliaService
+                                  .isThereAnExactUsernameMatch(userHolder.text);
+                              if (valid) {
+                                String uuid = await algoliaService
+                                    .getUserFromUserName(userHolder.text);
+                                NotificationsDbService(uid: uuid)
+                                    .sendShareVideoNotification(
+                                        userHolder.text);
+                                successfulShare(context);
+                              } else {
+                                failedShare(context);
+                              }
+                              userHolder.clear();
+                            },
+                          ),
+                        ),
+                      ]),
+                    ),
+                  );
+                },
+              );
+            },
+            child: Icon(
+              Icons.share,
+              color: Colors.black,
+            ),
+            backgroundColor: Colors.white,
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * .25,
+          ),
+          FloatingActionButton.extended(
+            //like button
+            onPressed: () => UserDbService(uid: widget.videos[index].uid)
+                .addLike(widget.videos[index].documentId, widget.feedId,
+                    widget.videos[index].author),
+            label: StreamBuilder<VideoFeedObject>(
+              stream: UserDbService(uid: widget.videos[index].uid)
+                  .getVideo(widget.feedId, widget.videos[index].documentId),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  VideoFeedObject video = snapshot.data;
+                  return Text(
+                      video.likes.toString(),
+                      style: TextStyle(color: Colors.black),
+                    );
+                } else {
+                  return Text(
+                    '0',
+                    style: TextStyle(color: Colors.black),
+                  );
+                }
+              },
+            ),
+            icon: Icon(
+              Icons.thumb_up,
+              color: Colors.black,
+              ),
+            backgroundColor: Colors.white,
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * .18,
+          ),
+          FloatingActionButton(
+              //comment button
               onPressed: () {
                 showDialog(
                   context: context,
@@ -328,27 +538,11 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                   },
                 );
               },
-              child: Icon(Icons.comment)),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * .05,
-          ),
-          FloatingActionButton.extended(
-              onPressed: () => UserDbService(uid: widget.videos[index].uid)
-                  .addLike(widget.videos[index].documentId, widget.feedId,
-                      widget.videos[index].author),
-              label: StreamBuilder<VideoFeedObject>(
-                stream: UserDbService(uid: widget.videos[index].uid)
-                    .getVideo(widget.feedId, widget.videos[index].documentId),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    VideoFeedObject video = snapshot.data;
-                    return Text(video.likes.toString());
-                  } else {
-                    return Text('0');
-                  }
-                },
+              child: Icon(
+                Icons.comment,
+                color: Colors.black,
               ),
-              icon: Icon(Icons.thumb_up)),
+              backgroundColor: Colors.white)
         ],
       ),
     );

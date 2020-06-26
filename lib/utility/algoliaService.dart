@@ -37,4 +37,14 @@ class AlgoliaService {
     String closestMatch = snap.data['email'].toString().toLowerCase();
     return closestMatch == potentialEmail.toString().toLowerCase();
   }
+
+  Future<String> getUserFromUserName(userName) async {
+    AlgoliaQuery query = algolia.instance.index('users').setHitsPerPage(1);
+    query = query.search(userName);
+    var hit = (await query.getObjects()).hits;
+    AlgoliaObjectSnapshot snap = hit[0];
+    //var closestMatch = snap.data['uid'];
+    print(snap.objectID);
+    return snap.objectID;
+  }
 }
