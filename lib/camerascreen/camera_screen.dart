@@ -24,6 +24,7 @@ class _CameraScreenState extends State<CameraScreen> {
   String imagePath;
   Future<void> _initializeVideoFuture;
   List<String> paths = [];
+  String directoryPath;
   bool isRecording = false;
   double _width = 60;
   double _height = 60;
@@ -158,8 +159,10 @@ class _CameraScreenState extends State<CameraScreen> {
                       if (paths.isEmpty) return;
                       Navigator.of(context).push(
                         CupertinoPageRoute(
-                          builder: (context) =>
-                              PreviewImageScreen(paths: paths),
+                          builder: (context) => PreviewImageScreen(
+                            paths: paths,
+                            directoryPath: directoryPath,
+                          ),
                         ),
                       );
                     },
@@ -231,6 +234,7 @@ class _CameraScreenState extends State<CameraScreen> {
           ),
         ),
         onPressed: () {
+          HapticFeedback.mediumImpact();
           setState(() {
             if (isRecording) {
               _color = Colors.white;
@@ -290,12 +294,12 @@ class _CameraScreenState extends State<CameraScreen> {
     // Take the Picture in a try / catch block. If anything goes wrong,
     // catch the error.
     try {
-      HapticFeedback.mediumImpact();
       String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
       final FirebaseAuth _auth = FirebaseAuth.instance;
       FirebaseUser uid = await _auth.currentUser();
       final Directory extDir = await getApplicationDocumentsDirectory();
       final String dirPath = '${extDir.path}/${uid.uid.toString()}/user-posts';
+      directoryPath = dirPath;
       await Directory(dirPath).create(recursive: true);
       final String filePath = '$dirPath/${timestamp()}.mp4';
 

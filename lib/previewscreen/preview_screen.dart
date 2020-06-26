@@ -1,15 +1,22 @@
 import 'dart:io';
+import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:creaid/utility/postsDbService.dart';
+import 'package:creaid/utility/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class PreviewImageScreen extends StatefulWidget {
   final List<String> paths;
-  PreviewImageScreen({this.paths});
+  final String directoryPath;
+  PreviewImageScreen({this.paths, this.directoryPath});
 
   @override
   _PreviewImageScreenState createState() => _PreviewImageScreenState();
@@ -17,6 +24,8 @@ class PreviewImageScreen extends StatefulWidget {
 
 class _PreviewImageScreenState extends State<PreviewImageScreen> {
   final List<StorageReference> storageReferences = [];
+  StorageReference thumbnailReference;
+  String thumbnail;
   final titleTextController = TextEditingController();
   final descriptionTextController = TextEditingController();
   final databaseReference = Firestore.instance;
@@ -31,6 +40,10 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   void initState() {
     super.initState();
     _paths = widget.paths;
+    String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
+    thumbnail = widget.directoryPath + '/${timestamp()}.png';
+    thumbnailReference = FirebaseStorage.instance.ref().child(thumbnail);
+
     for (var i = 0; i < _paths.length; i++) {
       storageReferences.add(FirebaseStorage.instance.ref().child(_paths[i]));
     }
@@ -65,6 +78,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     final deviceRatio = width / height;
     final bottom = MediaQuery.of(context).viewInsets.bottom;
     bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+    final user = Provider.of<User>(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -82,7 +96,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                   children: <Widget>[
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
+                      mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.only(
@@ -91,28 +105,39 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                           ),
                           child: SizedBox(
                             width: width - 30 * 2,
-                            child: TextFormField(
-                              controller: titleTextController,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 34,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black54,
+                                    offset: Offset(0.0, 0.0),
+                                    blurRadius: 10.0,
+                                  ),
+                                ],
                               ),
-                              decoration: const InputDecoration(
-                                hintText: 'Title',
-                                hintStyle: TextStyle(
+                              child: TextFormField(
+                                controller: titleTextController,
+                                style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 34,
                                 ),
-                                border: InputBorder.none,
+                                decoration: const InputDecoration(
+                                  hintText: 'Title',
+                                  hintStyle: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 34,
+                                  ),
+                                  border: InputBorder.none,
+                                ),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Please enter some text';
+                                  }
+                                  return null;
+                                },
                               ),
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Please enter some text';
-                                }
-                                return null;
-                              },
                             ),
                           ),
                         ),
@@ -120,7 +145,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
+                      mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.only(
@@ -129,28 +154,39 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                           ),
                           child: SizedBox(
                             width: width - 30 * 2,
-                            child: TextFormField(
-                              controller: descriptionTextController,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black54,
+                                    offset: Offset(0.0, 0.0),
+                                    blurRadius: 10.0,
+                                  ),
+                                ],
                               ),
-                              decoration: const InputDecoration(
-                                hintText: 'What you need:',
-                                hintStyle: TextStyle(
+                              child: TextFormField(
+                                controller: descriptionTextController,
+                                style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
                                 ),
-                                border: InputBorder.none,
+                                decoration: const InputDecoration(
+                                  hintText: 'What you need:',
+                                  hintStyle: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                  border: InputBorder.none,
+                                ),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Please enter some text';
+                                  }
+                                  return null;
+                                },
                               ),
-                              validator: (value) {
-                                if (value.isEmpty) {
-                                  return 'Please enter some text';
-                                }
-                                return null;
-                              },
                             ),
                           ),
                         ),
@@ -163,18 +199,8 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                         children: <Widget>[
                           Spacer(flex: 1),
                           RaisedButton(
-                            onPressed: () {
-                              setState(() {
-                                isSaving = true;
-                              });
-                              _addPostToDb();
-                              _saveVideosToDb();
-                              setState(() {
-                                isSaving = false;
-                              });
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pop();
-                            },
+                            color: Colors.indigo,
+                            onPressed: () => _savePost(user, context),
                             textColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(18.0),
@@ -222,6 +248,20 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
         ],
       ),
     );
+  }
+
+  Future _savePost(User user, BuildContext context) async {
+    setState(() {
+      isSaving = true;
+    });
+    await _saveVideosToDb();
+    PostsDbService(uid: user.uid).addPostToDb(titleTextController.text,
+        descriptionTextController.text, _paths, thumbnail);
+    setState(() {
+      isSaving = false;
+    });
+    Navigator.of(context).pop();
+    Navigator.of(context).pop();
   }
 
   Future<void> attachListenerAndInit(VideoPlayerController controller) async {
@@ -342,7 +382,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     );
   }
 
-  void _saveVideosToDb() async {
+  Future _saveVideosToDb() async {
     _controllers[1].pause();
     for (var i = 0; i < storageReferences.length; i++) {
       final StorageUploadTask uploadTask = storageReferences[i].putFile(
@@ -359,9 +399,31 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       }
       print('Was video upload successful: ' + successfulUpload.toString());
     }
+    await _saveThumbnail();
+
     _controllers[0].dispose();
     _controllers[1].dispose();
     _controllers[2].dispose();
+  }
+
+  Future _saveThumbnail() async {
+    print(widget.paths[0]);
+    Uint8List thumbnailBytes = await VideoThumbnail.thumbnailData(
+      video: widget.paths[0],
+      imageFormat: ImageFormat.PNG,
+      maxHeight: 100,
+      quality: 75,
+    ).catchError((onError) => print(onError));
+    StorageUploadTask uploadThumbnail = thumbnailReference.putData(
+      thumbnailBytes,
+      StorageMetadata(
+        contentType: 'thumbnails/.png',
+      ),
+    );
+    await uploadThumbnail.onComplete;
+    var successfulThumbnailUpload = uploadThumbnail.isSuccessful;
+    print('Was thumbnail upload successful: ' +
+        successfulThumbnailUpload.toString());
   }
 
   void _addPostToDb() async {
