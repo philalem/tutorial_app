@@ -19,13 +19,14 @@ class ProfilePostsService {
     Stream<QuerySnapshot> stream = profilePostsCollection
         .document(uid)
         .collection('user-posts')
+        .orderBy('date', descending: true)
         .limit(20)
         .snapshots()
         .handleError((e) {
       print(e);
     });
     return stream.map(
-      (snap) => snap.documents.map(_mapToPost).toList().reversed.toList(),
+      (snap) => snap.documents.map(_mapToPost).toList(),
     );
   }
 }

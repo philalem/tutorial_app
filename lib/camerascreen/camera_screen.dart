@@ -96,8 +96,7 @@ class _CameraScreenState extends State<CameraScreen> {
     bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: true,
       body: Stack(
         children: <Widget>[
           _getCamera(deviceRatio, isIOS),
