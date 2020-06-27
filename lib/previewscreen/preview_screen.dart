@@ -248,14 +248,14 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     setState(() {
       isSaving = true;
     });
-    _saveVideosToDb();
+    Navigator.of(context).pop();
+    Navigator.of(context).pop();
+    await _saveVideosToDb();
     PostsDbService(uid: user.uid).addPostToDb(titleTextController.text,
         descriptionTextController.text, _paths, thumbnailPath);
     setState(() {
       isSaving = false;
     });
-    Navigator.of(context).pop();
-    Navigator.of(context).pop();
   }
 
   Future<void> attachListenerAndInit(VideoPlayerController controller) async {
@@ -428,69 +428,8 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
         successfulThumbnailUpload.toString());
   }
 
-  void _addPostToDb() async {
-    print('Adding post information...');
-    var date = DateTime.now();
-    FirebaseUser uid = await getCurrentUser();
-    DocumentReference userRef = await databaseReference
-        .collection("posts")
-        .document(uid.uid.toString())
-        .collection("user-posts")
-        .add({
-      'title': titleTextController.text,
-      'description': descriptionTextController.text,
-      'videos': _paths,
-      'number-likes': 0,
-      'date': date,
-    }).catchError((e) {
-      print("Got error: ${e.error}");
-      return 1;
-    });
-    await databaseReference
-        .collection("posts")
-        .document(uid.uid.toString())
-        .collection("following-posts")
-        .document(userRef.documentID)
-        .setData({
-      'title': titleTextController.text,
-      'description': descriptionTextController.text,
-      'videos': _paths,
-      'number-likes': 0,
-      'date': date,
-    }).catchError((e) {
-      print("Got error: ${e.error}");
-      return 1;
-    });
-    print("Document ID: " + userRef.documentID);
-    print('Done.');
-  }
-
   Future<FirebaseUser> getCurrentUser() async {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     return await _auth.currentUser();
-  }
-
-  Row _thumbnailWidget(controller) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        _controllers == null
-            ? Container()
-            : SafeArea(
-                child: Container(
-                  child: Center(
-                    child: AspectRatio(
-                      aspectRatio: controller.value.size != null
-                          ? controller.value.aspectRatio
-                          : 1.0,
-                      child: VideoPlayer(controller),
-                    ),
-                  ),
-                  height: 400,
-                ),
-              ),
-      ],
-    );
   }
 }
