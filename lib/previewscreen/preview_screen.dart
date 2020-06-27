@@ -56,7 +56,6 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     } else {
       _controllers
           .add(VideoPlayerController.file(File(_paths[_paths.length - 1])));
-      //TODO: make it so there are always three controllers in the list
       for (int i = 0; i < ((_paths.length > 2) ? 2 : _paths.length); i++) {
         _controllers.add(VideoPlayerController.file(File(_paths[i])));
       }
