@@ -463,12 +463,8 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                             child: posts[index].thumbnail !=
                                                         null ||
                                                     posts[index].thumbnail != ''
-                                                ? FadeInImage(
-                                                    image: NetworkImage(
-                                                        posts[index].thumbnail),
-                                                    placeholder: AssetImage(
-                                                        'assets/images/unknown-profile.png'),
-                                                  )
+                                                ? displayFadeInImage(
+                                                    posts, index)
                                                 : AssetImage(
                                                     'assets/images/unknown-profile.png'),
                                           ),
@@ -506,6 +502,20 @@ class _ProfileFirstState extends State<ProfileFirst> {
         },
       ),
     );
+  }
+
+  FadeInImage displayFadeInImage(List<Post> posts, int index) {
+    try {
+      return FadeInImage(
+        image: NetworkImage(posts[index].thumbnail),
+        placeholder: AssetImage('assets/images/unknown-profile.png'),
+      );
+    } catch (_) {
+      return FadeInImage(
+        image: AssetImage('assets/images/unknown-profile.png'),
+        placeholder: AssetImage('assets/images/unknown-profile.png'),
+      );
+    }
   }
 
   _myAlbumCard(String asset1, String asset2, String asset3, String asset4,
