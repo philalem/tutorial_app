@@ -82,8 +82,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     final user = Provider.of<User>(context);
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: true,
       body: Stack(
         children: <Widget>[
           _getCamera(deviceRatio, _controllers[1]),
@@ -99,118 +98,93 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                     Colors.black45,
                     Colors.transparent,
                   ],
-                  tileMode: TileMode.repeated,
                 ),
               ),
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 4),
+              child: Container(
+                padding:
+                    EdgeInsets.symmetric(horizontal: width * 0.1, vertical: 4),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: 0,
-                            left: 30,
-                          ),
-                          child: SizedBox(
-                            width: width - 30 * 2,
-                            child: Container(
-                              child: TextFormField(
-                                controller: titleTextController,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 34,
-                                ),
-                                decoration: const InputDecoration(
-                                  hintText: 'Title',
-                                  hintStyle: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 34,
-                                  ),
-                                  border: InputBorder.none,
-                                ),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'Please enter some text';
-                                  }
-                                  return null;
-                                },
-                              ),
+                        Expanded(
+                          child: TextFormField(
+                            controller: titleTextController,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 34,
                             ),
+                            decoration: const InputDecoration(
+                              hintText: 'Title',
+                              hintStyle: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 34,
+                              ),
+                              border: InputBorder.none,
+                            ),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                       ],
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: 30,
-                            left: 30,
-                          ),
-                          child: SizedBox(
-                            width: width - 30 * 2,
-                            child: Container(
-                              child: TextFormField(
-                                controller: descriptionTextController,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                                decoration: const InputDecoration(
-                                  hintText: 'What you need:',
-                                  hintStyle: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                  border: InputBorder.none,
-                                ),
-                                validator: (value) {
-                                  if (value.isEmpty) {
-                                    return 'Please enter some text';
-                                  }
-                                  return null;
-                                },
-                              ),
+                        Expanded(
+                          child: TextFormField(
+                            controller: descriptionTextController,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
                             ),
+                            decoration: const InputDecoration(
+                              hintText: 'What you need:',
+                              hintStyle: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                              border: InputBorder.none,
+                            ),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Please enter some text';
+                              }
+                              return null;
+                            },
                           ),
                         ),
                       ],
                     ),
-                    Container(
-                      width: width,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          RaisedButton(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Expanded(
+                          child: RaisedButton(
                             color: Colors.indigo,
                             onPressed: () => _savePost(user, context),
                             textColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(18.0),
                             ),
-                            child: Row(
-                              children: <Widget>[
-                                Text(
-                                  "Share",
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              ],
-                              mainAxisSize: MainAxisSize.min,
+                            child: Text(
+                              "Share",
+                              style: TextStyle(fontSize: 16),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -250,12 +224,12 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     });
     Navigator.of(context).pop();
     Navigator.of(context).pop();
-    await _saveVideosToDb();
-    PostsDbService(uid: user.uid).addPostToDb(titleTextController.text,
-        descriptionTextController.text, _paths, thumbnailPath);
     setState(() {
       isSaving = false;
     });
+    await _saveVideosToDb();
+    PostsDbService(uid: user.uid).addPostToDb(titleTextController.text,
+        descriptionTextController.text, _paths, thumbnailPath);
   }
 
   Future<void> attachListenerAndInit(VideoPlayerController controller) async {
