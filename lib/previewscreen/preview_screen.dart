@@ -248,7 +248,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     setState(() {
       isSaving = true;
     });
-    await _saveVideosToDb();
+    _saveVideosToDb();
     PostsDbService(uid: user.uid).addPostToDb(titleTextController.text,
         descriptionTextController.text, _paths, thumbnailPath);
     setState(() {
@@ -395,9 +395,9 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     }
     //await _saveThumbnail();
 
-    _controllers[0].dispose();
-    _controllers[1].dispose();
-    _controllers[2].dispose();
+    _controllers[0]?.dispose();
+    _controllers[1]?.dispose();
+    if (_controllers.length > 2) _controllers[2]?.dispose();
   }
 
   Future _saveThumbnail() async {
@@ -417,6 +417,9 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     await _flutterFFmpeg
         .executeWithArguments(arguments)
         .then((rc) => print("FFmpeg process exited with rc $rc"));
+    File(thumbnailPath).createSync(
+      recursive: true,
+    );
     StorageUploadTask uploadThumbnail = thumbnailReference.putFile(
       File(thumbnailPath),
       StorageMetadata(

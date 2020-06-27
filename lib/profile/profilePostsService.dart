@@ -25,7 +25,7 @@ class ProfilePostsService {
       print(e);
     });
     return stream.map(
-      (snap) => snap.documents.map(_mapToPost).toList(),
+      (snap) => snap.documents.map(_mapToPost).toList().reversed.toList(),
     );
   }
 }
