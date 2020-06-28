@@ -377,7 +377,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       }
       print('Was video upload successful: ' + successfulUpload.toString());
     }
-    //await _saveThumbnail();
+    await _saveThumbnail();
 
     _controllers[0]?.dispose();
     _controllers[1]?.dispose();
@@ -386,6 +386,10 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
 
   Future _saveThumbnail() async {
     //TODO: add ffmpeg -ss 00:00:00.100
+    File file = new File(widget.paths[0]);
+    var statSync = file.statSync();
+    print(
+        "File: ${widget.paths[0]},\n exists: ${file.existsSync()},\n size: ${statSync.size},\n mode: ${statSync.modeString()},\n type: ${statSync.type},\n lastModified: ${statSync.modified}\n");
     var arguments = [
       "-y",
       "-i",
