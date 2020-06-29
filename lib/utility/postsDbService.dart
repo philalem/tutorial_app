@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class PostsDbService {
   final String uid;
@@ -8,14 +9,14 @@ class PostsDbService {
   PostsDbService({this.uid});
 
   Future<void> addPostToDb(String title, String description,
-      List<String> videoPaths, String thumbnail) async {
+      List<String> videoPaths, String thumbnailPath) async {
     print('Adding post information...');
     var date = DateTime.now();
     var postData = {
       'title': title,
       'description': description,
       'videos': videoPaths,
-      'thumbnail': thumbnail,
+      'thumbnail': thumbnailPath,
       'number-likes': 0,
       'date': date,
     };

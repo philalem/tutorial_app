@@ -31,6 +31,8 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   final descriptionTextController = TextEditingController();
   final databaseReference = Firestore.instance;
   List<String> _paths;
+  List<String> pathUrls = [];
+  String thumbnailUrl;
   int index = 0;
   double _progress = 0;
   bool _changeLock = false;
@@ -239,7 +241,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     });
     await _saveVideosToDb();
     PostsDbService(uid: user.uid).addPostToDb(titleTextController.text,
-        descriptionTextController.text, _paths, thumbnailPath);
+        descriptionTextController.text, pathUrls, thumbnailUrl);
   }
 
   Future<void> attachListenerAndInit(VideoPlayerController controller) async {
@@ -362,6 +364,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
 
   Future _saveVideosToDb() async {
     _controllers[1].pause();
+    await _saveThumbnail();
     for (var i = 0; i < storageReferences.length; i++) {
       final StorageUploadTask uploadTask = storageReferences[i].putFile(
         File(widget.paths[i]),
@@ -370,14 +373,13 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
         ),
       );
       await uploadTask.onComplete;
-
+      pathUrls.add(await storageReferences[i].getDownloadURL());
       var successfulUpload = uploadTask.isSuccessful;
       if (successfulUpload) {
         Directory(widget.paths[i]).deleteSync(recursive: true);
       }
       print('Was video upload successful: ' + successfulUpload.toString());
     }
-    await _saveThumbnail();
 
     _controllers[0]?.dispose();
     _controllers[1]?.dispose();
@@ -385,24 +387,8 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   }
 
   Future _saveThumbnail() async {
-    //TODO: add ffmpeg -ss 00:00:00.100
-    File file = new File(widget.paths[0]);
-    var statSync = file.statSync();
-    print(
-        "File: ${widget.paths[0]},\n exists: ${file.existsSync()},\n size: ${statSync.size},\n mode: ${statSync.modeString()},\n type: ${statSync.type},\n lastModified: ${statSync.modified}\n");
-    var arguments = [
-      "-y",
-      "-i",
-      "${widget.paths[0]}",
-      "-vframes",
-      "1",
-      "-an",
-      "-ss",
-      "00:01:00",
-      "$thumbnailPath"
-    ];
     await _flutterFFmpeg
-        .executeWithArguments(arguments)
+        .execute("-ss 00:00:00 -i ${widget.paths[0]} -vframes 1 $thumbnailPath")
         .then((rc) => print("FFmpeg process exited with rc $rc"));
     StorageUploadTask uploadThumbnail = thumbnailReference.putFile(
       File(thumbnailPath),
@@ -411,6 +397,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       ),
     );
     await uploadThumbnail.onComplete;
+    thumbnailUrl = await thumbnailReference.getDownloadURL();
     var successfulThumbnailUpload = uploadThumbnail.isSuccessful;
     print('Was thumbnail upload successful: ' +
         successfulThumbnailUpload.toString());
