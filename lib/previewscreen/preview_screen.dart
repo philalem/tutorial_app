@@ -23,7 +23,6 @@ class PreviewImageScreen extends StatefulWidget {
 
 class _PreviewImageScreenState extends State<PreviewImageScreen> {
   final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
-  final FlutterFFmpegConfig _flutterFFmpegConfig = new FlutterFFmpegConfig();
   final List<StorageReference> storageReferences = [];
   StorageReference thumbnailReference;
   String thumbnailPath;
@@ -90,8 +89,6 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     final height = size.height;
     final width = size.width;
     final deviceRatio = width / height;
-    final bottom = MediaQuery.of(context).viewInsets.bottom;
-    bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
     final user = Provider.of<User>(context);
 
     return Scaffold(

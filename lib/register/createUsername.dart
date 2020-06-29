@@ -1,6 +1,5 @@
 import 'package:creaid/utility/algoliaService.dart';
 import 'package:creaid/utility/creaidTextField.dart';
-import 'package:creaid/utility/firebaseAuth.dart';
 import 'package:flutter/material.dart';
 
 class CreateUsername extends StatefulWidget {
@@ -19,7 +18,6 @@ class CreateUsername extends StatefulWidget {
 
 class _CreateUsername extends State<CreateUsername> {
   final AlgoliaService algoliaService = AlgoliaService();
-  final FireBaseAuthorization _auth = FireBaseAuthorization();
   String error = '';
 
   @override

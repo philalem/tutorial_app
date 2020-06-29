@@ -28,18 +28,6 @@ class _NotificationsState extends State<Notifications> {
     });
   }
 
-  String _getLoadedName() {
-    if (userName != null) {
-      if (userName.displayName != null) {
-        return userName.displayName;
-      }
-    }
-    setState(() {
-      _loadCurrentUser();
-    });
-    return '';
-  }
-
   String getNotificationPhrase(String type) {
     switch (type) {
       case 'follow':
