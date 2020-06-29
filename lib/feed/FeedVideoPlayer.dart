@@ -6,9 +6,9 @@ import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:creaid/utility/algoliaService.dart';
+import 'package:video_player/video_player.dart';
 
 class FeedVideoPlayer extends StatefulWidget {
   final List<VideoFeedObject> videos;

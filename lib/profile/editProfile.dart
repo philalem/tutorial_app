@@ -61,9 +61,6 @@ class _EditProfileState extends State<EditProfile> {
     Size size = MediaQuery.of(context).size;
     double height = size.height;
     double width = size.width;
-    const IconData camera = const IconData(0xf2d3,
-        fontFamily: CupertinoIcons.iconFont,
-        fontPackage: CupertinoIcons.iconFontPackage);
 
     return CupertinoPageScaffold(
       key: _scaffoldKey,
