@@ -461,8 +461,7 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                             borderRadius:
                                                 BorderRadius.circular(10.0),
                                             child: posts[index].thumbnail !=
-                                                        null ||
-                                                    posts[index].thumbnail != ''
+                                                    null
                                                 ? FadeInImage(
                                                     fit: BoxFit.cover,
                                                     image: NetworkImage(

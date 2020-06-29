@@ -38,6 +38,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
   bool _changeLock = false;
   List<VideoPlayerController> _controllers = [];
   bool isSaving = false;
+  String documentId;
 
   @override
   void initState() {
@@ -221,6 +222,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
           ),
           isSaving
               ? Container(
+                  color: Colors.black45,
                   alignment: Alignment.center,
                   child: CupertinoActivityIndicator(),
                 )
@@ -234,14 +236,14 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     setState(() {
       isSaving = true;
     });
-    Navigator.of(context).pop();
-    Navigator.of(context).pop();
+    documentId = await PostsDbService(uid: user.uid)
+        .addPostToDb(titleTextController.text, descriptionTextController.text);
     setState(() {
       isSaving = false;
     });
-    await _saveVideosToDb();
-    PostsDbService(uid: user.uid).addPostToDb(titleTextController.text,
-        descriptionTextController.text, pathUrls, thumbnailUrl);
+    Navigator.of(context).pop();
+    Navigator.of(context).pop();
+    _saveVideosToDb(user.uid);
   }
 
   Future<void> attachListenerAndInit(VideoPlayerController controller) async {
@@ -362,7 +364,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     );
   }
 
-  Future _saveVideosToDb() async {
+  Future _saveVideosToDb(String uid) async {
     _controllers[1].pause();
     await _saveThumbnail();
     for (var i = 0; i < storageReferences.length; i++) {
@@ -380,7 +382,8 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       }
       print('Was video upload successful: ' + successfulUpload.toString());
     }
-
+    PostsDbService(uid: uid)
+        .addMediaInformation(documentId, pathUrls, thumbnailUrl);
     _controllers[0]?.dispose();
     _controllers[1]?.dispose();
     if (_controllers.length > 2) _controllers[2]?.dispose();
