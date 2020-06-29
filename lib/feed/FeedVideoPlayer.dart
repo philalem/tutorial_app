@@ -1,7 +1,7 @@
 import 'package:creaid/feed/FeedCommentObject.dart';
 import 'package:creaid/feed/VideoFeedObject.dart';
 import 'package:creaid/notifications/notificationsDbService.dart';
-import 'package:creaid/profile/profile.dart';
+import 'package:creaid/profile/dynamicProfile.dart';
 import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:flutter/cupertino.dart';
@@ -270,7 +270,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                 child: InkWell(
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => Profile(
+                        builder: (context) => DynamicProfile(
                             uid: widget.videos[index].uid,
                             name: widget.videos[index].author)));
                   },
@@ -388,9 +388,9 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                 if (snapshot.hasData) {
                   VideoFeedObject video = snapshot.data;
                   return Text(
-                      video.likes.toString(),
-                      style: TextStyle(color: Colors.black),
-                    );
+                    video.likes.toString(),
+                    style: TextStyle(color: Colors.black),
+                  );
                 } else {
                   return Text(
                     '0',
@@ -402,7 +402,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
             icon: Icon(
               Icons.thumb_up,
               color: Colors.black,
-              ),
+            ),
             backgroundColor: Colors.white,
           ),
           SizedBox(
