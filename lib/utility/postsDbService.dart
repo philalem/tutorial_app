@@ -41,10 +41,20 @@ class PostsDbService {
 
   Future<void> addMediaInformation(
       String documentId, List<String> videoPaths, String thumbnailPath) async {
+    print('Uploading media download links...');
     var postData = {
       'videos': videoPaths,
       'thumbnail': thumbnailPath,
     };
+    await postsCollection
+        .document(uid)
+        .collection("user-posts")
+        .document(documentId)
+        .setData(postData, merge: true)
+        .catchError((e) {
+      print("Got error: ${e.error}");
+      return 1;
+    });
     await postsCollection
         .document(uid)
         .collection("following-posts")
@@ -54,5 +64,6 @@ class PostsDbService {
       print("Got error: ${e.error}");
       return 1;
     });
+    print('Done.');
   }
 }

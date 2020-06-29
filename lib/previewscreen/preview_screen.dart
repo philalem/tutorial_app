@@ -382,7 +382,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
       }
       print('Was video upload successful: ' + successfulUpload.toString());
     }
-    PostsDbService(uid: uid)
+    await PostsDbService(uid: uid)
         .addMediaInformation(documentId, pathUrls, thumbnailUrl);
     _controllers[0]?.dispose();
     _controllers[1]?.dispose();
