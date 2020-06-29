@@ -464,13 +464,16 @@ class _ProfileFirstState extends State<ProfileFirst> {
                                                         null ||
                                                     posts[index].thumbnail != ''
                                                 ? FadeInImage(
+                                                    fit: BoxFit.cover,
                                                     image: NetworkImage(
                                                         posts[index].thumbnail),
                                                     placeholder: AssetImage(
                                                         'assets/images/unknown-profile.png'),
                                                   )
-                                                : AssetImage(
-                                                    'assets/images/unknown-profile.png'),
+                                                : Image.asset(
+                                                    'assets/images/unknown-profile.png',
+                                                    fit: BoxFit.cover,
+                                                  ),
                                           ),
                                           decoration: BoxDecoration(
                                             color: Colors.grey,
