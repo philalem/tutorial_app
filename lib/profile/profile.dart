@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:creaid/profile/editProfile.dart';
 import 'package:creaid/profile/post.dart';
 import 'package:creaid/profile/profilePhotoService.dart';
 import 'package:creaid/profile/profilePostsService.dart';
 import 'package:creaid/utility/UserData.dart';
+import 'package:creaid/utility/firebaseAuth.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -72,6 +75,10 @@ class _ProfileState extends State<Profile> {
             fontSize: 20,
             fontWeight: FontWeight.normal,
           ),
+        ),
+        trailing: IconButton(
+          icon: Icon(signOut),
+          onPressed: _showLogoutPopUp(context),
         ),
       ),
       body: StreamBuilder<UserData>(
@@ -602,5 +609,78 @@ class _ProfileState extends State<Profile> {
         ),
       ),
     );
+  }
+
+  _showLogoutPopUp(context) {
+    if (Platform.isAndroid) {
+      showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Are you sure you want to log out?"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              FlatButton(
+                padding: EdgeInsets.all(0),
+                child: Text(
+                  "Log out",
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 16,
+                  ),
+                ),
+                onPressed: () {
+                  FireBaseAuthorization().signOut();
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                padding: EdgeInsets.all(0),
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 16,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      showCupertinoModalPopup(
+        context: context,
+        builder: (context) {
+          return CupertinoActionSheet(
+            title: Text("Are you sure you want to log out?"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              CupertinoActionSheetAction(
+                child: Text(
+                  "Log out",
+                ),
+                onPressed: () {
+                  FireBaseAuthorization().signOut();
+                  Navigator.of(context).pop();
+                },
+                isDestructiveAction: true,
+              ),
+            ],
+            cancelButton: CupertinoActionSheetAction(
+              child: Text(
+                "Cancel",
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          );
+        },
+      );
+    }
   }
 }
