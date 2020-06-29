@@ -8,15 +8,12 @@ class PostsDbService {
 
   PostsDbService({this.uid});
 
-  Future<void> addPostToDb(String title, String description,
-      List<String> videoPaths, String thumbnailPath) async {
+  Future<String> addPostToDb(String title, String description) async {
     print('Adding post information...');
     var date = DateTime.now();
     var postData = {
       'title': title,
       'description': description,
-      'videos': videoPaths,
-      'thumbnail': thumbnailPath,
       'number-likes': 0,
       'date': date,
     };
@@ -39,5 +36,23 @@ class PostsDbService {
     });
     print("Document ID: " + userRef.documentID);
     print('Done.');
+    return userRef.documentID;
+  }
+
+  Future<void> addMediaInformation(
+      String documentId, List<String> videoPaths, String thumbnailPath) async {
+    var postData = {
+      'videos': videoPaths,
+      'thumbnail': thumbnailPath,
+    };
+    await postsCollection
+        .document(uid)
+        .collection("following-posts")
+        .document(documentId)
+        .setData(postData, merge: true)
+        .catchError((e) {
+      print("Got error: ${e.error}");
+      return 1;
+    });
   }
 }
