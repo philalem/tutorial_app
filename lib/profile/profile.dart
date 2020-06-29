@@ -14,6 +14,7 @@ import 'package:sticky_headers/sticky_headers.dart';
 class Profile extends StatefulWidget {
   final String uid;
   final String username;
+
   Profile({this.uid, this.username});
 
   @override
@@ -116,118 +117,11 @@ class _ProfileState extends State<Profile> {
                                   ),
                                   Expanded(
                                     flex: 4,
-                                    child: Container(
-                                      margin: EdgeInsets.only(top: 4),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          FittedBox(
-                                            fit: BoxFit.contain,
-                                            child: Column(
-                                              children: <Widget>[
-                                                Text(
-                                                  data.numberFollowing
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 22,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Text(
-                                                  "Following",
-                                                  style: TextStyle(
-                                                    color: Colors.black87,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Spacer(),
-                                          FittedBox(
-                                            fit: BoxFit.contain,
-                                            child: Column(
-                                              children: <Widget>[
-                                                Text(
-                                                  data.numberFollowers
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 22,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Text(
-                                                  "Followers",
-                                                  style: TextStyle(
-                                                    color: Colors.black87,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Spacer(),
-                                        ],
-                                      ),
-                                    ),
+                                    child: followerRow(data),
                                   ),
                                   Expanded(
                                     flex: 3,
-                                    child: FlatButton(
-                                      padding: EdgeInsets.only(top: 4),
-                                      onPressed: () =>
-                                          Navigator.of(context).push(
-                                        CupertinoPageRoute(
-                                          builder: (context) => EditProfile(
-                                            name: data.name,
-                                            biography: data.bio,
-                                            username: data.username,
-                                            email: userName.email,
-                                            profileImage: photoUrl,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border:
-                                              Border.all(color: Colors.black87),
-                                          borderRadius:
-                                              BorderRadius.circular(5.0),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 4.0),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              FittedBox(
-                                                fit: BoxFit.contain,
-                                                child: Text(
-                                                  "Edit ",
-                                                  style: TextStyle(
-                                                      color: Colors.black87,
-                                                      fontSize: 16),
-                                                ),
-                                              ),
-                                              FittedBox(
-                                                fit: BoxFit.contain,
-                                                child: Icon(
-                                                  CupertinoIcons.pencil,
-                                                  color: Colors.black87,
-                                                  size: 16,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                    child: editButton(context, data),
                                   ),
                                 ],
                               ),
@@ -237,65 +131,13 @@ class _ProfileState extends State<Profile> {
                               child: FittedBox(
                                 fit: BoxFit.contain,
                                 alignment: Alignment.centerRight,
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.indigoAccent,
-                                  radius: 85,
-                                  child: StreamBuilder<Object>(
-                                      stream: ProfilePhotoService(uid: uid)
-                                          .getProfilePhoto(),
-                                      builder: (context, snapshot) {
-                                        if (!snapshot.hasData)
-                                          return Align(
-                                            alignment: Alignment.center,
-                                            child: CupertinoActivityIndicator(),
-                                          );
-                                        photoUrl = snapshot.data;
-                                        return ClipOval(
-                                          child: Container(
-                                            height: 160,
-                                            width: 160,
-                                            child: photoUrl != null
-                                                ? FadeInImage(
-                                                    image:
-                                                        NetworkImage(photoUrl),
-                                                    placeholder: AssetImage(
-                                                        'assets/images/unknown-profile.png'),
-                                                  )
-                                                : AssetImage(
-                                                    'assets/images/unknown-profile.png'),
-                                          ),
-                                        );
-                                      }),
-                                ),
+                                child: userProfileImage(uid),
                               ),
                             ),
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: 10,
-                          bottom: 20,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Flexible(
-                              child: Text(
-                                data.bio != null
-                                    ? data.bio
-                                    : 'Welcome to my profile! 😊',
-                                softWrap: true,
-                                maxLines: null,
-                                style: TextStyle(
-                                  color: Colors.black87,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      userBio(data),
                     ],
                   ),
                 ),
@@ -324,69 +166,7 @@ class _ProfileState extends State<Profile> {
                   ),
                   child: Column(
                     children: <Widget>[
-                      StickyHeader(
-                        header: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border(
-                                bottom: BorderSide(
-                                    color: Colors.black, width: 0.1)),
-                          ),
-                          height: 40,
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
-                          alignment: Alignment.center,
-                          child: Text(
-                            "Collections",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                        ),
-                        content: Column(
-                          children: <Widget>[
-                            SizedBox(
-                              height: 30,
-                            ),
-                            Container(
-                              height: 300,
-                              child: ListView(
-                                scrollDirection: Axis.horizontal,
-                                children: <Widget>[
-                                  _myAlbumCard(
-                                      "assets/images/phillip_profile.jpg",
-                                      "assets/images/phillip_profile.jpg",
-                                      "assets/images/phillip_profile.jpg",
-                                      "assets/images/phillip_profile.jpg",
-                                      "+178",
-                                      "Best Trip"),
-                                  _myAlbumCard(
-                                      "assets/images/phillip_profile.jpg",
-                                      "assets/images/phillip_profile.jpg",
-                                      "assets/images/phillip_profile.jpg",
-                                      "assets/images/phillip_profile.jpg",
-                                      "+18",
-                                      "Hill Lake Tourism"),
-                                  _myAlbumCard(
-                                      "assets/images/phillip_profile.jpg",
-                                      "assets/images/phillip_profile.jpg",
-                                      "assets/images/phillip_profile.jpg",
-                                      "assets/images/phillip_profile.jpg",
-                                      "+1288",
-                                      "The Grand Canyon"),
-                                  SizedBox(
-                                    width: 100,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 30,
-                            ),
-                          ],
-                        ),
-                      ),
+                      userCollections(),
                       StickyHeader(
                         header: Container(
                           height: 40,
@@ -406,76 +186,7 @@ class _ProfileState extends State<Profile> {
                                 fontSize: 18),
                           ),
                         ),
-                        content: Column(
-                          children: <Widget>[
-                            SizedBox(
-                              height: 30,
-                            ),
-                            StreamBuilder<Object>(
-                                stream: ProfilePostsService(uid: user.uid)
-                                    .getProfilePosts(),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData)
-                                    return Align(
-                                      alignment: Alignment.center,
-                                      child: CupertinoActivityIndicator(),
-                                    );
-                                  List<Post> posts = snapshot.data;
-                                  return GridView.builder(
-                                    physics: NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      crossAxisSpacing: 5.0,
-                                      mainAxisSpacing: 5.0,
-                                    ),
-                                    itemCount: posts.length,
-                                    itemBuilder: (context, index) {
-                                      return Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Container(
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                            child: posts[index].thumbnail !=
-                                                    null
-                                                ? FadeInImage(
-                                                    fit: BoxFit.cover,
-                                                    image: NetworkImage(
-                                                        posts[index].thumbnail),
-                                                    placeholder: AssetImage(
-                                                        'assets/images/unknown-profile.png'),
-                                                  )
-                                                : Image.asset(
-                                                    'assets/images/unknown-profile.png',
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey,
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                            border: Border.all(
-                                                color: Colors.grey, width: 0.2),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black54,
-                                                offset: Offset(-1.0, 1.0),
-                                                blurRadius: 1.0,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                }),
-                            SizedBox(
-                              height: 30,
-                            )
-                          ],
-                        ),
+                        content: userPostsGrid(user),
                       ),
                     ],
                   ),
@@ -484,6 +195,294 @@ class _ProfileState extends State<Profile> {
             ],
           );
         },
+      ),
+    );
+  }
+
+  Column userPostsGrid(User user) {
+    return Column(
+      children: <Widget>[
+        SizedBox(
+          height: 30,
+        ),
+        StreamBuilder<Object>(
+            stream: ProfilePostsService(uid: user.uid).getProfilePosts(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData)
+                return Align(
+                  alignment: Alignment.center,
+                  child: CupertinoActivityIndicator(),
+                );
+              List<Post> posts = snapshot.data;
+              return GridView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 5.0,
+                  mainAxisSpacing: 5.0,
+                ),
+                itemCount: posts.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: posts[index].thumbnail != null
+                            ? FadeInImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(posts[index].thumbnail),
+                                placeholder: AssetImage(
+                                    'assets/images/unknown-profile.png'),
+                              )
+                            : Image.asset(
+                                'assets/images/unknown-profile.png',
+                                fit: BoxFit.cover,
+                              ),
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(10.0),
+                        border: Border.all(color: Colors.grey, width: 0.2),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black54,
+                            offset: Offset(-1.0, 1.0),
+                            blurRadius: 1.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            }),
+        SizedBox(
+          height: 30,
+        )
+      ],
+    );
+  }
+
+  StickyHeader userCollections() {
+    return StickyHeader(
+      header: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(bottom: BorderSide(color: Colors.black, width: 0.1)),
+        ),
+        height: 40,
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        alignment: Alignment.center,
+        child: Text(
+          "Collections",
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+      ),
+      content: Column(
+        children: <Widget>[
+          SizedBox(
+            height: 30,
+          ),
+          Container(
+            height: 300,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: <Widget>[
+                _myAlbumCard(
+                    "assets/images/phillip_profile.jpg",
+                    "assets/images/phillip_profile.jpg",
+                    "assets/images/phillip_profile.jpg",
+                    "assets/images/phillip_profile.jpg",
+                    "+178",
+                    "Best Trip"),
+                _myAlbumCard(
+                    "assets/images/phillip_profile.jpg",
+                    "assets/images/phillip_profile.jpg",
+                    "assets/images/phillip_profile.jpg",
+                    "assets/images/phillip_profile.jpg",
+                    "+18",
+                    "Hill Lake Tourism"),
+                _myAlbumCard(
+                    "assets/images/phillip_profile.jpg",
+                    "assets/images/phillip_profile.jpg",
+                    "assets/images/phillip_profile.jpg",
+                    "assets/images/phillip_profile.jpg",
+                    "+1288",
+                    "The Grand Canyon"),
+                SizedBox(
+                  width: 100,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Padding userBio(UserData data) {
+    return Padding(
+      padding: EdgeInsets.only(
+        top: 10,
+        bottom: 20,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Flexible(
+            child: Text(
+              data.bio != null ? data.bio : 'Welcome to my profile! 😊',
+              softWrap: true,
+              maxLines: null,
+              style: TextStyle(
+                color: Colors.black87,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  CircleAvatar userProfileImage(String uid) {
+    return CircleAvatar(
+      backgroundColor: Colors.indigoAccent,
+      radius: 85,
+      child: StreamBuilder<Object>(
+          stream: ProfilePhotoService(uid: uid).getProfilePhoto(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData)
+              return Align(
+                alignment: Alignment.center,
+                child: CupertinoActivityIndicator(),
+              );
+            photoUrl = snapshot.data;
+            return ClipOval(
+              child: Container(
+                height: 160,
+                width: 160,
+                child: photoUrl != null
+                    ? FadeInImage(
+                        image: NetworkImage(photoUrl),
+                        placeholder:
+                            AssetImage('assets/images/unknown-profile.png'),
+                      )
+                    : AssetImage('assets/images/unknown-profile.png'),
+              ),
+            );
+          }),
+    );
+  }
+
+  FlatButton editButton(BuildContext context, UserData data) {
+    return FlatButton(
+      padding: EdgeInsets.only(top: 4),
+      onPressed: () => Navigator.of(context).push(
+        CupertinoPageRoute(
+          builder: (context) => EditProfile(
+            name: data.name,
+            biography: data.bio,
+            username: data.username,
+            email: userName.email,
+            profileImage: photoUrl,
+          ),
+        ),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black87),
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  "Edit ",
+                  style: TextStyle(color: Colors.black87, fontSize: 16),
+                ),
+              ),
+              FittedBox(
+                fit: BoxFit.contain,
+                child: Icon(
+                  CupertinoIcons.pencil,
+                  color: Colors.black87,
+                  size: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container followerRow(UserData data) {
+    return Container(
+      margin: EdgeInsets.only(top: 4),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          FittedBox(
+            fit: BoxFit.contain,
+            child: Column(
+              children: <Widget>[
+                Text(
+                  data.numberFollowing.toString(),
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  "Following",
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Spacer(),
+          FittedBox(
+            fit: BoxFit.contain,
+            child: Column(
+              children: <Widget>[
+                Text(
+                  data.numberFollowers.toString(),
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  "Followers",
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Spacer(),
+        ],
       ),
     );
   }
