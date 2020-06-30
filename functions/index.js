@@ -15,6 +15,13 @@ exports.sendPostToFollowers = functions
     return postFunctions.createPostToFollowersBatchJobs(snap, context, false);
   });
 
+exports.deletePostFromFollowers = functions
+  .region("us-east4")
+  .firestore.document("posts/{userId}/user-posts/{postId}")
+  .onDelete((snap, context) => {
+    return postFunctions.createPostToFollowersBatchJobs(snap, context, true);
+  });
+
 exports.addUserToFollowers = functions
   .region("us-east4")
   .firestore.document("follow-info/{userId}/following/{followingId}")

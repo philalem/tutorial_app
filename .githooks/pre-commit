@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+exec flutter format lib/ test/
+git add $(git diff --name-only --cached)

@@ -10,13 +10,13 @@ class CreaidButton extends StatelessWidget {
     this.padding: 10,
     this.filled: true,
   });
-  List<Widget> children;
-  Function onPressed;
-  bool disabled;
-  bool shrink;
-  Color color;
-  double padding;
-  bool filled;
+  final List<Widget> children;
+  final Function onPressed;
+  final bool disabled;
+  final bool shrink;
+  final Color color;
+  final double padding;
+  final bool filled;
 
   @override
   Widget build(BuildContext context) {

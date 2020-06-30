@@ -5,9 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() => runApp(
-      CreaidApp(),
-    );
+void main() => runApp(CreaidApp());
 
 class CreaidApp extends StatelessWidget {
   @override
