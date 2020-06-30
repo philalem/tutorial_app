@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:vector_math/vector_math_64.dart' as vector;
 
 class UploadProfile extends StatefulWidget {
   @override
@@ -31,8 +30,6 @@ class _UploadProfileState extends State<UploadProfile> {
     Size size = MediaQuery.of(context).size;
     double height = size.height;
     double width = size.width;
-    var navBarHeight = CupertinoNavigationBar().preferredSize.height;
-    var statusBarHeight = MediaQuery.of(context).padding.top;
 
     return Scaffold(
       backgroundColor: Colors.black87,

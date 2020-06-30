@@ -3,8 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
-void main() => runApp(VideoPlayerApp());
-
 class VideoPlayerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

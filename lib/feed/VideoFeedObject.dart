@@ -9,14 +9,12 @@ class VideoFeedObject {
   String description;
 
   VideoFeedObject(
-    {this.author,
-    this.videoUrl,
-    this.likes,
-    this.comments,
-    this.documentId,
-    this.uid,
-    this.title,
-    this.description
-    }
-  );
+      {this.author,
+      this.videoUrl,
+      this.likes,
+      this.comments,
+      this.documentId,
+      this.uid,
+      this.title,
+      this.description});
 }

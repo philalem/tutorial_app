@@ -61,9 +61,6 @@ class _EditProfileState extends State<EditProfile> {
     Size size = MediaQuery.of(context).size;
     double height = size.height;
     double width = size.width;
-    const IconData camera = const IconData(0xf2d3,
-        fontFamily: CupertinoIcons.iconFont,
-        fontPackage: CupertinoIcons.iconFontPackage);
 
     return CupertinoPageScaffold(
       key: _scaffoldKey,
@@ -86,7 +83,7 @@ class _EditProfileState extends State<EditProfile> {
           ),
         ),
       ),
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Colors.white,
       child: Stack(
         children: <Widget>[
           Center(
@@ -167,8 +164,9 @@ class _EditProfileState extends State<EditProfile> {
                               controller: nameController,
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: Colors.black, width: 1)),
                               ),
                               textAlignVertical: TextAlignVertical.center,
                               textInputAction: TextInputAction.done,
@@ -215,8 +213,9 @@ class _EditProfileState extends State<EditProfile> {
                               controller: usernameController,
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: Colors.black, width: 1)),
                               ),
                               onChanged: (value) {
                                 _isValidUsername(value);
@@ -254,8 +253,9 @@ class _EditProfileState extends State<EditProfile> {
                               controller: biographyController,
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: Colors.black, width: 1)),
                               ),
                               onSubmitted: (value) {
                                 focusNode.unfocus();
@@ -290,8 +290,9 @@ class _EditProfileState extends State<EditProfile> {
                               controller: emailController,
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0)),
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: Colors.black, width: 1)),
                               ),
                               onSubmitted: (value) {
                                 focusNode.unfocus();
