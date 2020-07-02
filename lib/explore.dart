@@ -151,8 +151,9 @@ class _ExploreState extends State<Explore> {
   }
 
   void _searchForUsers() async {
-    _searchResults =
-        await algoliaService.searchForUsers(_searchController.text, 5);
+    _searchResults = _searchController.text == ''
+        ? []
+        : await algoliaService.searchForUsers(_searchController.text, 5);
     setState(() {});
   }
 
