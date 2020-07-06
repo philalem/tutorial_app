@@ -20,8 +20,7 @@ class Feed extends StatelessWidget {
           if (userData.feedId != null) {
             if (userData.feedId.length > 0) {
               return StreamBuilder<List<VideoFeedObject>>(
-                stream:
-                    UserDbService(uid: user.uid).getUserFeed(user.uid),
+                stream: UserDbService(uid: user.uid).getUserFeed(user.uid),
                 builder:
                     (context, AsyncSnapshot<List<VideoFeedObject>> snapshot) {
                   if (snapshot.hasData) {
