@@ -76,9 +76,9 @@ class _ProfileState extends State<Profile> {
             fontWeight: FontWeight.normal,
           ),
         ),
-        trailing: IconButton(
-          icon: Icon(signOut),
-          onPressed: _showLogoutPopUp(context),
+        trailing: CupertinoButton(
+          child: Icon(signOut),
+          onPressed: () => _showLogoutPopUp(context),
         ),
       ),
       body: StreamBuilder<UserData>(
