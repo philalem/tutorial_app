@@ -60,13 +60,13 @@ class _ProfileState extends State<Profile> {
     double width = size.width;
     final user = Provider.of<User>(context);
     var uid = user.uid;
-    const IconData signOut = const IconData(0xf220,
+    const IconData signOut = const IconData(0xf46a,
         fontFamily: CupertinoIcons.iconFont,
         fontPackage: CupertinoIcons.iconFontPackage);
 
-    return Scaffold(
+    return CupertinoPageScaffold(
       backgroundColor: Color(0xffF8F8FA),
-      appBar: CupertinoNavigationBar(
+      navigationBar: CupertinoNavigationBar(
         backgroundColor: Colors.indigo,
         middle: Text(
           _getLoadedName(),
@@ -77,11 +77,16 @@ class _ProfileState extends State<Profile> {
           ),
         ),
         trailing: CupertinoButton(
-          child: Icon(signOut),
+          padding: EdgeInsets.zero,
+          child: Icon(
+            signOut,
+            size: 35,
+            color: Colors.white,
+          ),
           onPressed: () => _showLogoutPopUp(context),
         ),
       ),
-      body: StreamBuilder<UserData>(
+      child: StreamBuilder<UserData>(
         stream: UserDbService(uid: uid).getNames(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
