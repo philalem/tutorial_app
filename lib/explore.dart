@@ -119,20 +119,46 @@ class _ExploreState extends State<Explore> {
       itemBuilder: (context, index) {
         AlgoliaObjectSnapshot snap = _searchResults[index];
 
-        return ListTile(
-          title: Text(snap.data['name']),
-          subtitle: Text(snap.data['username']),
-          onTap: () {
-            Navigator.of(context).push(
-              CupertinoPageRoute(
-                builder: (context) => DynamicProfile(
-                  uid: snap.objectID,
-                  name: snap.data['name'],
-                  loggedInUid: userName.uid,
-                ),
+        return Column(
+          children: <Widget>[
+            Container(
+              color: Colors.white,
+              child: ListTile(
+                leading: CircleAvatar(
+                    backgroundImage:
+                        AssetImage('assets/images/unknown-profile.png')),
+                title: Text(snap.data['name']),
+                subtitle: Text(snap.data['username']),
+                onTap: () {
+                  Navigator.of(context).push(
+                    CupertinoPageRoute(
+                      builder: (context) => DynamicProfile(
+                        uid: snap.objectID,
+                        name: snap.data['name'],
+                        loggedInUid: userName.uid,
+                      ),
+                    ),
+                  );
+                },
               ),
-            );
-          },
+            ),
+            Container(
+              color: Colors.white,
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 70),
+                      child: Container(
+                        height: 1,
+                        color: Color(0xFFD9D9D9),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         );
       },
     );
