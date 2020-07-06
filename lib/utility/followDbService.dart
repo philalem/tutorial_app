@@ -67,7 +67,7 @@ class FollowDbService {
     return UserData(
       uid: snapshot['uid'],
       name: snapshot['name'],
-      photoUrl: snapshot['photoUrl'],
+      photoUrl: snapshot['photo-url'],
     );
   }
 

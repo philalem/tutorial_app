@@ -11,7 +11,7 @@ class NotificationsDbService {
   Notification _mapToNotification(DocumentSnapshot snapshot) {
     return Notification(
       name: snapshot['name'],
-      photoUrl: snapshot['photoUrl'],
+      photoUrl: snapshot['photo-url'],
       type: snapshot['type'],
       comment: snapshot['comment'],
       date: snapshot['date'].toDate(),

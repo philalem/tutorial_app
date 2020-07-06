@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:creaid/profile/DisplayFollow.dart';
 import 'package:creaid/profile/editProfile.dart';
 import 'package:creaid/profile/post.dart';
 import 'package:creaid/profile/profilePhotoService.dart';
@@ -129,7 +130,7 @@ class _ProfileState extends State<Profile> {
                                   ),
                                   Expanded(
                                     flex: 4,
-                                    child: followerRow(data),
+                                    child: followerRow(data, uid),
                                   ),
                                   Expanded(
                                     flex: 3,
@@ -383,7 +384,7 @@ class _ProfileState extends State<Profile> {
               child: Container(
                 height: 160,
                 width: 160,
-                child: photoUrl != null
+                child: photoUrl != null && photoUrl != ''
                     ? FadeInImage(
                         image: NetworkImage(photoUrl),
                         placeholder:
@@ -443,7 +444,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Container followerRow(UserData data) {
+  Container followerRow(UserData data, String uid) {
     return Container(
       margin: EdgeInsets.only(top: 4),
       child: Row(
@@ -452,45 +453,65 @@ class _ProfileState extends State<Profile> {
         children: <Widget>[
           FittedBox(
             fit: BoxFit.contain,
-            child: Column(
-              children: <Widget>[
-                Text(
-                  data.numberFollowing.toString(),
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  "Following",
-                  style: TextStyle(
-                    color: Colors.black87,
-                    fontSize: 12,
+            child: CupertinoButton(
+              padding: EdgeInsets.zero,
+              onPressed: () {
+                Navigator.of(context).push(CupertinoPageRoute(
+                    builder: (_) => DisplayFollow(
+                          uid: uid,
+                          isFollowers: false,
+                        )));
+              },
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    data.numberFollowing.toString(),
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold),
                   ),
-                ),
-              ],
+                  Text(
+                    "Following",
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Spacer(),
           FittedBox(
             fit: BoxFit.contain,
-            child: Column(
-              children: <Widget>[
-                Text(
-                  data.numberFollowers.toString(),
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  "Followers",
-                  style: TextStyle(
-                    color: Colors.black87,
-                    fontSize: 12,
+            child: CupertinoButton(
+              padding: EdgeInsets.zero,
+              onPressed: () {
+                Navigator.of(context).push(CupertinoPageRoute(
+                    builder: (_) => DisplayFollow(
+                          uid: uid,
+                          isFollowers: true,
+                        )));
+              },
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    data.numberFollowers.toString(),
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold),
                   ),
-                ),
-              ],
+                  Text(
+                    "Followers",
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Spacer(),
