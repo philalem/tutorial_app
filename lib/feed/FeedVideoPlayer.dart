@@ -1,6 +1,6 @@
-import 'package:creaid/feed/FeedCommentObject.dart';
 import 'package:creaid/feed/VideoFeedObject.dart';
-import 'package:creaid/notifications/notificationsDbService.dart';
+import 'package:creaid/feed/feedCommentPage.dart';
+import 'package:creaid/feed/feedSharePage.dart';
 import 'package:creaid/profile/dynamicProfile.dart';
 import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/userDBService.dart';
@@ -267,20 +267,24 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
               color: Colors.white,
               child: Align(
                 alignment: FractionalOffset.centerLeft,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => DynamicProfile(
-                            uid: widget.videos[index].uid,
-                            name: widget.videos[index].author)));
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: Text(
-                      widget.videos[index].author,
-                      style: TextStyle(color: Colors.black, fontSize: 20),
+                child: Row(
+                  children: <Widget>[
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => DynamicProfile(
+                                uid: widget.videos[index].uid,
+                                name: widget.videos[index].author)));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(1.0),
+                        child: Text(
+                          widget.videos[index].author,
+                          style: TextStyle(color: Colors.black, fontSize: 20),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ),
@@ -296,76 +300,8 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
           ),
           FloatingActionButton(
             onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return Dialog(
-                    child: Container(
-                      height: 200.0,
-                      width: 360.0,
-                      child: ListView(children: <Widget>[
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Center(
-                          child: Text(
-                            "Send this video to:",
-                            style: TextStyle(
-                                fontSize: 24,
-                                color: Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: TextFormField(
-                            onFieldSubmitted: (value) => {shareId = value},
-                            validator: (val) =>
-                                val.isEmpty ? "Enter valid user" : null,
-                            decoration: InputDecoration(
-                              hintStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: Theme.of(context).primaryColor),
-                              hintText: 'Enter username',
-                            ),
-                            controller: userHolder,
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 100.0),
-                          child: CreaidButton(
-                            children: <Widget>[
-                              Text(
-                                'Send',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ],
-                            onPressed: () async {
-                              bool valid = await algoliaService
-                                  .isThereAnExactUsernameMatch(userHolder.text);
-                              if (valid) {
-                                String uuid = await algoliaService
-                                    .getUserFromUserName(userHolder.text);
-                                NotificationsDbService(uid: uuid)
-                                    .sendShareVideoNotification(
-                                        userHolder.text);
-                                successfulShare(context);
-                              } else {
-                                failedShare(context);
-                              }
-                              userHolder.clear();
-                            },
-                          ),
-                        ),
-                      ]),
-                    ),
-                  );
-                },
-              );
+              Navigator.of(context).push(FeedSharePage());
+              
             },
             child: Icon(
               Icons.share,
@@ -411,132 +347,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
           FloatingActionButton(
               //comment button
               onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return Dialog(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(40)),
-                      elevation: 16,
-                      child: Container(
-                        height: 400.0,
-                        width: 360.0,
-                        child: ListView(
-                          children: <Widget>[
-                            SizedBox(height: 20),
-                            Center(
-                              child: Text(
-                                "Comments",
-                                style: TextStyle(
-                                    fontSize: 24,
-                                    color: Theme.of(context).primaryColor,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20.0),
-                              child: TextFormField(
-                                  onFieldSubmitted: (value) => {
-                                        UserDbService(
-                                                uid: widget.videos[index].uid)
-                                            .addComment(
-                                                widget.videos[index].documentId,
-                                                widget.feedId,
-                                                value,
-                                                widget.videos[index].author),
-                                        interestHolder.clear()
-                                      },
-                                  validator: (val) => val.isEmpty
-                                      ? 'Enter a valid comment'
-                                      : null,
-                                  controller: interestHolder,
-                                  decoration: InputDecoration(
-                                    hintStyle: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20),
-                                    hintText: 'Comment',
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                      borderSide: BorderSide(
-                                        color: Theme.of(context).primaryColor,
-                                        width: 2,
-                                      ),
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                      borderSide: BorderSide(
-                                        color: Theme.of(context).primaryColor,
-                                        width: 5,
-                                      ),
-                                    ),
-                                    prefixIcon: Padding(
-                                      child: IconTheme(
-                                        data: IconThemeData(
-                                            color:
-                                                Theme.of(context).primaryColor),
-                                        child: Icon(Icons.comment),
-                                      ),
-                                      padding:
-                                          EdgeInsets.only(left: 20, right: 10),
-                                    ),
-                                  )),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Divider(
-                              color: Colors.indigo[400],
-                              thickness: 5,
-                            ),
-                            SizedBox(height: 20),
-                            Container(
-                                height: 220,
-                                child: StreamBuilder<List<FeedCommentObject>>(
-                                  stream: UserDbService(
-                                          uid: widget.videos[index].uid)
-                                      .getFeedComments(
-                                          widget.videos[index].documentId,
-                                          widget.feedId),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      List<FeedCommentObject>
-                                          feedCommentObject = snapshot.data;
-                                      return ListView.separated(
-                                        physics:
-                                            AlwaysScrollableScrollPhysics(),
-                                        separatorBuilder: (context, idx) =>
-                                            Divider(
-                                          color: Colors.grey[400],
-                                        ),
-                                        itemCount: feedCommentObject.length,
-                                        itemBuilder: (context, idx) => InkWell(
-                                          child: ListTile(
-                                            title: Padding(
-                                              padding: EdgeInsets.all(5),
-                                              child: Text(feedCommentObject[idx]
-                                                  .comment),
-                                            ),
-                                            onTap: () {},
-                                          ),
-                                        ),
-                                      );
-                                    } else {
-                                      return Align(
-                                          alignment: Alignment.center,
-                                          child: CupertinoActivityIndicator());
-                                    }
-                                  },
-                                ))
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
+                Navigator.of(context).push(FeedCommentPage(index: index, videos: widget.videos, feedId: widget.feedId));
               },
               child: Icon(
                 Icons.comment,
