@@ -1,8 +1,8 @@
 import 'package:creaid/feed/VideoFeedObject.dart';
 import 'package:creaid/feed/feedCommentPage.dart';
+import 'package:creaid/feed/feedDescription.dart';
 import 'package:creaid/feed/feedSharePage.dart';
 import 'package:creaid/profile/dynamicProfile.dart';
-import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -142,26 +142,6 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
     });
   }
 
-  showDescription(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-            elevation: 15,
-            child: Container(
-              color: Colors.black12,
-              height: 100,
-              child: Center(
-                child: Text(
-                  widget.videos[index].description,
-                  style: TextStyle(color: Colors.black, fontSize: 20),
-                ),
-              ),
-            ),
-          );
-        });
-  }
-
   successfulShare(BuildContext context) {
     showDialog(
         context: context,
@@ -251,7 +231,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                     alignment: FractionalOffset.bottomCenter,
                     child: InkWell(
                       onTap: () {
-                        showDescription(context);
+                        Navigator.of(context).push(FeedDescription(description: widget.videos[index].description));
                       },
                       child: Text(
                         widget.videos[index].title,

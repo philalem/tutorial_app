@@ -5,10 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:creaid/notifications/notificationsDbService.dart';
 
 class FeedSharePage extends ModalRoute<void> {
-
   String shareId = "";
   final userHolder = TextEditingController();
-   AlgoliaService algoliaService = AlgoliaService();
+  AlgoliaService algoliaService = AlgoliaService();
 
   @override
   Duration get transitionDuration => Duration(milliseconds: 500);
@@ -50,69 +49,67 @@ class FeedSharePage extends ModalRoute<void> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Container(
-                      height: 200.0,
-                      width: 360.0,
-                      child: ListView(children: <Widget>[
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Center(
-                          child: Text(
-                            "Send this video to:",
-                            style: TextStyle(
-                                fontSize: 24,
-                                color: Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: TextFormField(
-                            onFieldSubmitted: (value) => {shareId = value},
-                            validator: (val) =>
-                                val.isEmpty ? "Enter valid user" : null,
-                            decoration: InputDecoration(
-                              hintStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: Theme.of(context).primaryColor),
-                              hintText: 'Enter username',
-                            ),
-                            controller: userHolder,
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 100.0),
-                          child: CreaidButton(
-                            children: <Widget>[
-                              Text(
-                                'Send',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ],
-                            onPressed: () async {
-                              bool valid = await algoliaService
-                                  .isThereAnExactUsernameMatch(userHolder.text);
-                              if (valid) {
-                                String uuid = await algoliaService
-                                    .getUserFromUserName(userHolder.text);
-                                NotificationsDbService(uid: uuid)
-                                    .sendShareVideoNotification(
-                                        userHolder.text);
-                               // successfulShare(context);
-                               Text("Succesful Share!");
-                              } else {
-                                 Text("User doesn't exist!");
-                              }
-                              userHolder.clear();
-                            },
-                          ),
-                        ),
-                      ]),
+            height: 200.0,
+            width: 360.0,
+            color: Colors.white,
+            child: ListView(children: <Widget>[
+              SizedBox(
+                height: 20,
+              ),
+              Center(
+                child: Text(
+                  "Send this video to:",
+                  style: TextStyle(
+                      fontSize: 24,
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: TextFormField(
+                  onFieldSubmitted: (value) => {shareId = value},
+                  validator: (val) => val.isEmpty ? "Enter valid user" : null,
+                  decoration: InputDecoration(
+                    hintStyle: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        color: Theme.of(context).primaryColor),
+                    hintText: 'Enter username',
+                  ),
+                  controller: userHolder,
+                ),
+              ),
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 100.0),
+                child: CreaidButton(
+                  children: <Widget>[
+                    Text(
+                      'Send',
+                      style: TextStyle(fontSize: 16),
                     ),
+                  ],
+                  onPressed: () async {
+                    bool valid = await algoliaService
+                        .isThereAnExactUsernameMatch(userHolder.text);
+                    if (valid) {
+                      String uuid = await algoliaService
+                          .getUserFromUserName(userHolder.text);
+                      NotificationsDbService(uid: uuid)
+                          .sendShareVideoNotification(userHolder.text);
+                      // successfulShare(context);
+                      Text("Succesful Share!");
+                    } else {
+                      Text("User doesn't exist!");
+                    }
+                    userHolder.clear();
+                  },
+                ),
+              ),
+            ]),
+          ),
           RaisedButton(
             onPressed: () => Navigator.pop(context),
             child: Text('Back to Feed'),
