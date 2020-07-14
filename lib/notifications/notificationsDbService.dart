@@ -11,7 +11,7 @@ class NotificationsDbService {
   Notification _mapToNotification(DocumentSnapshot snapshot) {
     return Notification(
       name: snapshot['name'],
-      photoUrl: snapshot['photoUrl'],
+      photoUrl: snapshot['photo-url'],
       type: snapshot['type'],
       comment: snapshot['comment'],
       date: snapshot['date'].toDate(),
@@ -30,8 +30,13 @@ class NotificationsDbService {
   }
 
   sendShareVideoNotification(String name) async {
-    await notificationsCollection.document(uid).updateData({'new-notifications' : FieldValue.increment(1)});
-    await notificationsCollection.document(uid).collection('notifications').add({
+    await notificationsCollection
+        .document(uid)
+        .updateData({'new-notifications': FieldValue.increment(1)});
+    await notificationsCollection
+        .document(uid)
+        .collection('notifications')
+        .add({
       'comment': name + ' wanted to share a video with you',
       'date': new DateTime.now().millisecondsSinceEpoch,
       'name': name,
