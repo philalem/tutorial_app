@@ -18,7 +18,14 @@ class _DisplayFollowState extends State<DisplayFollow> {
     return Scaffold(
       appBar: CupertinoNavigationBar(
         backgroundColor: Colors.indigo,
-        middle: Text(widget.isFollowers ? 'Followers' : 'Following'),
+        middle: Text(
+          widget.isFollowers ? 'Followers' : 'Following',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
       ),
       body: StreamBuilder<Object>(
           stream: widget.isFollowers
