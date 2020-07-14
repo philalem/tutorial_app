@@ -61,7 +61,7 @@ class _ProfileState extends State<Profile> {
     double width = size.width;
     final user = Provider.of<User>(context);
     var uid = user.uid;
-    const IconData signOut = const IconData(0xf46a,
+    const IconData threeDots = const IconData(0xf46a,
         fontFamily: CupertinoIcons.iconFont,
         fontPackage: CupertinoIcons.iconFontPackage);
 
@@ -80,7 +80,7 @@ class _ProfileState extends State<Profile> {
         trailing: CupertinoButton(
           padding: EdgeInsets.zero,
           child: Icon(
-            signOut,
+            threeDots,
             size: 35,
             color: Colors.white,
           ),
