@@ -3,6 +3,7 @@ import 'package:creaid/feed/feedCommentPage.dart';
 import 'package:creaid/feed/feedDescription.dart';
 import 'package:creaid/feed/feedSharePage.dart';
 import 'package:creaid/profile/dynamicProfile.dart';
+import 'package:creaid/utility/UserData.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,8 @@ import 'package:video_player/video_player.dart';
 class FeedVideoPlayer extends StatefulWidget {
   final List<VideoFeedObject> videos;
   final String feedId;
-  FeedVideoPlayer({Key key, this.videos, this.feedId}) : super(key: key);
+  final UserData userData;
+  FeedVideoPlayer({Key key, this.videos, this.feedId, this.userData}) : super(key: key);
 
   @override
   _FeedVideoPlayerState createState() => _FeedVideoPlayerState();
@@ -182,6 +184,15 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
         });
   }
 
+  void _showFeedShare(BuildContext context) {
+    Navigator.of(context).push(FeedSharePage());
+  }
+
+  void _showFeedComment(BuildContext context) {
+    Navigator.of(context).push(FeedCommentPage(
+        index: index, videos: widget.videos, feedId: widget.feedId));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -231,7 +242,8 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                     alignment: FractionalOffset.bottomCenter,
                     child: InkWell(
                       onTap: () {
-                        Navigator.of(context).push(FeedDescription(description: widget.videos[index].description));
+                        Navigator.of(context).push(FeedDescription(
+                            description: widget.videos[index].description));
                       },
                       child: Text(
                         widget.videos[index].title,
@@ -249,6 +261,17 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                 alignment: FractionalOffset.centerLeft,
                 child: Row(
                   children: <Widget>[
+                    SizedBox(
+                    width: 5,
+                    ),
+                    CircleAvatar(
+                      radius: 12,
+                      backgroundImage: NetworkImage(widget.userData.photoUrl),
+                      backgroundColor: Colors.transparent,
+                    ),
+                    SizedBox(
+                    width: 5,
+                    ),
                     InkWell(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
@@ -279,10 +302,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
             width: MediaQuery.of(context).size.width * .08,
           ),
           FloatingActionButton(
-            onPressed: () {
-              Navigator.of(context).push(FeedSharePage());
-              
-            },
+            onPressed: () => _showFeedShare(context),
             child: Icon(
               Icons.share,
               color: Colors.black,
@@ -326,9 +346,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
           ),
           FloatingActionButton(
               //comment button
-              onPressed: () {
-                Navigator.of(context).push(FeedCommentPage(index: index, videos: widget.videos, feedId: widget.feedId));
-              },
+              onPressed: () => _showFeedComment(context),
               child: Icon(
                 Icons.comment,
                 color: Colors.black,
