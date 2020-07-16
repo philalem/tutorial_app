@@ -33,14 +33,52 @@ class FeedSharePage extends ModalRoute<void> {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
-    // This makes sure that text and other content follows the material style
     return Material(
       type: MaterialType.transparency,
-      // make sure that the overlay content is not cut off
       child: SafeArea(
         child: _buildOverlayContent(context),
       ),
     );
+  }
+
+  successfulShare(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            elevation: 15,
+            child: Container(
+              color: Colors.black12,
+              height: 100,
+              child: Center(
+                child: Text(
+                  "Video Shared!",
+                  style: TextStyle(color: Colors.black, fontSize: 20),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  failedShare(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            elevation: 15,
+            child: Container(
+              color: Colors.black12,
+              height: 100,
+              child: Center(
+                child: Text(
+                  "User doesn't exist!",
+                  style: TextStyle(color: Colors.black, fontSize: 20),
+                ),
+              ),
+            ),
+          );
+        });
   }
 
   Widget _buildOverlayContent(BuildContext context) {
@@ -99,10 +137,9 @@ class FeedSharePage extends ModalRoute<void> {
                           .getUserFromUserName(userHolder.text);
                       NotificationsDbService(uid: uuid)
                           .sendShareVideoNotification(userHolder.text);
-                      // successfulShare(context);
-                      Text("Succesful Share!");
+                      successfulShare(context);
                     } else {
-                      Text("User doesn't exist!");
+                      failedShare(context);
                     }
                     userHolder.clear();
                   },
@@ -122,7 +159,6 @@ class FeedSharePage extends ModalRoute<void> {
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
-    // You can add your own animations for the overlay content
     return FadeTransition(
       opacity: animation,
       child: ScaleTransition(

@@ -31,10 +31,8 @@ class FeedDescription extends ModalRoute<void> {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
   ) {
-    // This makes sure that text and other content follows the material style
     return Material(
       type: MaterialType.transparency,
-      // make sure that the overlay content is not cut off
       child: SafeArea(
         child: _buildOverlayContent(context),
       ),
@@ -49,6 +47,7 @@ class FeedDescription extends ModalRoute<void> {
           Container(
               color: Colors.white,
               height: 100,
+              width: MediaQuery.of(context).size.width*.7,
               child: Center(
                 child: Text(
                   description,
@@ -68,7 +67,6 @@ class FeedDescription extends ModalRoute<void> {
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
-    // You can add your own animations for the overlay content
     return FadeTransition(
       opacity: animation,
       child: ScaleTransition(

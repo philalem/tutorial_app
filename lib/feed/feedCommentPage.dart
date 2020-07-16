@@ -73,14 +73,6 @@ class FeedCommentPage extends ModalRoute<void> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: TextFormField(
-                      onFieldSubmitted: (value) => {
-                            UserDbService(uid: videos[index].uid).addComment(
-                                videos[index].documentId,
-                                feedId,
-                                value,
-                                videos[index].author),
-                            interestHolder.clear()
-                          },
                       validator: (val) =>
                           val.isEmpty ? 'Enter a valid comment' : null,
                       controller: interestHolder,
@@ -110,6 +102,17 @@ class FeedCommentPage extends ModalRoute<void> {
                           ),
                           padding: EdgeInsets.only(left: 20, right: 10),
                         ),
+                        suffixIcon: IconButton(
+                          onPressed: () => {
+                            UserDbService(uid: videos[index].uid).addComment(
+                                videos[index].documentId,
+                                feedId,
+                                interestHolder.text,
+                                videos[index].author),
+                            interestHolder.clear()
+                          },
+                          icon: Icon(Icons.send),
+                        ),
                       )),
                 ),
                 SizedBox(
@@ -132,7 +135,7 @@ class FeedCommentPage extends ModalRoute<void> {
                           return ListView.separated(
                             physics: AlwaysScrollableScrollPhysics(),
                             separatorBuilder: (context, idx) => Divider(
-                              color: Colors.white,
+                              color: Theme.of(context).primaryColor,
                             ),
                             itemCount: feedCommentObject.length,
                             itemBuilder: (context, idx) => InkWell(
