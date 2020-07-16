@@ -23,6 +23,7 @@ class ProfilePhotoService {
         .snapshots()
         .map((snapshot) => snapshot['original'])
         .handleError((e) {
+      print('Something went wrong while getting the profile picture.');
       print(e);
     });
   }

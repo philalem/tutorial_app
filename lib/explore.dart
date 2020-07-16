@@ -68,7 +68,7 @@ class _ExploreState extends State<Explore> {
           height: screenHeight,
           width: screenWidth,
         ),
-        _displaySearchScreen(),
+        _displaySearchResults(),
       ],
     );
   }
@@ -113,30 +113,52 @@ class _ExploreState extends State<Explore> {
     );
   }
 
-  Widget _displaySearchScreen() {
+  Widget _displaySearchResults() {
     return ListView.builder(
       itemCount: _searchResults.length,
       itemBuilder: (context, index) {
         AlgoliaObjectSnapshot snap = _searchResults[index];
 
-        return InkWell(
-          child: Card(
-            color: Colors.white,
-            child: ListTile(
-              title: Text(snap.data['name']),
-              onTap: () {
-                Navigator.of(context).push(
-                  CupertinoPageRoute(
-                    builder: (context) => DynamicProfile(
-                      uid: snap.objectID,
-                      name: snap.data['name'],
-                      loggedInUid: userName.uid,
+        return Column(
+          children: <Widget>[
+            Container(
+              color: Colors.white,
+              child: ListTile(
+                leading: CircleAvatar(
+                    backgroundImage:
+                        AssetImage('assets/images/unknown-profile.png')),
+                title: Text(snap.data['name']),
+                subtitle: Text(snap.data['username']),
+                onTap: () {
+                  Navigator.of(context).push(
+                    CupertinoPageRoute(
+                      builder: (context) => DynamicProfile(
+                        uid: snap.objectID,
+                        name: snap.data['name'],
+                        loggedInUid: userName.uid,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            Container(
+              color: Colors.white,
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 70),
+                      child: Container(
+                        height: 1,
+                        color: Color(0xFFD9D9D9),
+                      ),
                     ),
                   ),
-                );
-              },
+                ],
+              ),
             ),
-          ),
+          ],
         );
       },
     );
@@ -152,7 +174,9 @@ class _ExploreState extends State<Explore> {
 
   void _searchForUsers() async {
     _searchResults =
-        await algoliaService.searchForUsers(_searchController.text, 5);
+        _searchController.text.trim() == '' || _searchController.text == null
+            ? []
+            : await algoliaService.searchForUsers(_searchController.text, 5);
     setState(() {});
   }
 
@@ -161,9 +185,9 @@ class _ExploreState extends State<Explore> {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
+    return CupertinoPageScaffold(
       resizeToAvoidBottomInset: false,
-      appBar: CupertinoNavigationBar(
+      navigationBar: CupertinoNavigationBar(
         leading: SizedBox(width: 20),
         trailing: SizedBox(width: 20),
         padding: EdgeInsetsDirectional.only(end: 0, start: 0),
@@ -209,7 +233,7 @@ class _ExploreState extends State<Explore> {
           ),
         ),
       ),
-      body: _getSearchOrExplore(screenHeight, screenWidth),
+      child: _getSearchOrExplore(screenHeight, screenWidth),
     );
   }
 }
