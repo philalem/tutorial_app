@@ -1,6 +1,6 @@
-import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/creaidTextField.dart';
 import 'package:creaid/utility/firebaseAuth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -96,27 +96,33 @@ class _LoginState extends State<Login> {
                       ],
                     ),
                     SizedBox(height: 12),
-                    CreaidButton(
+                    Row(
                       children: <Widget>[
-                        Text(
-                          'Sign in',
-                          style: TextStyle(fontSize: 16),
+                        Expanded(
+                          child: CupertinoButton(
+                            color: Colors.indigo,
+                            child: Text(
+                              'Sign in',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            onPressed: () async {
+                              if (_formKey.currentState.validate()) {
+                                _formKey.currentState.save();
+                                dynamic res =
+                                    await _auth.signInWithEmailAndPassword(
+                                        email, password);
+
+                                if (res == null) {
+                                  setState(() {
+                                    error =
+                                        'Could not sign in with those credentials';
+                                  });
+                                }
+                              }
+                            },
+                          ),
                         ),
                       ],
-                      onPressed: () async {
-                        if (_formKey.currentState.validate()) {
-                          _formKey.currentState.save();
-                          dynamic res = await _auth.signInWithEmailAndPassword(
-                              email, password);
-
-                          if (res == null) {
-                            setState(() {
-                              error =
-                                  'Could not sign in with those credentials';
-                            });
-                          }
-                        }
-                      },
                     ),
                     SizedBox(height: 12.0),
                     Text(

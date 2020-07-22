@@ -1,6 +1,5 @@
 import 'package:creaid/register/usernameAndInterestsSignUp.dart';
 import 'package:creaid/utility/algoliaService.dart';
-import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/creaidTextField.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -98,29 +97,34 @@ class _RegisterState extends State<Register> {
                       hint: "Password",
                     ),
                     SizedBox(height: 18),
-                    CreaidButton(
+                    Row(
                       children: <Widget>[
-                        Text(
-                          'Next',
-                          style: TextStyle(fontSize: 16),
-                          textAlign: TextAlign.center,
+                        Expanded(
+                          child: CupertinoButton(
+                            color: Colors.indigo,
+                            child: Text(
+                              'Next',
+                              style: TextStyle(fontSize: 16),
+                              textAlign: TextAlign.center,
+                            ),
+                            onPressed: () async {
+                              await _isValidEmail(emailController.text);
+                              if (_formKey.currentState.validate()) {
+                                _formKey.currentState.save();
+                                Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                      builder: (context) =>
+                                          UsernameAndInterestsSignUp(
+                                              email: email,
+                                              name: name,
+                                              password: password)),
+                                );
+                              }
+                            },
+                          ),
                         ),
                       ],
-                      onPressed: () async {
-                        await _isValidEmail(emailController.text);
-                        if (_formKey.currentState.validate()) {
-                          _formKey.currentState.save();
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                                builder: (context) =>
-                                    UsernameAndInterestsSignUp(
-                                        email: email,
-                                        name: name,
-                                        password: password)),
-                          );
-                        }
-                      },
                     ),
                   ],
                 ),
