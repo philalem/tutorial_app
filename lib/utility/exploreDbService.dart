@@ -15,10 +15,8 @@ class ExploreDbService {
     );
   }
 
-  Stream<List<Post>> getProfilePosts() {
+  Stream<List<Post>> getExplorePosts() {
     Stream<QuerySnapshot> stream = exploreCollection
-        .document(uid)
-        .collection('user-posts')
         .orderBy('date', descending: true)
         .limit(20)
         .snapshots()
