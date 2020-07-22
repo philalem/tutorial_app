@@ -164,7 +164,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                   ),
                   child: Column(
                     children: <Widget>[
-                      userCollections(),
+                      // userCollections(),
                       StickyHeader(
                         header: Container(
                           height: 40,

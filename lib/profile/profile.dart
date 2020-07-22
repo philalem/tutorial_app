@@ -179,7 +179,8 @@ class _ProfileState extends State<Profile> {
                   ),
                   child: Column(
                     children: <Widget>[
-                      userCollections(),
+                      // TODO: backlog item
+                      // userCollections(),
                       StickyHeader(
                         header: Container(
                           height: 40,
