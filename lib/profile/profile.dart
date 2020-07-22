@@ -102,7 +102,11 @@ class _ProfileState extends State<Profile> {
                 color: Colors.grey[200],
                 width: width,
                 child: Padding(
-                  padding: EdgeInsets.only(left: 30.0, right: 30.0, top: 15),
+                  padding: EdgeInsets.only(
+                    left: 30.0,
+                    right: 30.0,
+                    top: 15,
+                  ),
                   child: Column(
                     children: <Widget>[
                       Container(
@@ -144,7 +148,7 @@ class _ProfileState extends State<Profile> {
                               child: FittedBox(
                                 fit: BoxFit.contain,
                                 alignment: Alignment.centerRight,
-                                child: userProfileImage(uid),
+                                child: userProfileImage(uid, data.photoUrl),
                               ),
                             ),
                           ],
@@ -227,7 +231,19 @@ class _ProfileState extends State<Profile> {
                   alignment: Alignment.center,
                   child: CupertinoActivityIndicator(),
                 );
+
               List<Post> posts = snapshot.data;
+              if (posts.length < 1) {
+                return Center(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      'You don\'t have any posts yet. Try making a post by clicking the camera button on the bottom navigation bar.',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              }
               return GridView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -368,33 +384,22 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  CircleAvatar userProfileImage(String uid) {
+  CircleAvatar userProfileImage(String uid, String photoUrl) {
     return CircleAvatar(
       backgroundColor: Colors.indigoAccent,
       radius: 85,
-      child: StreamBuilder<Object>(
-          stream: ProfilePhotoService(uid: uid).getProfilePhoto(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData)
-              return Align(
-                alignment: Alignment.center,
-                child: CupertinoActivityIndicator(),
-              );
-            photoUrl = snapshot.data;
-            return ClipOval(
-              child: Container(
-                height: 160,
-                width: 160,
-                child: photoUrl != null && photoUrl != ''
-                    ? FadeInImage(
-                        image: NetworkImage(photoUrl),
-                        placeholder:
-                            AssetImage('assets/images/unknown-profile.png'),
-                      )
-                    : AssetImage('assets/images/unknown-profile.png'),
-              ),
-            );
-          }),
+      child: ClipOval(
+        child: Container(
+          height: 160,
+          width: 160,
+          child: photoUrl != null && photoUrl != ''
+              ? FadeInImage(
+                  image: NetworkImage(photoUrl),
+                  placeholder: AssetImage('assets/images/unknown-profile.png'),
+                )
+              : Image.asset('assets/images/unknown-profile.png'),
+        ),
+      ),
     );
   }
 

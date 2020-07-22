@@ -68,7 +68,7 @@ exports.updateExplorePosts = async (snap, context) => {
   if (currentExplorePosts.length < 20) {
     exports.addToExplorePosts(feedId, videoId);
   }
-
+  // TODO: Logic for checking popularity
   return await firestore
     .collection("notifications")
     .doc(userId)
