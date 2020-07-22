@@ -45,16 +45,16 @@ class FeedDescription extends ModalRoute<void> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Container(
-              color: Colors.white,
-              height: 100,
-              width: MediaQuery.of(context).size.width*.7,
-              child: Center(
-                child: Text(
-                  description,
-                  style: TextStyle(color: Colors.black, fontSize: 20),
-                ),
+            color: Colors.white,
+            height: 100,
+            width: MediaQuery.of(context).size.width * .7,
+            child: Center(
+              child: Text(
+                description,
+                style: TextStyle(color: Colors.black, fontSize: 20),
               ),
             ),
+          ),
           RaisedButton(
             onPressed: () => Navigator.pop(context),
             child: Text('Back to Feed'),
