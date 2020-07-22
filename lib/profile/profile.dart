@@ -66,7 +66,7 @@ class _ProfileState extends State<Profile> {
         fontPackage: CupertinoIcons.iconFontPackage);
 
     return CupertinoPageScaffold(
-      backgroundColor: Color(0xffF8F8FA),
+      backgroundColor: Colors.white,
       navigationBar: CupertinoNavigationBar(
         backgroundColor: Colors.indigo,
         middle: Text(
@@ -165,9 +165,9 @@ class _ProfileState extends State<Profile> {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black54,
-                      offset: Offset(0.0, 3.0),
-                      blurRadius: 10.0,
+                      color: Colors.black38,
+                      offset: Offset(0.0, -2.0),
+                      blurRadius: 2.0,
                     ),
                   ],
                 ),
