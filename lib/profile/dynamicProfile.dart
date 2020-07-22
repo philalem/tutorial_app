@@ -388,7 +388,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
   ) {
     return FlatButton(
       padding: EdgeInsets.only(top: 4),
-      onPressed: () => _updateFollowing(data.uid, widget.name),
+      onPressed: () => _updateFollowing(widget.uid, widget.name),
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black87),
@@ -407,14 +407,6 @@ class _DynamicProfileState extends State<DynamicProfile> {
                     : Text(
                         'Follow',
                       ),
-              ),
-              FittedBox(
-                fit: BoxFit.contain,
-                child: Icon(
-                  CupertinoIcons.pencil,
-                  color: Colors.black87,
-                  size: 16,
-                ),
               ),
             ],
           ),

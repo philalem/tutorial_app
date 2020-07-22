@@ -67,6 +67,7 @@ exports.incrementNewNotifications = async (userId) => {
 
 exports.sendFollowNotification = async (snap, context) => {
   const followerUserId = context.params.followerId;
+  const userId = context.params.userId;
   const followerUserName = snap.data().name;
   const timestamp = new Date().toUTCString();
   exports.incrementNewNotifications(userId).catch((error) => {

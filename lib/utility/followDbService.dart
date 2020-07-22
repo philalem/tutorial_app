@@ -11,6 +11,8 @@ class FollowDbService {
   FollowDbService({this.uid});
 
   Future<void> addToFollowing(String uidToBeFollowed, String name) async {
+    print('Uid: $uid');
+    print('Uid to be followed: $uidToBeFollowed');
     await Firestore.instance.runTransaction((transaction) async {
       await userInfoCollection
           .document(uid)
