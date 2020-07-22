@@ -12,13 +12,16 @@ class CreaidApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamProvider<User>.value(
       value: FireBaseAuthorization().user,
-      child: GestureDetector(
-        onTap: () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
+      child: Listener(
+        onPointerMove: (PointerMoveEvent pointerDetails) {
+          var movement = pointerDetails.localDelta;
+          if (movement.dy > 20) {
+            FocusScopeNode currentFocus = FocusScope.of(context);
 
-          if (!currentFocus.hasPrimaryFocus &&
-              currentFocus.focusedChild != null) {
-            FocusManager.instance.primaryFocus.unfocus();
+            if (!currentFocus.hasPrimaryFocus &&
+                currentFocus.focusedChild != null) {
+              FocusManager.instance.primaryFocus.unfocus();
+            }
           }
         },
         child: CupertinoApp(

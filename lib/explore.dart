@@ -25,6 +25,11 @@ class _ExploreState extends State<Explore> {
   @override
   void initState() {
     focusNode = FocusNode();
+    focusNode.addListener(() {
+      if (!focusNode.hasFocus) {
+        setState(() {});
+      }
+    });
     _loadCurrentUser();
     super.initState();
   }
@@ -59,7 +64,7 @@ class _ExploreState extends State<Explore> {
   }
 
   Widget _getSearchDisplayWithBackground(screenWidth, screenHeight) {
-    if (!_isSearching) {
+    if (!_isSearching || !focusNode.hasFocus) {
       return Container();
     }
 
@@ -106,7 +111,7 @@ class _ExploreState extends State<Explore> {
                   child: Container(
                     height: screenWidth,
                     width: screenWidth,
-                    color: Colors.green,
+                    color: Colors.grey[300],
                     child: Center(
                       child: Text('Main Container'),
                     ),
@@ -126,7 +131,7 @@ class _ExploreState extends State<Explore> {
                   return GestureDetector(
                     onTap: () => _navigateToVideo(),
                     child: Container(
-                      color: Colors.green,
+                      color: Colors.grey[300],
                       child: Text("Index: $index"),
                     ),
                   );
@@ -279,7 +284,7 @@ class _ExploreState extends State<Explore> {
     var uid = user.uid;
 
     return CupertinoPageScaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       navigationBar: CupertinoNavigationBar(
         leading: SizedBox(width: 20),
         trailing: SizedBox(width: 20),
