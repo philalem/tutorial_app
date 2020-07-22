@@ -160,7 +160,7 @@ class _ExploreState extends State<Explore> {
                     BoxShadow(
                       color: Colors.black54,
                       offset: Offset(-1.0, 1.0),
-                      blurRadius: 5.0,
+                      blurRadius: 1.0,
                     ),
                   ],
                 ),
