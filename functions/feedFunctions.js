@@ -68,8 +68,6 @@ exports.updateExplorePosts = async (snap, context) => {
   if (currentExplorePosts.length < 20) {
     return await exports.addToExplorePosts(feedId, videoId);
   }
-  // TODO: Logic for checking popularity
-  // get post in question
 
   // compare likes with current explore posts
   // keep track of least liked post out of the explore
@@ -83,6 +81,7 @@ exports.updateExplorePosts = async (snap, context) => {
     }
   }
 
+  // get post in question
   // if post in question has more likes, add it and remove the least liked post in explore
   const postData = await exports.getPost(videoId);
   if (postData.get("likes") > lowestLikesPost.likes) {
