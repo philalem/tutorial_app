@@ -64,30 +64,31 @@ exports.updateExplorePosts = async (snap, context) => {
   const feedId = context.params.feedId;
   const timestamp = new Date().getTime();
   const name = snap.data().name;
-  const currentExplorePosts = exports.getExplorePosts();
+  const currentExplorePosts = await exports.getExplorePosts();
   if (currentExplorePosts.length < 20) {
-    exports.addToExplorePosts(feedId, videoId);
+    return await exports.addToExplorePosts(feedId, videoId);
   }
   // TODO: Logic for checking popularity
   // get post in question
 
   // compare likes with current explore posts
   // keep track of least liked post out of the explore
+  var lowestLikes = Number.MAX_SAFE_INTEGER;
+  var lowestLikesPost = { likes: Number.MAX_SAFE_INTEGER, id: null };
+  var i;
+  for (i = 0; i < currentExplorePosts.length; i++) {
+    if (currentExplorePosts[i].likes < lowestLikes) {
+      lowestLikesPost.likes = currentExplorePosts[i].likes;
+      lowestLikesPost.id = currentExplorePosts[i].id;
+    }
+  }
 
   // if post in question has more likes, add it and remove the least liked post in explore
-
-  return await firestore
-    .collection("notifications")
-    .doc(userId)
-    .collection("notifications")
-    .doc()
-    .set({
-      uid: userId,
-      name: name,
-      type: "like",
-      comment: "",
-      date: timestamp,
-    });
+  const postData = await exports.getPost(videoId);
+  if (postData.get("likes") > lowestLikesPost.likes) {
+    exports.removePostFromExplorePosts(lowestLikesPost.id);
+    exports.addToExplorePosts(postData.get(id));
+  }
 };
 
 exports.getExplorePosts = async () => {
@@ -99,6 +100,10 @@ exports.getExplorePosts = async () => {
   }));
 };
 
+exports.getPost = async (postId) => {
+  return await firestore.collection("explore").doc(postId).get();
+};
+
 exports.addToExplorePosts = async (feedId, videoId) => {
   const post = await firestore
     .collection("posts")
@@ -107,4 +112,8 @@ exports.addToExplorePosts = async (feedId, videoId) => {
     .doc(videoId)
     .get();
   return await firestore.collection("explore").doc(videoId).set(post);
+};
+
+exports.removePostFromExplorePosts = async (videoId) => {
+  return await firestore.collection("explore").doc(videoId).delete();
 };
