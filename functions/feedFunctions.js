@@ -110,6 +110,7 @@ exports.findLowestLikedPost = (currentExplorePosts) => {
   }
   return lowestLikesPost;
 };
+
 exports.addNewPostIfItHasMoreLikes = async (videoId, lowestLikesPost) => {
   const postData = await exports.getPost(videoId);
   if (postData.get("likes") > lowestLikesPost.likes) {
