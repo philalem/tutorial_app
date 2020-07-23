@@ -69,6 +69,13 @@ exports.updateExplorePosts = async (snap, context) => {
     exports.addToExplorePosts(feedId, videoId);
   }
   // TODO: Logic for checking popularity
+  // get post in question
+
+  // compare likes with current explore posts
+  // keep track of least liked post out of the explore
+
+  // if post in question has more likes, add it and remove the least liked post in explore
+
   return await firestore
     .collection("notifications")
     .doc(userId)
@@ -88,6 +95,7 @@ exports.getExplorePosts = async () => {
   return topPosts.docs.map((postSnapshot) => ({
     id: postSnapshot.id,
     thumbnail: postSnapshot.get("thumbnail"),
+    likes: postSnapshot.get("likes"),
   }));
 };
 
