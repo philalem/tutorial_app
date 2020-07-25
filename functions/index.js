@@ -50,12 +50,12 @@ exports.sendLikeNotifications = functions
     return feedFunction.sendLikeNotifications(snap, context);
   });
 
-// exports.updateExploreCollection = functions
-//   .region("us-east4")
-//   .firestore.document("posts/{feedId}/following-posts/{videoId}/liked/{uid}")
-//   .onCreate((snap, context) => {
-//     return feedFunction.updateExplorePosts(snap, context);
-//   });
+exports.updateExploreCollection = functions
+  .region("us-east4")
+  .firestore.document("posts/{feedId}/following-posts/{videoId}/liked/{uid}")
+  .onCreate((snap, context) => {
+    return feedFunction.updateExplorePosts(snap, context);
+  });
 
 exports.sendCommentNotification = functions
   .region("us-east4")
