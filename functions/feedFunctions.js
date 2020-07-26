@@ -91,7 +91,7 @@ exports.addToExplorePosts = async (feedId, videoId) => {
     .collection("following-posts")
     .doc(videoId)
     .get();
-  return await firestore.collection("explore").doc(videoId).set(post);
+  return await firestore.collection("explore").doc(videoId).set(post.data());
 };
 
 exports.removePostFromExplorePosts = async (videoId) => {
