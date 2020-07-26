@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class Explore extends StatefulWidget {
   @override
@@ -21,6 +22,8 @@ class _ExploreState extends State<Explore> {
   FocusNode focusNode;
   var _searchResults = [];
   FirebaseUser userName;
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   @override
   void initState() {
@@ -47,6 +50,15 @@ class _ExploreState extends State<Explore> {
     _searchController.dispose();
     focusNode.dispose();
     super.dispose();
+  }
+
+  void _onRefresh() async {
+    await Future.delayed(Duration(milliseconds: 1000));
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    setState(() {});
   }
 
   Widget _getSearchOrExplore(screenHeight, screenWidth, uid) {
@@ -83,26 +95,39 @@ class _ExploreState extends State<Explore> {
 
   Widget _displayExploreScreen(screenWidth, uid) {
     return StreamBuilder<List<dynamic>>(
-        stream: ExploreDbService(uid: uid).getExplorePosts(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return loadingExplorePosts(screenWidth);
-          }
+      stream: ExploreDbService(uid: uid).getExplorePosts(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return loadingExplorePosts(screenWidth);
+        }
 
-          List data = snapshot.data;
+        List data = snapshot.data;
 
-          if (data.length < 1) {
-            return Center(
+        if (data.length < 1) {
+          return SmartRefresher(
+            enablePullDown: true,
+            header: ClassicHeader(),
+            controller: _refreshController,
+            onRefresh: _onRefresh,
+            onLoading: _onLoading,
+            child: Center(
               child: Column(
                 children: <Widget>[
                   SizedBox(height: 50),
                   Text('Nothing to see here!'),
                 ],
               ),
-            );
-          }
+            ),
+          );
+        }
 
-          return ListView(
+        return SmartRefresher(
+          enablePullDown: true,
+          header: ClassicHeader(),
+          controller: _refreshController,
+          onRefresh: _onRefresh,
+          onLoading: _onLoading,
+          child: ListView(
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(bottom: 1.0),
@@ -138,8 +163,10 @@ class _ExploreState extends State<Explore> {
                 },
               ),
             ],
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   ListView loadingExplorePosts(screenWidth) {
