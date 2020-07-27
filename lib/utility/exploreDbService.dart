@@ -23,8 +23,10 @@ class ExploreDbService {
         .catchError((e) {
       print(e);
     });
-    return posts.documents.map(
-      (snap) => _mapToPost(snap),
-    );
+    return posts.documents
+        .map(
+          (snap) => _mapToPost(snap),
+        )
+        .toList();
   }
 }
