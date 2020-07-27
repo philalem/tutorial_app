@@ -55,7 +55,7 @@ class Feed extends StatelessWidget {
           }
         } else {
           return Align(
-              alignment: Alignment.center, child: CupertinoActivityIndicator());
+              alignment: Alignment.center, child: Text('Nothing to see here!'));
         }
       },
     );

@@ -50,6 +50,13 @@ exports.sendLikeNotifications = functions
     return feedFunction.sendLikeNotifications(snap, context);
   });
 
+exports.updateExploreCollection = functions
+  .region("us-east4")
+  .firestore.document("posts/{feedId}/following-posts/{videoId}/liked/{uid}")
+  .onCreate((snap, context) => {
+    return feedFunction.updateExplorePosts(snap, context);
+  });
+
 exports.sendCommentNotification = functions
   .region("us-east4")
   .firestore.document(
@@ -58,13 +65,6 @@ exports.sendCommentNotification = functions
   .onCreate((snap, context) => {
     return feedFunction.sendCommentNotifications(snap, context);
   });
-// Shelving this for now.
-//
-// exports.generateThumbnailFromPost = functions.storage
-//   .object()
-//   .onFinalize(async (object) => {
-//     return postFunctions.generateVideoThumbnail(object, admin);
-//   });
 
 // Create a HTTP request cloud function.
 

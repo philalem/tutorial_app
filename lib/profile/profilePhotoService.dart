@@ -7,6 +7,8 @@ class ProfilePhotoService {
   final String uid;
   final CollectionReference profilePhotosCollection =
       Firestore.instance.collection('profile-photos');
+  final CollectionReference userInfoCollection =
+      Firestore.instance.collection('profile-photos');
 
   ProfilePhotoService({this.uid});
 

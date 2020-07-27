@@ -94,6 +94,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: Stack(
+        fit: StackFit.expand,
         children: <Widget>[
           _getCamera(deviceRatio, _controllers[1]),
           Positioned(
@@ -111,8 +112,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                 ),
               ),
               child: Container(
-                padding:
-                    EdgeInsets.symmetric(horizontal: width * 0.1, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -181,16 +181,11 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Expanded(
-                          child: FlatButton(
+                          child: CupertinoButton(
                             color: Colors.indigo,
                             onPressed: () => _savePost(user, context),
-                            textColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                            ),
                             child: Text(
                               "Share",
-                              style: TextStyle(fontSize: 16),
                             ),
                           ),
                         ),

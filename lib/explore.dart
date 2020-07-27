@@ -1,10 +1,15 @@
 import 'package:algolia/algolia.dart';
 import 'package:creaid/profile/dynamicProfile.dart';
+import 'package:creaid/profile/post.dart';
 import 'package:creaid/utility/algoliaService.dart';
+import 'package:creaid/utility/exploreDbService.dart';
+import 'package:creaid/utility/user.dart';
 import 'package:creaid/video-player.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class Explore extends StatefulWidget {
   @override
@@ -18,10 +23,17 @@ class _ExploreState extends State<Explore> {
   FocusNode focusNode;
   var _searchResults = [];
   FirebaseUser userName;
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   @override
   void initState() {
     focusNode = FocusNode();
+    focusNode.addListener(() {
+      if (!focusNode.hasFocus) {
+        setState(() {});
+      }
+    });
     _loadCurrentUser();
     super.initState();
   }
@@ -41,9 +53,18 @@ class _ExploreState extends State<Explore> {
     super.dispose();
   }
 
-  Widget _getSearchOrExplore(screenHeight, screenWidth) {
+  void _onRefresh() async {
+    await Future.delayed(Duration(milliseconds: 1000));
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    setState(() {});
+  }
+
+  Widget _getSearchOrExplore(screenHeight, screenWidth, uid) {
     var children = <Widget>[
-      _displayExploreScreen(screenWidth),
+      _displayExploreScreen(screenWidth, uid),
       AnimatedSwitcher(
         duration: Duration(milliseconds: 200),
         child: _getSearchDisplayWithBackground(screenWidth, screenHeight),
@@ -56,7 +77,7 @@ class _ExploreState extends State<Explore> {
   }
 
   Widget _getSearchDisplayWithBackground(screenWidth, screenHeight) {
-    if (!_isSearching) {
+    if (!_isSearching || !focusNode.hasFocus) {
       return Container();
     }
 
@@ -73,19 +94,116 @@ class _ExploreState extends State<Explore> {
     );
   }
 
-  Widget _displayExploreScreen(screenWidth) {
+  Widget _displayExploreScreen(screenWidth, uid) {
+    return FutureBuilder<List<Post>>(
+      future: ExploreDbService(uid: uid).getExplorePosts(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return loadingExplorePosts(screenWidth);
+        }
+
+        List<Post> data = snapshot.data;
+
+        if (data.length < 1) {
+          return SmartRefresher(
+            enablePullDown: true,
+            header: ClassicHeader(),
+            controller: _refreshController,
+            onRefresh: _onRefresh,
+            onLoading: _onLoading,
+            child: Center(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 50),
+                  Text('Nothing to see here!'),
+                ],
+              ),
+            ),
+          );
+        }
+
+        return SmartRefresher(
+          enablePullDown: true,
+          header: ClassicHeader(),
+          controller: _refreshController,
+          onRefresh: _onRefresh,
+          onLoading: _onLoading,
+          child: ListView(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(bottom: 1.0),
+                child: GestureDetector(
+                  onTap: () => _navigateToVideo(),
+                  child: Container(
+                    height: screenWidth,
+                    width: screenWidth,
+                    color: Colors.grey[300],
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: Image.network(
+                        data[0].thumbnail,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              GridView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  crossAxisSpacing: 1.0,
+                  mainAxisSpacing: 1.0,
+                ),
+                itemCount: data.length - 1,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () => _navigateToVideo(),
+                    child: Container(
+                      color: Colors.grey[300],
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Image.network(
+                          data[index + 1].thumbnail,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  ListView loadingExplorePosts(screenWidth) {
     return ListView(
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.only(bottom: 1.0),
+          padding: const EdgeInsets.only(bottom: 5.0),
           child: GestureDetector(
             onTap: () => _navigateToVideo(),
-            child: Container(
-              height: screenWidth,
-              width: screenWidth,
-              color: Colors.green,
-              child: Center(
-                child: Text('Main Container'),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: Container(
+                height: screenWidth,
+                width: screenWidth,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(10.0),
+                  border: Border.all(color: Colors.grey, width: 0.2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black54,
+                      offset: Offset(-1.0, 1.0),
+                      blurRadius: 1.0,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -95,16 +213,28 @@ class _ExploreState extends State<Explore> {
           shrinkWrap: true,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
-            crossAxisSpacing: 1.0,
-            mainAxisSpacing: 1.0,
+            crossAxisSpacing: 5.0,
+            mainAxisSpacing: 5.0,
           ),
           itemCount: 20,
           itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () => _navigateToVideo(),
-              child: Container(
-                color: Colors.green,
-                child: Text("Index: $index"),
+            return Container(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(10.0),
+                    border: Border.all(color: Colors.grey, width: 0.2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black54,
+                        offset: Offset(-1.0, 1.0),
+                        blurRadius: 5.0,
+                      ),
+                    ],
+                  ),
+                ),
               ),
             );
           },
@@ -184,9 +314,11 @@ class _ExploreState extends State<Explore> {
   Widget build(BuildContext context) {
     var screenHeight = MediaQuery.of(context).size.height;
     var screenWidth = MediaQuery.of(context).size.width;
+    final user = Provider.of<User>(context);
+    var uid = user.uid;
 
     return CupertinoPageScaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       navigationBar: CupertinoNavigationBar(
         leading: SizedBox(width: 20),
         trailing: SizedBox(width: 20),
@@ -233,7 +365,7 @@ class _ExploreState extends State<Explore> {
           ),
         ),
       ),
-      child: _getSearchOrExplore(screenHeight, screenWidth),
+      child: _getSearchOrExplore(screenHeight, screenWidth, uid),
     );
   }
 }
