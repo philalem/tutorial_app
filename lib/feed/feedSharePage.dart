@@ -3,6 +3,7 @@ import 'package:creaid/utility/creaidButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:creaid/notifications/notificationsDbService.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class FeedSharePage extends ModalRoute<void> {
   String shareId = "";
@@ -97,10 +98,12 @@ class FeedSharePage extends ModalRoute<void> {
               Center(
                 child: Text(
                   "Send this video to:",
-                  style: TextStyle(
+                  style: GoogleFonts.mcLaren(
+                    textStyle: TextStyle(
                       fontSize: 24,
                       color: Theme.of(context).primaryColor,
                       fontWeight: FontWeight.bold),
+                  )
                 ),
               ),
               SizedBox(height: 20),
@@ -126,7 +129,9 @@ class FeedSharePage extends ModalRoute<void> {
                   children: <Widget>[
                     Text(
                       'Send',
-                      style: TextStyle(fontSize: 16),
+                      style: GoogleFonts.mcLaren(
+                          textStyle: TextStyle(fontSize: 16),
+                        )
                     ),
                   ],
                   onPressed: () async {
@@ -149,7 +154,12 @@ class FeedSharePage extends ModalRoute<void> {
           ),
           RaisedButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Back to Feed'),
+            child: Text(
+              'Back to Feed',
+              style: GoogleFonts.mcLaren(
+                textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+            ),
           )
         ],
       ),
