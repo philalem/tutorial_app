@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:creaid/profile/profilePhotoService.dart';
-import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -62,12 +61,11 @@ class _UploadProfileState extends State<UploadProfile> {
                     height: 28,
                   ),
                   _image != null
-                      ? CreaidButton(
-                          children: <Widget>[
-                            Text(
-                              'Upload Picture',
-                            ),
-                          ],
+                      ? CupertinoButton(
+                          color: Colors.indigo,
+                          child: Text(
+                            'Upload Picture',
+                          ),
                           onPressed: () async {
                             await uploadFile();
                             print(_uploadedFileURL);
@@ -81,12 +79,11 @@ class _UploadProfileState extends State<UploadProfile> {
                           },
                         )
                       : Container(),
-                  CreaidButton(
-                    children: <Widget>[
-                      Text(
-                        'Choose Picture',
-                      ),
-                    ],
+                  CupertinoButton(
+                    color: Colors.indigo,
+                    child: Text(
+                      'Choose Picture',
+                    ),
                     onPressed: () async {
                       await chooseFile();
                       File croppedImage = await cropImageView();

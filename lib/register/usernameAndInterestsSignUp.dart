@@ -1,6 +1,7 @@
 import 'package:creaid/register/createUsername.dart';
 import 'package:creaid/utility/creaidButton.dart';
 import 'package:creaid/utility/firebaseAuth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -119,33 +120,39 @@ class _UsernameAndInterestsSignUpState
                             },
                           ).toList()),
                       SizedBox(height: 40.0),
-                      CreaidButton(
-                          disabled: _isSubmitDisabled,
-                          children: <Widget>[
-                            Text(
-                              'Done',
-                              style: TextStyle(fontSize: 16),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                          onPressed: () async {
-                            dynamic res =
-                                await _auth.registerWithEmailAndPassword(
-                                    widget.email,
-                                    usernameHolder.text,
-                                    widget.password,
-                                    widget.name,
-                                    _interests);
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: CupertinoButton(
+                                color: Colors.indigo,
+                                child: Text(
+                                  'Done',
+                                ),
+                                onPressed: _isSubmitDisabled
+                                    ? null
+                                    : () async {
+                                        dynamic res = await _auth
+                                            .registerWithEmailAndPassword(
+                                                widget.email,
+                                                usernameHolder.text,
+                                                widget.password,
+                                                widget.name,
+                                                _interests);
 
-                            if (res != null) {
-                              res = await _auth.signInWithEmailAndPassword(
-                                  widget.email, widget.password);
-                              Navigator.of(context).pop();
-                            }
-                            setState(() {
-                              error = 'Can not register this user';
-                            });
-                          }),
+                                        if (res != null) {
+                                          res = await _auth
+                                              .signInWithEmailAndPassword(
+                                                  widget.email,
+                                                  widget.password);
+                                          Navigator.of(context).pop();
+                                        }
+                                        setState(() {
+                                          error = 'Can not register this user';
+                                        });
+                                      }),
+                          ),
+                        ],
+                      ),
                       SizedBox(height: 12.0),
                       Text(
                         error,

@@ -358,11 +358,13 @@ class _EditProfileState extends State<EditProfile> {
     setState(() {
       _isLoading = true;
     });
-    await chooseFile();
-    File croppedImage = await cropImageView();
+    var image = await chooseFile();
+    if (image != null) {
+      File croppedImage = await cropImageView();
+      _image = croppedImage;
+    }
     setState(() {
       _isLoading = false;
-      _image = croppedImage;
     });
   }
 
@@ -391,9 +393,12 @@ class _EditProfileState extends State<EditProfile> {
 
   Future chooseFile() async {
     final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    setState(() {
-      _image = File(pickedFile.path);
-    });
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+    return pickedFile;
   }
 
   Future uploadFile(User user) async {

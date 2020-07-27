@@ -15,7 +15,8 @@ class FeedVideoPlayer extends StatefulWidget {
   final List<VideoFeedObject> videos;
   final String feedId;
   final UserData userData;
-  FeedVideoPlayer({Key key, this.videos, this.feedId, this.userData}) : super(key: key);
+  FeedVideoPlayer({Key key, this.videos, this.feedId, this.userData})
+      : super(key: key);
 
   @override
   _FeedVideoPlayerState createState() => _FeedVideoPlayerState();
@@ -262,7 +263,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                 child: Row(
                   children: <Widget>[
                     SizedBox(
-                    width: 5,
+                      width: 5,
                     ),
                     CircleAvatar(
                       radius: 12,
@@ -270,7 +271,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                       backgroundColor: Colors.transparent,
                     ),
                     SizedBox(
-                    width: 5,
+                      width: 5,
                     ),
                     InkWell(
                       onTap: () {

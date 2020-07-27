@@ -39,6 +39,7 @@ dependencies:
   sticky_headers: ^0.1.8
   video_player: ">=0.10.11+1 <2.0.0"
   flutter_ffmpeg: ^0.2.10
+  pull_to_refresh: ^1.6.0
 
 flutter_icons:
   image_path_android: "assets/icon/creaid_icon.png"
