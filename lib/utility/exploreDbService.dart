@@ -15,16 +15,16 @@ class ExploreDbService {
     );
   }
 
-  Stream<List<Post>> getExplorePosts() {
-    Stream<QuerySnapshot> stream = exploreCollection
+  Future<List<Post>> getExplorePosts() async {
+    QuerySnapshot posts = await exploreCollection
         .orderBy('date', descending: true)
         .limit(20)
-        .snapshots()
-        .handleError((e) {
+        .getDocuments()
+        .catchError((e) {
       print(e);
     });
-    return stream.map(
-      (snap) => snap.documents.map(_mapToPost).toList(),
+    return posts.documents.map(
+      (snap) => _mapToPost(snap),
     );
   }
 }
