@@ -1,5 +1,6 @@
 import 'package:algolia/algolia.dart';
 import 'package:creaid/profile/dynamicProfile.dart';
+import 'package:creaid/profile/post.dart';
 import 'package:creaid/utility/algoliaService.dart';
 import 'package:creaid/utility/exploreDbService.dart';
 import 'package:creaid/utility/user.dart';
@@ -94,14 +95,14 @@ class _ExploreState extends State<Explore> {
   }
 
   Widget _displayExploreScreen(screenWidth, uid) {
-    return FutureBuilder<List<dynamic>>(
+    return FutureBuilder<List<Post>>(
       future: ExploreDbService(uid: uid).getExplorePosts(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return loadingExplorePosts(screenWidth);
         }
 
-        List data = snapshot.data;
+        List<Post> data = snapshot.data;
 
         if (data.length < 1) {
           return SmartRefresher(
@@ -137,8 +138,12 @@ class _ExploreState extends State<Explore> {
                     height: screenWidth,
                     width: screenWidth,
                     color: Colors.grey[300],
-                    child: Center(
-                      child: Text('Main Container'),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10.0),
+                      child: Image.network(
+                        data[0].thumbnail,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
@@ -151,13 +156,19 @@ class _ExploreState extends State<Explore> {
                   crossAxisSpacing: 1.0,
                   mainAxisSpacing: 1.0,
                 ),
-                itemCount: 20,
+                itemCount: data.length - 1,
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () => _navigateToVideo(),
                     child: Container(
                       color: Colors.grey[300],
-                      child: Text("Index: $index"),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Image.network(
+                          data[index + 1].thumbnail,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                   );
                 },
@@ -181,9 +192,6 @@ class _ExploreState extends State<Explore> {
               child: Container(
                 height: screenWidth,
                 width: screenWidth,
-                child: Center(
-                  child: Text('Main Container'),
-                ),
                 decoration: BoxDecoration(
                   color: Colors.grey[300],
                   borderRadius: BorderRadius.circular(10.0),
@@ -214,7 +222,6 @@ class _ExploreState extends State<Explore> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
                 child: Container(
-                  child: Center(child: Text("Index: $index")),
                   decoration: BoxDecoration(
                     color: Colors.grey[300],
                     borderRadius: BorderRadius.circular(10.0),
