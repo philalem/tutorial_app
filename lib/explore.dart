@@ -94,8 +94,8 @@ class _ExploreState extends State<Explore> {
   }
 
   Widget _displayExploreScreen(screenWidth, uid) {
-    return StreamBuilder<List<dynamic>>(
-      stream: ExploreDbService(uid: uid).getExplorePosts(),
+    return FutureBuilder<List<dynamic>>(
+      future: ExploreDbService(uid: uid).getExplorePosts(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return loadingExplorePosts(screenWidth);
