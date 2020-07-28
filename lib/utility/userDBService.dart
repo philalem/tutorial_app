@@ -172,4 +172,21 @@ class UserDbService {
         .snapshots()
         .map(_mapSingleVideoFeedObject);
   }
+
+  Future<VideoFeedObject> getVideoFuture(String feedId, String videoId) async {
+    var snap = await feedInfoCollection
+        .document(feedId)
+        .collection('following-posts')
+        .document(videoId)
+        .get();
+    return VideoFeedObject(
+      author: snap['author'],
+      videoUrl: snap['videoUrl'],
+      likes: snap['likes'],
+      documentId: snap.documentID,
+      title: snap['title'],
+      description: snap['description'],
+      uid: uid,
+    );
+  }
 }

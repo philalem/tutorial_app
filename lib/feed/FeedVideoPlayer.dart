@@ -14,8 +14,10 @@ import 'package:video_player/video_player.dart';
 class FeedVideoPlayer extends StatefulWidget {
   final List<VideoFeedObject> videos;
   final String feedId;
+  final String videoId;
   final UserData userData;
-  FeedVideoPlayer({Key key, this.videos, this.feedId, this.userData})
+  FeedVideoPlayer(
+      {Key key, this.videos, this.feedId, this.userData, this.videoId})
       : super(key: key);
 
   @override
@@ -33,6 +35,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   final interestHolder = TextEditingController();
   final userHolder = TextEditingController();
   AlgoliaService algoliaService = AlgoliaService();
+  List<VideoFeedObject> videos;
 
   clearTextInput() {
     interestHolder.clear();
@@ -44,15 +47,20 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
     _initControllers();
   }
 
-  _initControllers() {
+  _initControllers() async {
     _controllers.add(null);
-    for (int i = 0; i < widget.videos.length; i++) {
-      print(widget.videos[i].videoUrl);
+    videos = videos == null
+        ? [
+            await UserDbService(uid: widget.userData.uid)
+                .getVideoFuture(widget.userData.uid, widget.videoId)
+          ]
+        : videos;
+    for (int i = 0; i < videos.length; i++) {
+      print(videos[i].videoUrl);
       if (i == 2) {
         break;
       }
-      _controllers
-          .add(VideoPlayerController.network(widget.videos[i].videoUrl));
+      _controllers.add(VideoPlayerController.network(videos[i].videoUrl));
     }
     attachListenerAndInit(_controllers[1]).then((_) {
       _controllers[1].play().then((_) {
@@ -100,13 +108,13 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
     _controllers[1]?.pause();
     index--;
 
-    if (index != widget.videos.length - 2) {
+    if (index != videos.length - 2) {
       _controllers.last?.dispose();
       _controllers.removeLast();
     }
     if (index != 0) {
       _controllers.insert(
-          0, VideoPlayerController.network(widget.videos[index - 1].videoUrl));
+          0, VideoPlayerController.network(videos[index - 1].videoUrl));
       attachListenerAndInit(_controllers.first);
     } else {
       _controllers.insert(0, null);
@@ -124,7 +132,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
       return;
     }
     _changeLock = true;
-    if (index == widget.videos.length - 1) {
+    if (index == videos.length - 1) {
       _changeLock = false;
       return;
     }
@@ -132,9 +140,9 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
     index++;
     _controllers.first?.dispose();
     _controllers.removeAt(0);
-    if (index != widget.videos.length - 1) {
-      _controllers.add(
-          VideoPlayerController.network(widget.videos[index + 1].videoUrl));
+    if (index != videos.length - 1) {
+      _controllers
+          .add(VideoPlayerController.network(videos[index + 1].videoUrl));
       attachListenerAndInit(_controllers.last);
     }
 
@@ -190,8 +198,8 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   }
 
   void _showFeedComment(BuildContext context) {
-    Navigator.of(context).push(FeedCommentPage(
-        index: index, videos: widget.videos, feedId: widget.feedId));
+    Navigator.of(context).push(
+        FeedCommentPage(index: index, videos: videos, feedId: widget.feedId));
   }
 
   @override
@@ -244,10 +252,10 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                     child: InkWell(
                       onTap: () {
                         Navigator.of(context).push(FeedDescription(
-                            description: widget.videos[index].description));
+                            description: videos[index].description));
                       },
                       child: Text(
-                        widget.videos[index].title,
+                        videos[index].title,
                         style: TextStyle(color: Colors.white, fontSize: 20),
                       ),
                     ),
@@ -277,13 +285,13 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => DynamicProfile(
-                                uid: widget.videos[index].uid,
-                                name: widget.videos[index].author)));
+                                uid: videos[index].uid,
+                                name: videos[index].author)));
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(1.0),
                         child: Text(
-                          widget.videos[index].author,
+                          videos[index].author,
                           style: TextStyle(color: Colors.black, fontSize: 20),
                         ),
                       ),
@@ -315,12 +323,11 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
           ),
           FloatingActionButton.extended(
             //like button
-            onPressed: () => UserDbService(uid: widget.videos[index].uid)
-                .addLike(widget.videos[index].documentId, widget.feedId,
-                    widget.videos[index].author),
+            onPressed: () => UserDbService(uid: videos[index].uid).addLike(
+                videos[index].documentId, widget.feedId, videos[index].author),
             label: StreamBuilder<VideoFeedObject>(
-              stream: UserDbService(uid: widget.videos[index].uid)
-                  .getVideo(widget.feedId, widget.videos[index].documentId),
+              stream: UserDbService(uid: videos[index].uid)
+                  .getVideo(widget.feedId, videos[index].documentId),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   VideoFeedObject video = snapshot.data;
