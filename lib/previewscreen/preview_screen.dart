@@ -15,7 +15,8 @@ import 'package:video_player/video_player.dart';
 class PreviewImageScreen extends StatefulWidget {
   final List<String> paths;
   final String directoryPath;
-  PreviewImageScreen({this.paths, this.directoryPath});
+  final String name;
+  PreviewImageScreen({this.paths, this.directoryPath, this.name});
 
   @override
   _PreviewImageScreenState createState() => _PreviewImageScreenState();
@@ -228,8 +229,11 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     setState(() {
       isSaving = true;
     });
-    documentId = await PostsDbService(uid: user.uid)
-        .addPostToDb(titleTextController.text, descriptionTextController.text);
+    documentId = await PostsDbService(uid: user.uid).addPostToDb(
+      titleTextController.text,
+      descriptionTextController.text,
+      widget.name,
+    );
     setState(() {
       isSaving = false;
     });

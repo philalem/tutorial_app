@@ -7,10 +7,12 @@ class PostsDbService {
 
   PostsDbService({this.uid});
 
-  Future<String> addPostToDb(String title, String description) async {
+  Future<String> addPostToDb(
+      String title, String description, String author) async {
     print('Adding post information...');
     var date = DateTime.now();
     var postData = {
+      'author': author,
       'title': title,
       'description': description,
       'number-likes': 0,

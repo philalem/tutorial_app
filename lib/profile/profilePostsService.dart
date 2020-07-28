@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:creaid/feed/VideoFeedObject.dart';
 import 'package:creaid/profile/post.dart';
 
 class ProfilePostsService {
@@ -8,14 +9,20 @@ class ProfilePostsService {
 
   ProfilePostsService({this.uid});
 
-  Post _mapToPost(DocumentSnapshot snapshot) {
-    return Post(
-      id: snapshot.documentID,
+  VideoFeedObject _mapToPost(DocumentSnapshot snapshot) {
+    return VideoFeedObject(
+      author: snapshot['author'],
+      videoUrl: snapshot['videos'][0],
+      likes: snapshot['number-likes'],
+      documentId: snapshot.documentID,
+      title: snapshot['title'],
+      description: snapshot['description'],
       thumbnail: snapshot['thumbnail'],
+      uid: uid,
     );
   }
 
-  Stream<List<Post>> getProfilePosts() {
+  Stream<List<VideoFeedObject>> getProfilePosts() {
     Stream<QuerySnapshot> stream = profilePostsCollection
         .document(uid)
         .collection('user-posts')
