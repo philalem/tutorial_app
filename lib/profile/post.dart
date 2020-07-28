@@ -1,7 +1,7 @@
 class Post {
   final String id;
   final String thumbnail;
-  final String videos;
+  final List<dynamic> videos;
 
   Post({this.id, this.thumbnail, this.videos});
 }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:creaid/feed/VideoFeedObject.dart';
 import 'package:creaid/profile/post.dart';
 
 class ExploreDbService {
@@ -8,15 +9,20 @@ class ExploreDbService {
 
   ExploreDbService({this.uid});
 
-  Post _mapToPost(DocumentSnapshot snapshot) {
-    return Post(
-      id: snapshot.documentID,
-      videos: snapshot['videos'],
+  VideoFeedObject _mapToPost(DocumentSnapshot snapshot) {
+    return VideoFeedObject(
+      author: snapshot['author'],
+      videoUrl: snapshot['videos'][0],
+      likes: snapshot['number-likes'],
+      documentId: snapshot.documentID,
+      title: snapshot['title'],
+      description: snapshot['description'],
       thumbnail: snapshot['thumbnail'],
+      uid: uid,
     );
   }
 
-  Future<List<Post>> getExplorePosts() async {
+  Future<List<VideoFeedObject>> getExplorePosts() async {
     QuerySnapshot posts = await exploreCollection
         .orderBy('date', descending: true)
         .limit(20)
