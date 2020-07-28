@@ -1,8 +1,9 @@
 import 'dart:io';
 
+import 'package:creaid/feed/FeedVideoPlayer.dart';
+import 'package:creaid/feed/VideoFeedObject.dart';
 import 'package:creaid/profile/DisplayFollow.dart';
 import 'package:creaid/profile/editProfile.dart';
-import 'package:creaid/profile/post.dart';
 import 'package:creaid/profile/profilePostsService.dart';
 import 'package:creaid/utility/UserData.dart';
 import 'package:creaid/utility/firebaseAuth.dart';
@@ -27,6 +28,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   FirebaseUser userName;
   String photoUrl;
+  UserData userData;
 
   @override
   void initState() {
@@ -35,11 +37,11 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> _loadCurrentUser() async {
-    return await FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
-      setState(() {
-        this.userName = user;
-      });
+    await FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
+      this.userName = user;
     });
+    userData = await UserDbService(uid: userName.uid).getUserFuture();
+    setState(() {});
   }
 
   String _getLoadedName() {
@@ -227,7 +229,7 @@ class _ProfileState extends State<Profile> {
                     child: CupertinoActivityIndicator(),
                   );
 
-                List<Post> posts = snapshot.data;
+                List<VideoFeedObject> posts = snapshot.data;
                 if (posts.length < 1) {
                   return Center(
                     child: Container(
@@ -250,32 +252,35 @@ class _ProfileState extends State<Profile> {
                   itemBuilder: (context, index) {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),
-                          child: posts[index].thumbnail != null
-                              ? FadeInImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(posts[index].thumbnail),
-                                  placeholder: AssetImage(
-                                      'assets/images/unknown-profile.png'),
-                                )
-                              : Image.asset(
-                                  'assets/images/unknown-profile.png',
-                                  fit: BoxFit.cover,
-                                ),
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(10.0),
-                          border: Border.all(color: Colors.grey, width: 0.2),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black54,
-                              offset: Offset(-1.0, 1.0),
-                              blurRadius: 1.0,
-                            ),
-                          ],
+                      child: GestureDetector(
+                        onTap: () => _navigateToVideo(posts[index + 1]),
+                        child: Container(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10.0),
+                            child: posts[index].thumbnail != null
+                                ? FadeInImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(posts[index].thumbnail),
+                                    placeholder: AssetImage(
+                                        'assets/images/unknown-profile.png'),
+                                  )
+                                : Image.asset(
+                                    'assets/images/unknown-profile.png',
+                                    fit: BoxFit.cover,
+                                  ),
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(10.0),
+                            border: Border.all(color: Colors.grey, width: 0.2),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black54,
+                                offset: Offset(-1.0, 1.0),
+                                blurRadius: 1.0,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -440,6 +445,18 @@ class _ProfileState extends State<Profile> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  _navigateToVideo(videos) {
+    Navigator.of(context).push(
+      CupertinoPageRoute(
+        builder: (context) => FeedVideoPlayer(
+          videos: [videos],
+          feedId: userName.uid,
+          userData: userData,
         ),
       ),
     );
