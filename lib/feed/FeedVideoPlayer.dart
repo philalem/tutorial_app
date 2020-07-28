@@ -44,7 +44,17 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
     _initControllers();
   }
 
-  _initControllers() {
+  @override
+  void dispose() {
+    for (int i = 0; i < _controllers.length; i++) {
+      _controllers[i]?.dispose();
+    }
+    interestHolder?.dispose();
+    userHolder?.dispose();
+    super.dispose();
+  }
+
+  _initControllers() async {
     _controllers.add(null);
     for (int i = 0; i < widget.videos.length; i++) {
       print(widget.videos[i].videoUrl);
@@ -267,7 +277,9 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                     ),
                     CircleAvatar(
                       radius: 12,
-                      backgroundImage: NetworkImage(widget.userData.photoUrl),
+                      backgroundImage: widget.userData.photoUrl != null
+                          ? NetworkImage(widget.userData.photoUrl)
+                          : AssetImage('assets/images/unknown-profile.png'),
                       backgroundColor: Colors.transparent,
                     ),
                     SizedBox(
@@ -283,7 +295,9 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                       child: Padding(
                         padding: const EdgeInsets.all(1.0),
                         child: Text(
-                          widget.videos[index].author,
+                          widget.videos[index].author != null
+                              ? widget.videos[index].author
+                              : '',
                           style: TextStyle(color: Colors.black, fontSize: 20),
                         ),
                       ),

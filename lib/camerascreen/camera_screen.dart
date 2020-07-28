@@ -31,10 +31,12 @@ class _CameraScreenState extends State<CameraScreen> {
   bool _pause = false;
   bool _chooseColor = true;
   var _color = Colors.white;
+  FirebaseUser user;
 
   @override
   void initState() {
     super.initState();
+    getUserInfo();
     availableCameras().then((availableCameras) {
       cameras = availableCameras;
 
@@ -50,6 +52,12 @@ class _CameraScreenState extends State<CameraScreen> {
     }).catchError((err) {
       print('Error: $err.code\nError Message: $err.message');
     });
+  }
+
+  void getUserInfo() async {
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    user = await _auth.currentUser();
+    setState(() {});
   }
 
   Future _initCameraController(CameraDescription cameraDescription) async {
@@ -126,8 +134,9 @@ class _CameraScreenState extends State<CameraScreen> {
                       }
                       Navigator.of(context).push(
                         CupertinoPageRoute(
-                          builder: (context) =>
-                              PreviewImageScreen(paths: paths),
+                          builder: (context) => PreviewImageScreen(
+                            paths: paths,
+                          ),
                         ),
                       );
                     },
@@ -161,6 +170,7 @@ class _CameraScreenState extends State<CameraScreen> {
                           builder: (context) => PreviewImageScreen(
                             paths: paths,
                             directoryPath: directoryPath,
+                            name: user.displayName,
                           ),
                         ),
                       );
@@ -294,10 +304,8 @@ class _CameraScreenState extends State<CameraScreen> {
     // catch the error.
     try {
       String timestamp() => DateTime.now().millisecondsSinceEpoch.toString();
-      final FirebaseAuth _auth = FirebaseAuth.instance;
-      FirebaseUser uid = await _auth.currentUser();
       final Directory extDir = await getApplicationDocumentsDirectory();
-      final String dirPath = '${extDir.path}/${uid.uid.toString()}/user-posts';
+      final String dirPath = '${extDir.path}/${user.uid.toString()}/user-posts';
       await Directory(dirPath).create(recursive: true);
       final String filePath = '$dirPath/${timestamp()}.mp4';
       directoryPath = dirPath;

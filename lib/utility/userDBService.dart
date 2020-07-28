@@ -110,6 +110,15 @@ class UserDbService {
     });
   }
 
+  Future<UserData> getUserFuture() async {
+    var ref = await userInfoCollection
+        .document(uid)
+        .get()
+        .catchError((e) => print(e));
+
+    return _mapUserData(ref);
+  }
+
   Stream<List<VideoFeedObject>> getUserFeed(String feedId) {
     return feedInfoCollection
         .document(feedId)
