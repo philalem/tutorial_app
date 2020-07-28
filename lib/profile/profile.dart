@@ -244,43 +244,28 @@ class _ProfileState extends State<Profile> {
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
+                    crossAxisCount: 4,
                     crossAxisSpacing: 5.0,
                     mainAxisSpacing: 5.0,
                   ),
                   itemCount: posts.length,
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: GestureDetector(
-                        onTap: () => _navigateToVideo(posts[index + 1]),
-                        child: Container(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10.0),
-                            child: posts[index].thumbnail != null
-                                ? FadeInImage(
-                                    fit: BoxFit.cover,
-                                    image: NetworkImage(posts[index].thumbnail),
-                                    placeholder: AssetImage(
-                                        'assets/images/unknown-profile.png'),
-                                  )
-                                : Image.asset(
-                                    'assets/images/unknown-profile.png',
-                                    fit: BoxFit.cover,
-                                  ),
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(10.0),
-                            border: Border.all(color: Colors.grey, width: 0.2),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black54,
-                                offset: Offset(-1.0, 1.0),
-                                blurRadius: 1.0,
-                              ),
-                            ],
-                          ),
+                    return GestureDetector(
+                      onTap: () => _navigateToVideo(posts[index]),
+                      child: Container(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),
+                          child: posts[index].thumbnail != null
+                              ? FadeInImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(posts[index].thumbnail),
+                                  placeholder: AssetImage(
+                                      'assets/images/unknown-profile.png'),
+                                )
+                              : Image.asset(
+                                  'assets/images/unknown-profile.png',
+                                  fit: BoxFit.cover,
+                                ),
                         ),
                       ),
                     );

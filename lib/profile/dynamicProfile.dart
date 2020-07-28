@@ -234,7 +234,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: GestureDetector(
-                        onTap: () => _navigateToVideo(posts[index + 1]),
+                        onTap: () => _navigateToVideo(posts[index]),
                         child: Container(
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10.0),
@@ -249,18 +249,6 @@ class _DynamicProfileState extends State<DynamicProfile> {
                                     'assets/images/unknown-profile.png',
                                     fit: BoxFit.cover,
                                   ),
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(10.0),
-                            border: Border.all(color: Colors.grey, width: 0.2),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black54,
-                                offset: Offset(-1.0, 1.0),
-                                blurRadius: 1.0,
-                              ),
-                            ],
                           ),
                         ),
                       ),

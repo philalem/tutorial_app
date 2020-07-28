@@ -140,7 +140,6 @@ class _ExploreState extends State<Explore> {
                   child: Container(
                     height: screenWidth,
                     width: screenWidth,
-                    color: Colors.grey[300],
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10.0),
                       child: Image.network(
@@ -164,7 +163,6 @@ class _ExploreState extends State<Explore> {
                   return GestureDetector(
                     onTap: () => _navigateToVideo(data[index + 1]),
                     child: Container(
-                      color: Colors.grey[300],
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10.0),
                         child: Image.network(
