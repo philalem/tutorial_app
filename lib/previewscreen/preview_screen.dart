@@ -91,6 +91,7 @@ class _PreviewImageScreenState extends State<PreviewImageScreen> {
     final deviceRatio = width / height;
     final user = Provider.of<User>(context);
 
+    //TODO: update post info to have 'author'
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: Stack(

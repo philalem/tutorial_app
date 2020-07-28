@@ -267,7 +267,9 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                     ),
                     CircleAvatar(
                       radius: 12,
-                      backgroundImage: NetworkImage(widget.userData.photoUrl),
+                      backgroundImage: widget.userData.photoUrl != null
+                          ? NetworkImage(widget.userData.photoUrl)
+                          : AssetImage('assets/images/unknown-profile.png'),
                       backgroundColor: Colors.transparent,
                     ),
                     SizedBox(

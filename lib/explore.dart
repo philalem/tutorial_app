@@ -1,13 +1,12 @@
 import 'package:algolia/algolia.dart';
 import 'package:creaid/feed/FeedVideoPlayer.dart';
+import 'package:creaid/feed/VideoFeedObject.dart';
 import 'package:creaid/profile/dynamicProfile.dart';
-import 'package:creaid/profile/post.dart';
 import 'package:creaid/utility/UserData.dart';
 import 'package:creaid/utility/algoliaService.dart';
 import 'package:creaid/utility/exploreDbService.dart';
 import 'package:creaid/utility/user.dart';
 import 'package:creaid/utility/userDBService.dart';
-import 'package:creaid/video-player.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -44,11 +43,10 @@ class _ExploreState extends State<Explore> {
 
   Future<void> _loadCurrentUser() async {
     await FirebaseAuth.instance.currentUser().then((FirebaseUser user) {
-      setState(() async {
-        userName = user;
-        userData = await UserDbService(uid: userName.uid).getUserFuture();
-      });
+      userName = user;
     });
+    userData = await UserDbService(uid: userName.uid).getUserFuture();
+    setState(() {});
   }
 
   @override
@@ -100,14 +98,14 @@ class _ExploreState extends State<Explore> {
   }
 
   Widget _displayExploreScreen(screenWidth, uid) {
-    return FutureBuilder<List<Post>>(
+    return FutureBuilder<List<VideoFeedObject>>(
       future: ExploreDbService(uid: uid).getExplorePosts(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return loadingExplorePosts(screenWidth);
         }
 
-        List<Post> data = snapshot.data;
+        List<VideoFeedObject> data = snapshot.data;
 
         if (data.length < 1) {
           return SmartRefresher(
@@ -138,7 +136,7 @@ class _ExploreState extends State<Explore> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 1.0),
                 child: GestureDetector(
-                  onTap: () => _navigateToVideo(data[0].videos),
+                  onTap: () => _navigateToVideo(data[0]),
                   child: Container(
                     height: screenWidth,
                     width: screenWidth,
@@ -164,7 +162,7 @@ class _ExploreState extends State<Explore> {
                 itemCount: data.length - 1,
                 itemBuilder: (context, index) {
                   return GestureDetector(
-                    onTap: () => _navigateToVideo(data[index + 1].videos),
+                    onTap: () => _navigateToVideo(data[index + 1]),
                     child: Container(
                       color: Colors.grey[300],
                       child: ClipRRect(
@@ -302,7 +300,7 @@ class _ExploreState extends State<Explore> {
     Navigator.of(context).push(
       CupertinoPageRoute(
         builder: (context) => FeedVideoPlayer(
-          videos: videos,
+          videos: [videos],
           feedId: userName.uid,
           userData: userData,
         ),
