@@ -11,6 +11,7 @@ class ExploreDbService {
   Post _mapToPost(DocumentSnapshot snapshot) {
     return Post(
       id: snapshot.documentID,
+      videos: snapshot['videos'],
       thumbnail: snapshot['thumbnail'],
     );
   }

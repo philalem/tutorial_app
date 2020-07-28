@@ -110,6 +110,15 @@ class UserDbService {
     });
   }
 
+  Future<UserData> getUserFuture() async {
+    var ref = await userInfoCollection
+        .document(uid)
+        .get()
+        .catchError((e) => print(e));
+
+    return _mapUserData(ref);
+  }
+
   Stream<List<VideoFeedObject>> getUserFeed(String feedId) {
     return feedInfoCollection
         .document(feedId)
@@ -171,22 +180,5 @@ class UserDbService {
         .document(videoId)
         .snapshots()
         .map(_mapSingleVideoFeedObject);
-  }
-
-  Future<VideoFeedObject> getVideoFuture(String feedId, String videoId) async {
-    var snap = await feedInfoCollection
-        .document(feedId)
-        .collection('following-posts')
-        .document(videoId)
-        .get();
-    return VideoFeedObject(
-      author: snap['author'],
-      videoUrl: snap['videoUrl'],
-      likes: snap['likes'],
-      documentId: snap.documentID,
-      title: snap['title'],
-      description: snap['description'],
-      uid: uid,
-    );
   }
 }
