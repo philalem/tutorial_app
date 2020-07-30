@@ -15,6 +15,7 @@ class Feed extends StatelessWidget {
     return StreamBuilder<UserData>(
       stream: UserDbService(uid: user.uid).getNames(),
       builder: (context, snapshot) {
+        //TODO: fix feed for every user
         if (snapshot.hasData) {
           UserData userData = snapshot.data;
           if (userData.feedId != null) {
