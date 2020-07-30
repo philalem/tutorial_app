@@ -8,16 +8,9 @@ class ProfilePhotoService {
   final CollectionReference profilePhotosCollection =
       Firestore.instance.collection('profile-photos');
   final CollectionReference userInfoCollection =
-      Firestore.instance.collection('profile-photos');
+      Firestore.instance.collection('user-info');
 
   ProfilePhotoService({this.uid});
-
-  Future<void> uploadPhoto(String pathToPhoto) {
-    return profilePhotosCollection
-        .document(uid)
-        .setData({'original': pathToPhoto}).whenComplete(
-            () => print("User photo added successfully."));
-  }
 
   Stream<dynamic> getProfilePhoto() {
     return profilePhotosCollection

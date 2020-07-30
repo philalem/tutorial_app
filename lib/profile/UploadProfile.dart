@@ -70,8 +70,6 @@ class _UploadProfileState extends State<UploadProfile> {
                             await uploadFile();
                             print(_uploadedFileURL);
                             if (_uploadedFileURL != null) {
-                              ProfilePhotoService(uid: user.uid)
-                                  .uploadPhoto(_uploadedFileURL);
                               Navigator.pop(context, true);
                             } else {
                               _showDialog();

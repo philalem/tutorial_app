@@ -355,7 +355,9 @@ class _ProfileState extends State<Profile> {
         children: <Widget>[
           Flexible(
             child: Text(
-              data.bio != null ? data.bio : 'Welcome to my profile! 😊',
+              data.bio != null && data.bio != ''
+                  ? data.bio
+                  : 'Welcome to my profile! 😊',
               softWrap: true,
               maxLines: null,
               style: TextStyle(

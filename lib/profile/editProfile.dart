@@ -340,7 +340,6 @@ class _EditProfileState extends State<EditProfile> {
     if (_image != null) {
       await uploadFile(user);
       print(_uploadedFileURL);
-      ProfilePhotoService(uid: user.uid).uploadPhoto(_uploadedFileURL);
     }
     await UserDbService(uid: user.uid).updateUserEditedInfo(
         nameController.text,
@@ -369,8 +368,8 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   _getProfileImage(File image) {
+    if (image != null) return FileImage(image);
     if (widget.profileImage != null) {
-      if (image != null) return FileImage(image);
       return NetworkImage(widget.profileImage);
     }
     return AssetImage('assets/images/unknown-profile.png');

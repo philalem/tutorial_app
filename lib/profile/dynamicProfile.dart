@@ -131,7 +131,7 @@ class _DynamicProfileState extends State<DynamicProfile> {
                               child: FittedBox(
                                 fit: BoxFit.contain,
                                 alignment: Alignment.centerRight,
-                                child: userProfileImage(uid),
+                                child: userProfileImage(uid, data.photoUrl),
                               ),
                             ),
                           ],
@@ -365,33 +365,22 @@ class _DynamicProfileState extends State<DynamicProfile> {
     );
   }
 
-  CircleAvatar userProfileImage(String uid) {
+  CircleAvatar userProfileImage(String uid, String photoUrl) {
     return CircleAvatar(
       backgroundColor: Colors.indigoAccent,
       radius: 85,
-      child: StreamBuilder<Object>(
-          stream: ProfilePhotoService(uid: uid).getProfilePhoto(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData)
-              return Align(
-                alignment: Alignment.center,
-                child: CupertinoActivityIndicator(),
-              );
-            photoUrl = snapshot.data;
-            return ClipOval(
-              child: Container(
-                height: 160,
-                width: 160,
-                child: photoUrl != null && photoUrl != ''
-                    ? FadeInImage(
-                        image: NetworkImage(photoUrl),
-                        placeholder:
-                            AssetImage('assets/images/unknown-profile.png'),
-                      )
-                    : AssetImage('assets/images/unknown-profile.png'),
-              ),
-            );
-          }),
+      child: ClipOval(
+        child: Container(
+          height: 160,
+          width: 160,
+          child: photoUrl != null && photoUrl != ''
+              ? FadeInImage(
+                  image: NetworkImage(photoUrl),
+                  placeholder: AssetImage('assets/images/unknown-profile.png'),
+                )
+              : AssetImage('assets/images/unknown-profile.png'),
+        ),
+      ),
     );
   }
 
