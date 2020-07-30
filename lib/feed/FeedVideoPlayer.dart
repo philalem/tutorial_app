@@ -206,18 +206,16 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CupertinoPageScaffold(
       key: _scaffoldKey,
-      appBar: CupertinoNavigationBar(
+      navigationBar: CupertinoNavigationBar(
         backgroundColor: Colors.indigo,
         middle: Text(
           'Creaid',
-          style: GoogleFonts.satisfy(
-            fontSize: 34,
-          ),
+          style: GoogleFonts.satisfy(fontSize: 34, color: Colors.white),
         ),
       ),
-      body: Stack(
+      child: Stack(
         children: <Widget>[
           SizedBox(
               //video
@@ -308,66 +306,67 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
               ),
             ),
           ),
-        ],
-      ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          //share button
-          SizedBox(
-            width: MediaQuery.of(context).size.width * .08,
-          ),
-          FloatingActionButton(
-            onPressed: () => _showFeedShare(context),
-            child: Icon(
-              Icons.share,
-              color: Colors.black,
-            ),
-            backgroundColor: Colors.white,
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * .25,
-          ),
-          FloatingActionButton.extended(
-            //like button
-            onPressed: () => UserDbService(uid: widget.videos[index].uid)
-                .addLike(widget.videos[index].documentId, widget.feedId,
-                    widget.videos[index].author),
-            label: StreamBuilder<VideoFeedObject>(
-              stream: UserDbService(uid: widget.videos[index].uid)
-                  .getVideo(widget.feedId, widget.videos[index].documentId),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  VideoFeedObject video = snapshot.data;
-                  return Text(
-                    video.likes.toString(),
-                    style: TextStyle(color: Colors.black),
-                  );
-                } else {
-                  return Text(
-                    '0',
-                    style: TextStyle(color: Colors.black),
-                  );
-                }
-              },
-            ),
-            icon: Icon(
-              Icons.thumb_up,
-              color: Colors.black,
-            ),
-            backgroundColor: Colors.white,
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * .18,
-          ),
-          FloatingActionButton(
-              //comment button
-              onPressed: () => _showFeedComment(context),
-              child: Icon(
-                Icons.comment,
-                color: Colors.black,
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: <Widget>[
+                  //share button
+                  FloatingActionButton(
+                    onPressed: () => _showFeedShare(context),
+                    child: Icon(
+                      Icons.share,
+                      color: Colors.black,
+                    ),
+                    backgroundColor: Colors.white,
+                  ),
+                  Spacer(),
+                  FloatingActionButton.extended(
+                    //like button
+                    onPressed: () =>
+                        UserDbService(uid: widget.videos[index].uid).addLike(
+                            widget.videos[index].documentId,
+                            widget.feedId,
+                            widget.videos[index].author),
+                    label: StreamBuilder<VideoFeedObject>(
+                      stream: UserDbService(uid: widget.videos[index].uid)
+                          .getVideo(
+                              widget.feedId, widget.videos[index].documentId),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData && snapshot.data.likes != null) {
+                          VideoFeedObject video = snapshot.data;
+                          return Text(
+                            video.likes.toString(),
+                            style: TextStyle(color: Colors.black),
+                          );
+                        } else {
+                          return Text(
+                            '0',
+                            style: TextStyle(color: Colors.black),
+                          );
+                        }
+                      },
+                    ),
+                    icon: Icon(
+                      Icons.thumb_up,
+                      color: Colors.black,
+                    ),
+                    backgroundColor: Colors.white,
+                  ),
+                  Spacer(),
+                  FloatingActionButton(
+                      //comment button
+                      onPressed: () => _showFeedComment(context),
+                      child: Icon(
+                        Icons.comment,
+                        color: Colors.black,
+                      ),
+                      backgroundColor: Colors.white)
+                ],
               ),
-              backgroundColor: Colors.white)
+            ),
+          )
         ],
       ),
     );
