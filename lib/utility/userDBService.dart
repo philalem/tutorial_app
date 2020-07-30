@@ -27,7 +27,7 @@ class UserDbService {
         'username': username,
         'number-following': numberFollowing,
         'number-followers': numberFollowers,
-        'photoUrl': photoUrl,
+        'photo-url': photoUrl,
       },
       merge: true,
     );
@@ -42,7 +42,7 @@ class UserDbService {
         'username': username != null ? username : FieldValue,
         'name': name != null ? name : FieldValue,
         'biography': biography != null ? biography : FieldValue,
-        'photoUrl': uploadedFileUrl != null ? uploadedFileUrl : FieldValue,
+        'photo-url': uploadedFileUrl != null ? uploadedFileUrl : FieldValue,
       },
       merge: true,
     );
