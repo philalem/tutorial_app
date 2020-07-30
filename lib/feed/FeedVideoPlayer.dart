@@ -209,6 +209,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: CupertinoNavigationBar(
+        backgroundColor: Colors.indigo,
         middle: Text(
           'Creaid',
           style: GoogleFonts.satisfy(
