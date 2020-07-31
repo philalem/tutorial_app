@@ -9,7 +9,7 @@ exports.incrementNotifications = async (id) => {
   return await firestore
     .collection("notifications")
     .doc(id)
-    .update({ "new-notifications": FieldValue.increment(1) });
+    .set({ "new-notifications": FieldValue.increment(1) });
 };
 
 exports.incrementLike = async (document, videoId) => {
