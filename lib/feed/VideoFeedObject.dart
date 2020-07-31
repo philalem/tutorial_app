@@ -8,6 +8,7 @@ class VideoFeedObject {
   String title;
   String description;
   String thumbnail;
+  String ownerUid;
 
   VideoFeedObject({
     this.author,
@@ -19,5 +20,6 @@ class VideoFeedObject {
     this.title,
     this.description,
     this.thumbnail,
+    this.ownerUid
   });
 }

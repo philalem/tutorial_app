@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:creaid/utility/userDBService.dart';
 import 'package:creaid/feed/FeedCommentObject.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class FeedCommentPage extends ModalRoute<void> {
   final int index;
@@ -59,13 +60,13 @@ class FeedCommentPage extends ModalRoute<void> {
               children: <Widget>[
                 SizedBox(height: 20),
                 Center(
-                  child: Text(
-                    "Comments",
-                    style: TextStyle(
-                        fontSize: 24,
-                        color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.bold),
-                  ),
+                  child: Text("Comments",
+                      style: GoogleFonts.mcLaren(
+                        textStyle: TextStyle(
+                            fontSize: 24,
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.bold),
+                      )),
                 ),
                 SizedBox(
                   height: 20,
@@ -77,8 +78,10 @@ class FeedCommentPage extends ModalRoute<void> {
                           val.isEmpty ? 'Enter a valid comment' : null,
                       controller: interestHolder,
                       decoration: InputDecoration(
-                        hintStyle: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
+                        hintStyle: GoogleFonts.mcLaren(
+                          textStyle: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
                         hintText: 'Comment',
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
@@ -142,7 +145,14 @@ class FeedCommentPage extends ModalRoute<void> {
                               child: ListTile(
                                 title: Padding(
                                   padding: EdgeInsets.all(5),
-                                  child: Text(feedCommentObject[idx].comment),
+                                  child: Text(
+                                    feedCommentObject[idx].comment,
+                                    style: GoogleFonts.mcLaren(
+                                      textStyle: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20),
+                                    ),
+                                  ),
                                 ),
                                 onTap: () {},
                               ),
@@ -160,7 +170,12 @@ class FeedCommentPage extends ModalRoute<void> {
           ),
           RaisedButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Back to Feed'),
+            child: Text(
+              'Back to Feed',
+              style: GoogleFonts.mcLaren(
+                textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+            ),
           )
         ],
       ),

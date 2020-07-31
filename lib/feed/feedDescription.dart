@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class FeedDescription extends ModalRoute<void> {
   final String description;
@@ -45,19 +46,26 @@ class FeedDescription extends ModalRoute<void> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Container(
-            color: Colors.white,
-            height: 100,
-            width: MediaQuery.of(context).size.width * .7,
-            child: Center(
-              child: Text(
-                description,
-                style: TextStyle(color: Colors.black, fontSize: 20),
+              color: Colors.white,
+              height: 100,
+              width: MediaQuery.of(context).size.width*.7,
+              child: Center(
+                child: Text(
+                  description,
+                  style: GoogleFonts.mcLaren(
+                    textStyle: TextStyle(color: Colors.black, fontSize: 20),
+                  )
+                ),
               ),
             ),
-          ),
           RaisedButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Back to Feed'),
+            child: Text(
+              'Back to Feed',
+              style: GoogleFonts.mcLaren(
+                textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+            ),
           )
         ],
       ),

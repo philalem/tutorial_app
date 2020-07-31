@@ -155,46 +155,6 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
     });
   }
 
-  successfulShare(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-            elevation: 15,
-            child: Container(
-              color: Colors.black12,
-              height: 100,
-              child: Center(
-                child: Text(
-                  "Video Shared!",
-                  style: TextStyle(color: Colors.black, fontSize: 20),
-                ),
-              ),
-            ),
-          );
-        });
-  }
-
-  failedShare(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return Dialog(
-            elevation: 15,
-            child: Container(
-              color: Colors.black12,
-              height: 100,
-              child: Center(
-                child: Text(
-                  "User doesn't exist!",
-                  style: TextStyle(color: Colors.black, fontSize: 20),
-                ),
-              ),
-            ),
-          );
-        });
-  }
-
   void _showFeedShare(BuildContext context) {
     Navigator.of(context).push(FeedSharePage());
   }
@@ -245,7 +205,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
           Positioned(
               //title/description
               child: Container(
-                  height: 65,
+                  height: 70,
                   width: MediaQuery.of(context).size.width,
                   color: Colors.black12,
                   child: Align(
@@ -257,7 +217,11 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                       },
                       child: Text(
                         widget.videos[index].title,
-                        style: TextStyle(color: Colors.white, fontSize: 20),
+                        style: GoogleFonts.mcLaren(
+                            textStyle: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        )),
                       ),
                     ),
                   ))),
@@ -297,7 +261,9 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                           widget.videos[index].author != null
                               ? widget.videos[index].author
                               : '',
-                          style: TextStyle(color: Colors.black, fontSize: 20),
+                          style: GoogleFonts.mcLaren(
+                              textStyle:
+                                  TextStyle(color: Colors.black, fontSize: 20)),
                         ),
                       ),
                     ),
@@ -327,14 +293,14 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                     onPressed: () =>
                         UserDbService(uid: widget.videos[index].uid).addLike(
                             widget.videos[index].documentId,
-                            widget.feedId,
+                            widget.videos[index].ownerUid,
                             widget.videos[index].author),
                     label: StreamBuilder<VideoFeedObject>(
                       stream: UserDbService(uid: widget.videos[index].uid)
                           .getVideo(
                               widget.feedId, widget.videos[index].documentId),
                       builder: (context, snapshot) {
-                        if (snapshot.hasData && snapshot.data.likes != null) {
+                        if (snapshot.hasData) {
                           VideoFeedObject video = snapshot.data;
                           return Text(
                             video.likes.toString(),
