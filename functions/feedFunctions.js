@@ -12,6 +12,43 @@ exports.incrementNotifications = async (id) => {
     .update({ "new-notifications": FieldValue.increment(1) });
 };
 
+exports.incrementLike = async (document, videoId) => {
+  return await firestore
+    .collection("posts")
+    .doc(document)
+    .collection("following-posts")
+    .doc(videoId)
+    .update({ "likes": FieldValue.increment(1) });
+}
+
+exports.addLike = async (document, videoId, comment, name, uid) => {
+  return await firestore
+    .collection("posts")
+    .doc(document)
+    .collection("following-posts")
+    .doc(videoId)
+    .collection("comments")
+    .doc()
+    .set({
+      comment: comment,
+      name: name,
+      uid: uid
+    });
+}
+
+exports.getUsers = async () => {
+  const collection = await firestore.collection("posts").get();
+    const documents = [];
+
+    collection.docs.forEach(
+      (document) => {
+        documents.push(document.id);
+      }
+    );
+
+    return documents
+}
+
 exports.sendLikeNotifications = async (snap, context) => {
     const userId = context.params.uid;
     const timestamp = new Date().getTime();
@@ -33,6 +70,31 @@ exports.sendLikeNotifications = async (snap, context) => {
         date: timestamp,
       });
 };
+
+exports.propagateLike = async (snap, context) => {
+    const documents = exports.getUsers();
+    const video = context.params.videoId;
+
+    (await documents).forEach( document => {
+      exports.incrementLike(document, video).catch((error) => {
+        console.log(error);
+      });
+    });
+};
+
+exports.propagateComment = async (snap, context) => {
+  const documents = exports.getUsers();
+  const video = context.params.videoId;
+  const name = snap.data().name;
+  const comment = snap.data().comment;
+  const userId = snap.data().uid;
+
+  (await documents).forEach( document => {
+    exports.addLike(document, video, comment, name, uid).catch((error) => {
+      console.log(error);
+    });
+  });
+}
 
 exports.sendCommentNotifications = async (snap, context) => {
     const timestamp = new Date().getTime();
