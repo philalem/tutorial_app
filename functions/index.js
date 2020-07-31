@@ -59,7 +59,7 @@ exports.propagateFeedLikes = functions
 
 exports.propagateFeedComments = functions
   .region("us-east4")
-  .firestore.document("posts/{feedId}/following-posts/{videoId}/comments/{randomId}")
+  .firestore.document("posts/{feedId}/user-posts/{videoId}/comments/{randomId}")
   .onCreate((snap, context) => {
     return feedFunction.propagateComment(snap, context);
 });

@@ -21,7 +21,7 @@ exports.incrementLike = async (document, videoId) => {
     .update({ "likes": FieldValue.increment(1) });
 }
 
-exports.addLike = async (document, videoId, comment, name, uid) => {
+exports.addComment = async (document, videoId, comment, name, uid) => {
   return await firestore
     .collection("posts")
     .doc(document)
@@ -90,7 +90,7 @@ exports.propagateComment = async (snap, context) => {
   const userId = snap.data().uid;
 
   (await documents).forEach( document => {
-    exports.addLike(document, video, comment, name, uid).catch((error) => {
+    exports.addComment(document, video, comment, name, userId).catch((error) => {
       console.log(error);
     });
   });
