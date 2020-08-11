@@ -66,14 +66,14 @@ class UserDbService {
   List<VideoFeedObject> _mapVideoFeedObject(QuerySnapshot snapshot) {
     List<VideoFeedObject> res = new List();
     snapshot.documents.forEach((document) => res.add(VideoFeedObject(
-          author: document['author'],
-          videoUrl: document['videoUrl'],
-          likes: document['likes'],
-          documentId: document.documentID,
-          title: document['title'],
-          description: document['description'],
-          uid: uid,
-        )));
+        author: document['author'],
+        videoUrl: document['videoUrl'],
+        likes: document['likes'],
+        documentId: document.documentID,
+        title: document['title'],
+        description: document['description'],
+        uid: uid,
+        ownerUid: document['uid'])));
     return res;
   }
 
@@ -142,16 +142,18 @@ class UserDbService {
       String videoId, String feedId, String comment, String author) async {
     await feedInfoCollection
         .document(feedId)
-        .collection('following-posts')
+        .collection('user-posts')
         .document(videoId)
         .collection('comments')
         .add({'comment': comment, 'name': author, 'uid': uid});
   }
 
   addLike(String videoId, String feedId, String author) async {
+    print(videoId);
+    print(feedId);
     final likeDocument = await feedInfoCollection
         .document(feedId)
-        .collection('following-posts')
+        .collection('user-posts')
         .document(videoId)
         .collection('liked')
         .document(uid)
@@ -160,14 +162,14 @@ class UserDbService {
     if (likeDocument == null || !likeDocument.exists) {
       await feedInfoCollection
           .document(feedId)
-          .collection('following-posts')
+          .collection('user-posts')
           .document(videoId)
           .collection('liked')
           .document(uid)
           .setData({'liker-id': uid, "name": author});
       await feedInfoCollection
           .document(feedId)
-          .collection('following-posts')
+          .collection('user-posts')
           .document(videoId)
           .updateData({'likes': FieldValue.increment(1)});
     }

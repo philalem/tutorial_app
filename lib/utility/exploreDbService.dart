@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:creaid/feed/VideoFeedObject.dart';
-import 'package:creaid/profile/post.dart';
 
 class ExploreDbService {
   final String uid;

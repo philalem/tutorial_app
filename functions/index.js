@@ -57,6 +57,20 @@ exports.updateExploreCollection = functions
     return feedFunction.updateExplorePosts(snap, context);
   });
 
+exports.propagateFeedLikes = functions
+  .region("us-east4")
+  .firestore.document("posts/{feedId}/user-posts/{videoId}/liked/{uid}")
+  .onCreate((snap, context) => {
+    feedFunction.propagateLike(snap, context);
+  });
+
+exports.propagateFeedComments = functions
+  .region("us-east4")
+  .firestore.document("posts/{feedId}/user-posts/{videoId}/comments/{randomId}")
+  .onCreate((snap, context) => {
+    return feedFunction.propagateComment(snap, context);
+  });
+
 exports.sendCommentNotification = functions
   .region("us-east4")
   .firestore.document(
