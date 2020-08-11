@@ -189,12 +189,12 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               child: GestureDetector(onPanUpdate: (details) {
-                if (details.delta.dy > 1.6) {
+                if (details.delta.dx > 20.0) {
                   // swiping in right direction
                   setState(() {
                     nextVideo();
                   });
-                } else if (details.delta.dy < -1.6) {
+                } else if (details.delta.dx < -20.0) {
                   setState(() {
                     previousVideo();
                   });

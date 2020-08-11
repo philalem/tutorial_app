@@ -8,14 +8,16 @@ class NotificationsDbService {
 
   NotificationsDbService({this.uid});
 
-  Notification _mapToNotification(DocumentSnapshot snapshot) {
-    return Notification(
-      name: snapshot['name'],
-      photoUrl: snapshot['photo-url'],
-      type: snapshot['type'],
-      comment: snapshot['comment'],
-      date: snapshot['date'].toDate(),
-    );
+  List<Notification> mapToNotification(QuerySnapshot snapshot) {
+    List<Notification> output = List();
+    snapshot.documents.map((snapshot) => output.add(Notification(
+          name: snapshot['name'],
+          //photoUrl: snapshot['photo-url'],
+          type: snapshot['type'],
+          comment: snapshot['comment'],
+          date: snapshot['date'].toDate(),
+        )));
+    return output;
   }
 
   Stream<List<Notification>> getAllNotifications() {
@@ -24,9 +26,7 @@ class NotificationsDbService {
         .collection('notifications')
         .limit(20)
         .snapshots();
-    return stream.map(
-      (snap) => snap.documents.map(_mapToNotification).toList(),
-    );
+    return stream.map(mapToNotification);
   }
 
   sendShareVideoNotification(String name) async {

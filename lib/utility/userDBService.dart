@@ -50,13 +50,14 @@ class UserDbService {
 
   UserData _mapUserData(DocumentSnapshot snapshot) {
     return UserData(
-        username: snapshot['username'],
-        name: snapshot['name'],
-        photoUrl: snapshot['photo-url'],
-        bio: snapshot['biography'],
-        numberFollowing: snapshot['number-following'],
-        numberFollowers: snapshot['number-followers'],
-        feedId: snapshot['feed-id']);
+      username: snapshot['username'],
+      name: snapshot['name'],
+      photoUrl: snapshot['photo-url'],
+      bio: snapshot['biography'],
+      numberFollowing: snapshot['number-following'],
+      numberFollowers: snapshot['number-followers'],
+      feedId: snapshot['feed-id'] != null ? snapshot['feed-id'] : this.uid,
+    );
   }
 
   VideoFeedObject _mapSingleVideoFeedObject(DocumentSnapshot snapshot) {
@@ -67,7 +68,7 @@ class UserDbService {
     List<VideoFeedObject> res = new List();
     snapshot.documents.forEach((document) => res.add(VideoFeedObject(
         author: document['author'],
-        videoUrl: document['videoUrl'],
+        videoUrl: document['videos'],
         likes: document['likes'],
         documentId: document.documentID,
         title: document['title'],
