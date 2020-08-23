@@ -76,7 +76,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   }
 
   Future<void> attachListenerAndInit(VideoPlayerController controller) async {
-    if (!controller.hasListeners) {
+    if (!controller.hasListeners && controller.value.duration != null) {
       controller.addListener(() {
         int dur = controller.value.duration.inMilliseconds;
         int pos = controller.value.position.inMilliseconds;

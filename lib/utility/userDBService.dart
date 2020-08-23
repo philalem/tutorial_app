@@ -68,7 +68,7 @@ class UserDbService {
     List<VideoFeedObject> res = new List();
     snapshot.documents.forEach((document) => res.add(VideoFeedObject(
         author: document['author'],
-        videoUrl: document['videos'],
+        videoUrl: document['videos'][0],
         likes: document['likes'],
         documentId: document.documentID,
         title: document['title'],
