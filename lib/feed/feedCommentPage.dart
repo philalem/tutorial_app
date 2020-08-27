@@ -1,15 +1,17 @@
-import 'package:creaid/feed/VideoFeedObject.dart';
-import 'package:flutter/material.dart';
-import 'package:creaid/utility/userDBService.dart';
 import 'package:creaid/feed/FeedCommentObject.dart';
+import 'package:creaid/utility/userDBService.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class FeedCommentPage extends ModalRoute<void> {
   final int index;
-  final List<VideoFeedObject> videos;
+  final List<String> videos;
+  final String documentId;
+  final String author;
   final String feedId;
-  FeedCommentPage({this.index, this.videos, this.feedId});
+  FeedCommentPage(
+      {this.documentId, this.author, this.index, this.videos, this.feedId});
 
   final interestHolder = TextEditingController();
 
@@ -107,11 +109,8 @@ class FeedCommentPage extends ModalRoute<void> {
                         ),
                         suffixIcon: IconButton(
                           onPressed: () => {
-                            UserDbService(uid: videos[index].uid).addComment(
-                                videos[index].documentId,
-                                feedId,
-                                interestHolder.text,
-                                videos[index].author),
+                            UserDbService(uid: feedId).addComment(documentId,
+                                feedId, interestHolder.text, author),
                             interestHolder.clear()
                           },
                           icon: Icon(Icons.send),
@@ -129,8 +128,8 @@ class FeedCommentPage extends ModalRoute<void> {
                 Container(
                     height: 220,
                     child: StreamBuilder<List<FeedCommentObject>>(
-                      stream: UserDbService(uid: videos[index].uid)
-                          .getFeedComments(videos[index].documentId, feedId),
+                      stream: UserDbService(uid: feedId)
+                          .getFeedComments(documentId, feedId),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           List<FeedCommentObject> feedCommentObject =

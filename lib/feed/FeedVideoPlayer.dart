@@ -12,10 +12,24 @@ import 'package:creaid/utility/algoliaService.dart';
 import 'package:video_player/video_player.dart';
 
 class FeedVideoPlayer extends StatefulWidget {
-  final List<VideoFeedObject> videos;
+  final List<String> videos;
+  final String ownerUid;
+  final String documentId;
+  final String author;
+  final String description;
+  final String title;
   final String feedId;
   final UserData userData;
-  FeedVideoPlayer({Key key, this.videos, this.feedId, this.userData})
+  FeedVideoPlayer(
+      {Key key,
+      this.videos,
+      this.feedId,
+      this.userData,
+      this.documentId,
+      this.author,
+      this.description,
+      this.title,
+      this.ownerUid})
       : super(key: key);
 
   @override
@@ -57,12 +71,11 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   _initControllers() async {
     _controllers.add(null);
     for (int i = 0; i < widget.videos.length; i++) {
-      print(widget.videos[i].videoUrl);
+      print(widget.videos[i]);
       if (i == 2) {
         break;
       }
-      _controllers
-          .add(VideoPlayerController.network(widget.videos[i].videoUrl));
+      _controllers.add(VideoPlayerController.network(widget.videos[i]));
     }
     attachListenerAndInit(_controllers[1]).then((_) {
       _controllers[1].play().then((_) {
@@ -116,7 +129,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
     }
     if (index != 0) {
       _controllers.insert(
-          0, VideoPlayerController.network(widget.videos[index - 1].videoUrl));
+          0, VideoPlayerController.network(widget.videos[index - 1]));
       attachListenerAndInit(_controllers.first);
     } else {
       _controllers.insert(0, null);
@@ -143,8 +156,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
     _controllers.first?.dispose();
     _controllers.removeAt(0);
     if (index != widget.videos.length - 1) {
-      _controllers.add(
-          VideoPlayerController.network(widget.videos[index + 1].videoUrl));
+      _controllers.add(VideoPlayerController.network(widget.videos[index + 1]));
       attachListenerAndInit(_controllers.last);
     }
 
@@ -161,7 +173,11 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
 
   void _showFeedComment(BuildContext context) {
     Navigator.of(context).push(FeedCommentPage(
-        index: index, videos: widget.videos, feedId: widget.feedId));
+        index: index,
+        videos: widget.videos,
+        documentId: widget.documentId,
+        author: widget.author,
+        feedId: widget.feedId));
   }
 
   @override
@@ -212,11 +228,11 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                     alignment: FractionalOffset.bottomCenter,
                     child: InkWell(
                       onTap: () {
-                        Navigator.of(context).push(FeedDescription(
-                            description: widget.videos[index].description));
+                        Navigator.of(context).push(
+                            FeedDescription(description: widget.description));
                       },
                       child: Text(
-                        widget.videos[index].title,
+                        widget.title,
                         style: GoogleFonts.mcLaren(
                             textStyle: TextStyle(
                           color: Colors.white,
@@ -252,15 +268,12 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => DynamicProfile(
-                                uid: widget.videos[index].uid,
-                                name: widget.videos[index].author)));
+                                uid: widget.feedId, name: widget.author)));
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(1.0),
                         child: Text(
-                          widget.videos[index].author != null
-                              ? widget.videos[index].author
-                              : '',
+                          widget.author != null ? widget.author : '',
                           style: GoogleFonts.mcLaren(
                               textStyle:
                                   TextStyle(color: Colors.black, fontSize: 20)),
@@ -290,15 +303,12 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                   Spacer(),
                   FloatingActionButton.extended(
                     //like button
-                    onPressed: () =>
-                        UserDbService(uid: widget.videos[index].uid).addLike(
-                            widget.videos[index].documentId,
-                            widget.videos[index].ownerUid,
-                            widget.videos[index].author),
+                    onPressed: () => UserDbService(uid: widget.userData.uid)
+                        .addLike(
+                            widget.documentId, widget.ownerUid, widget.author),
                     label: StreamBuilder<VideoFeedObject>(
-                      stream: UserDbService(uid: widget.videos[index].uid)
-                          .getVideo(
-                              widget.feedId, widget.videos[index].documentId),
+                      stream: UserDbService(uid: widget.userData.uid)
+                          .getVideo(widget.feedId, widget.documentId),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           VideoFeedObject video = snapshot.data;

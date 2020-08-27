@@ -15,7 +15,7 @@ class Feed extends StatelessWidget {
     return StreamBuilder<UserData>(
       stream: UserDbService(uid: user.uid).getNames(),
       builder: (context, snapshot) {
-        //TODO: fix feed for every user
+        //TODO: fix feed tap right
         if (snapshot.hasData) {
           UserData userData = snapshot.data;
           if (userData.feedId != null) {
@@ -25,12 +25,19 @@ class Feed extends StatelessWidget {
                 builder:
                     (context, AsyncSnapshot<List<VideoFeedObject>> snapshot) {
                   if (snapshot.hasData) {
-                    List<VideoFeedObject> userDatas = snapshot.data;
-                    if (userDatas.length > 0) {
-                      return FeedVideoPlayer(
-                        videos: userDatas,
-                        feedId: user.uid,
-                        userData: userData,
+                    List<VideoFeedObject> feedData = snapshot.data;
+                    if (feedData.length > 0) {
+                      return ListView.builder(
+                        itemBuilder: (context, index) => FeedVideoPlayer(
+                          videos: feedData[index].videoUrls,
+                          ownerUid: feedData[index].ownerUid,
+                          documentId: feedData[index].documentId,
+                          author: feedData[index].author,
+                          description: feedData[index].description,
+                          title: feedData[index].title,
+                          feedId: user.uid,
+                          userData: userData,
+                        ),
                       );
                     } else {
                       return Align(

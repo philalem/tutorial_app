@@ -11,7 +11,7 @@ class ProfilePostsService {
   VideoFeedObject _mapToPost(DocumentSnapshot snapshot) {
     return VideoFeedObject(
       author: snapshot['author'],
-      videoUrl: snapshot['videos'][0],
+      videoUrls: snapshot['videos'],
       likes: snapshot['number-likes'],
       documentId: snapshot.documentID,
       title: snapshot['title'],

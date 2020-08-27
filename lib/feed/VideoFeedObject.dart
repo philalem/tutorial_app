@@ -1,6 +1,6 @@
 class VideoFeedObject {
   String author;
-  String videoUrl;
+  List<String> videoUrls;
   int likes;
   List<String> comments;
   String documentId;
@@ -12,7 +12,7 @@ class VideoFeedObject {
 
   VideoFeedObject(
       {this.author,
-      this.videoUrl,
+      this.videoUrls,
       this.likes,
       this.comments,
       this.documentId,
