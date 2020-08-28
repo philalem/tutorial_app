@@ -99,25 +99,23 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   }
 
   Future<void> attachListenerAndInit(VideoPlayerController controller) async {
-    if (!controller.hasListeners && controller.value.duration != null) {
-      controller.addListener(() {
-        int dur = controller.value.duration.inMilliseconds;
-        int pos = controller.value.position.inMilliseconds;
-        setState(() {
-          if (dur <= pos) {
-            _progress = 0;
-          } else {
-            _progress = (dur - (dur - pos)) / dur;
-          }
-        });
-        if (dur - pos < 1) {
-          controller.seekTo(Duration(milliseconds: 0));
-          //nextVideo();
-        }
-      });
+    if (!controller.hasListeners) {
+      addNewListener(controller);
     }
-    await controller.initialize().then((_) {});
+    controller.initialize().then((_) {});
     return;
+  }
+
+  void addNewListener(VideoPlayerController controller) {
+    controller.addListener(() {
+      if (controller.value.initialized &&
+          controller.value.duration.inMilliseconds -
+                  controller.value.position.inMilliseconds <
+              1) {
+        controller.seekTo(Duration(milliseconds: 0));
+        nextVideo();
+      }
+    });
   }
 
   void previousVideo() {
