@@ -182,19 +182,21 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
     return Stack(
       children: <Widget>[
         SizedBox(
             //video
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
+            height: height,
+            width: width,
             child: Center(child: VideoPlayer(_controllers[1]))),
         Positioned(
           //swipe
           right: 0,
           child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
+            height: height,
+            width: width,
             child: GestureDetector(onPanUpdate: (details) {
               if (details.delta.dx > 20.0) {
                 // swiping in right direction
@@ -213,7 +215,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
             //title/description
             child: Container(
                 height: 70,
-                width: MediaQuery.of(context).size.width,
+                width: width,
                 color: Colors.black12,
                 child: Align(
                   alignment: FractionalOffset.bottomCenter,
@@ -236,7 +238,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
           //user
           child: Container(
             height: 45,
-            width: MediaQuery.of(context).size.width,
+            width: width,
             color: Colors.white,
             child: Align(
               alignment: FractionalOffset.centerLeft,
@@ -276,61 +278,63 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
             ),
           ),
         ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: <Widget>[
-                //share button
-                FloatingActionButton(
-                  onPressed: () => _showFeedShare(context),
-                  child: Icon(
-                    Icons.share,
-                    color: Colors.black,
-                  ),
-                  backgroundColor: Colors.white,
-                ),
-                Spacer(),
-                FloatingActionButton.extended(
-                  //like button
-                  onPressed: () => UserDbService(uid: widget.userData.feedId)
-                      .addLike(
-                          widget.documentId, widget.ownerUid, widget.author),
-                  label: StreamBuilder<VideoFeedObject>(
-                    stream: UserDbService(uid: widget.userData.feedId)
-                        .getVideo(widget.feedId, widget.documentId),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData && snapshot.data.likes != null) {
-                        VideoFeedObject video = snapshot.data;
-                        return Text(
-                          video.likes.toString(),
-                          style: TextStyle(color: Colors.black),
-                        );
-                      } else {
-                        return Text(
-                          '0',
-                          style: TextStyle(color: Colors.black),
-                        );
-                      }
-                    },
-                  ),
-                  icon: Icon(
-                    Icons.thumb_up,
-                    color: Colors.black,
-                  ),
-                  backgroundColor: Colors.white,
-                ),
-                Spacer(),
-                FloatingActionButton(
-                    //comment button
-                    onPressed: () => _showFeedComment(context),
+        Positioned.fill(
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: <Widget>[
+                  //share button
+                  FloatingActionButton(
+                    onPressed: () => _showFeedShare(context),
                     child: Icon(
-                      Icons.comment,
+                      Icons.share,
                       color: Colors.black,
                     ),
-                    backgroundColor: Colors.white)
-              ],
+                    backgroundColor: Colors.white,
+                  ),
+                  Spacer(),
+                  FloatingActionButton.extended(
+                    //like button
+                    onPressed: () => UserDbService(uid: widget.userData.feedId)
+                        .addLike(
+                            widget.documentId, widget.ownerUid, widget.author),
+                    label: StreamBuilder<VideoFeedObject>(
+                      stream: UserDbService(uid: widget.userData.feedId)
+                          .getVideo(widget.feedId, widget.documentId),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData && snapshot.data.likes != null) {
+                          VideoFeedObject video = snapshot.data;
+                          return Text(
+                            video.likes.toString(),
+                            style: TextStyle(color: Colors.black),
+                          );
+                        } else {
+                          return Text(
+                            '0',
+                            style: TextStyle(color: Colors.black),
+                          );
+                        }
+                      },
+                    ),
+                    icon: Icon(
+                      Icons.thumb_up,
+                      color: Colors.black,
+                    ),
+                    backgroundColor: Colors.white,
+                  ),
+                  Spacer(),
+                  FloatingActionButton(
+                      //comment button
+                      onPressed: () => _showFeedComment(context),
+                      child: Icon(
+                        Icons.comment,
+                        color: Colors.black,
+                      ),
+                      backgroundColor: Colors.white)
+                ],
+              ),
             ),
           ),
         )
