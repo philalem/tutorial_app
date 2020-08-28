@@ -69,14 +69,24 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   }
 
   _initControllers() async {
-    _controllers.add(null);
-    for (int i = 0; i < widget.videos.length; i++) {
-      print(widget.videos[i]);
-      if (i == 2) {
-        break;
+    if (widget.videos.length == 1) {
+      for (var i = 0; i < 3; i++) {
+        _controllers.add(VideoPlayerController.network(widget.videos[0]));
       }
-      _controllers.add(VideoPlayerController.network(widget.videos[i]));
+    } else if (widget.videos.length == 2) {
+      _controllers.add(VideoPlayerController.network(widget.videos[0]));
+      _controllers.add(VideoPlayerController.network(widget.videos[0]));
+      _controllers.add(VideoPlayerController.network(widget.videos[1]));
+    } else {
+      _controllers.add(VideoPlayerController.network(
+          widget.videos[widget.videos.length - 1]));
+      for (int i = 0;
+          i < ((widget.videos.length > 2) ? 2 : widget.videos.length);
+          i++) {
+        _controllers.add(VideoPlayerController.network(widget.videos[i]));
+      }
     }
+
     attachListenerAndInit(_controllers[1]).then((_) {
       _controllers[1].play().then((_) {
         setState(() {});
@@ -111,28 +121,21 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   }
 
   void previousVideo() {
-    if (_changeLock) {
-      return;
-    }
-    _changeLock = true;
-
-    if (index == 0) {
-      _changeLock = false;
-      return;
-    }
     _controllers[1]?.pause();
-    index--;
+    index = index - 1 < 0 ? widget.videos.length - 1 : index - 1;
+    _controllers.last?.dispose();
+    _controllers.removeLast();
 
-    if (index != widget.videos.length - 2) {
-      _controllers.last?.dispose();
-      _controllers.removeLast();
-    }
     if (index != 0) {
       _controllers.insert(
           0, VideoPlayerController.network(widget.videos[index - 1]));
       attachListenerAndInit(_controllers.first);
-    } else {
-      _controllers.insert(0, null);
+    } else if (index == 0) {
+      _controllers.insert(
+          0,
+          VideoPlayerController.network(
+              widget.videos[widget.videos.length - 1]));
+      attachListenerAndInit(_controllers.first);
     }
 
     _controllers[1].play().then((_) {
@@ -146,17 +149,16 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
     if (_changeLock) {
       return;
     }
+    index = index + 1 == widget.videos.length ? 0 : index + 1;
     _changeLock = true;
-    if (index == widget.videos.length - 1) {
-      _changeLock = false;
-      return;
-    }
     _controllers[1]?.pause();
-    index++;
     _controllers.first?.dispose();
     _controllers.removeAt(0);
     if (index != widget.videos.length - 1) {
       _controllers.add(VideoPlayerController.network(widget.videos[index + 1]));
+      attachListenerAndInit(_controllers.last);
+    } else if (index == widget.videos.length - 1) {
+      _controllers.add(VideoPlayerController.network(widget.videos[0]));
       attachListenerAndInit(_controllers.last);
     }
 
@@ -192,23 +194,35 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
             width: width,
             child: Center(child: VideoPlayer(_controllers[1]))),
         Positioned(
-          //swipe
           right: 0,
           child: SizedBox(
             height: height,
-            width: width,
-            child: GestureDetector(onPanUpdate: (details) {
-              if (details.delta.dx > 20.0) {
-                // swiping in right direction
-                setState(() {
-                  nextVideo();
-                });
-              } else if (details.delta.dx < -20.0) {
-                setState(() {
-                  previousVideo();
-                });
-              }
-            }),
+            width: width / 2,
+            child: GestureDetector(
+              onTap: () {
+                setState(
+                  () {
+                    nextVideo();
+                  },
+                );
+              },
+            ),
+          ),
+        ),
+        Positioned(
+          left: 0,
+          child: SizedBox(
+            height: height,
+            width: width / 2,
+            child: GestureDetector(
+              onTap: () {
+                setState(
+                  () {
+                    previousVideo();
+                  },
+                );
+              },
+            ),
           ),
         ),
         Positioned(
@@ -337,7 +351,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
               ),
             ),
           ),
-        )
+        ),
       ],
     );
   }
