@@ -12,7 +12,7 @@ class ProfilePostsService {
     return VideoFeedObject(
       author: snapshot['author'],
       videoUrls: snapshot['videos'],
-      likes: snapshot['number-likes'],
+      likes: snapshot['likes'],
       documentId: snapshot.documentID,
       title: snapshot['title'],
       description: snapshot['description'],

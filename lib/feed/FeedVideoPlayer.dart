@@ -12,7 +12,7 @@ import 'package:creaid/utility/algoliaService.dart';
 import 'package:video_player/video_player.dart';
 
 class FeedVideoPlayer extends StatefulWidget {
-  final List<String> videos;
+  final List<dynamic> videos;
   final String ownerUid;
   final String documentId;
   final String author;
@@ -182,169 +182,159 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      key: _scaffoldKey,
-      navigationBar: CupertinoNavigationBar(
-        backgroundColor: Colors.indigo,
-        middle: Text(
-          'Creaid',
-          style: GoogleFonts.satisfy(fontSize: 34, color: Colors.white),
+    return Stack(
+      children: <Widget>[
+        SizedBox(
+            //video
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Center(child: VideoPlayer(_controllers[1]))),
+        Positioned(
+          //swipe
+          right: 0,
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: GestureDetector(onPanUpdate: (details) {
+              if (details.delta.dx > 20.0) {
+                // swiping in right direction
+                setState(() {
+                  nextVideo();
+                });
+              } else if (details.delta.dx < -20.0) {
+                setState(() {
+                  previousVideo();
+                });
+              }
+            }),
+          ),
         ),
-      ),
-      child: Stack(
-        children: <Widget>[
-          SizedBox(
-              //video
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: Center(child: VideoPlayer(_controllers[1]))),
-          Positioned(
-            //swipe
-            right: 0,
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: GestureDetector(onPanUpdate: (details) {
-                if (details.delta.dx > 20.0) {
-                  // swiping in right direction
-                  setState(() {
-                    nextVideo();
-                  });
-                } else if (details.delta.dx < -20.0) {
-                  setState(() {
-                    previousVideo();
-                  });
-                }
-              }),
-            ),
-          ),
-          Positioned(
-              //title/description
-              child: Container(
-                  height: 70,
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.black12,
-                  child: Align(
-                    alignment: FractionalOffset.bottomCenter,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(
-                            FeedDescription(description: widget.description));
-                      },
-                      child: Text(
-                        widget.title,
-                        style: GoogleFonts.mcLaren(
-                            textStyle: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        )),
-                      ),
-                    ),
-                  ))),
-          Positioned(
-            //user
+        Positioned(
+            //title/description
             child: Container(
-              height: 45,
-              width: MediaQuery.of(context).size.width,
-              color: Colors.white,
-              child: Align(
-                alignment: FractionalOffset.centerLeft,
-                child: Row(
-                  children: <Widget>[
-                    SizedBox(
-                      width: 5,
+                height: 70,
+                width: MediaQuery.of(context).size.width,
+                color: Colors.black12,
+                child: Align(
+                  alignment: FractionalOffset.bottomCenter,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(
+                          FeedDescription(description: widget.description));
+                    },
+                    child: Text(
+                      widget.title,
+                      style: GoogleFonts.mcLaren(
+                          textStyle: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      )),
                     ),
-                    CircleAvatar(
-                      radius: 12,
-                      backgroundImage: widget.userData.photoUrl != null
-                          ? NetworkImage(widget.userData.photoUrl)
-                          : AssetImage('assets/images/unknown-profile.png'),
-                      backgroundColor: Colors.transparent,
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => DynamicProfile(
-                                uid: widget.feedId, name: widget.author)));
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(1.0),
-                        child: Text(
-                          widget.author != null ? widget.author : '',
-                          style: GoogleFonts.mcLaren(
-                              textStyle:
-                                  TextStyle(color: Colors.black, fontSize: 20)),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
+                  ),
+                ))),
+        Positioned(
+          //user
+          child: Container(
+            height: 45,
+            width: MediaQuery.of(context).size.width,
+            color: Colors.white,
+            child: Align(
+              alignment: FractionalOffset.centerLeft,
               child: Row(
                 children: <Widget>[
-                  //share button
-                  FloatingActionButton(
-                    onPressed: () => _showFeedShare(context),
-                    child: Icon(
-                      Icons.share,
-                      color: Colors.black,
-                    ),
-                    backgroundColor: Colors.white,
+                  SizedBox(
+                    width: 5,
                   ),
-                  Spacer(),
-                  FloatingActionButton.extended(
-                    //like button
-                    onPressed: () => UserDbService(uid: widget.userData.uid)
-                        .addLike(
-                            widget.documentId, widget.ownerUid, widget.author),
-                    label: StreamBuilder<VideoFeedObject>(
-                      stream: UserDbService(uid: widget.userData.uid)
-                          .getVideo(widget.feedId, widget.documentId),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          VideoFeedObject video = snapshot.data;
-                          return Text(
-                            video.likes.toString(),
-                            style: TextStyle(color: Colors.black),
-                          );
-                        } else {
-                          return Text(
-                            '0',
-                            style: TextStyle(color: Colors.black),
-                          );
-                        }
-                      },
-                    ),
-                    icon: Icon(
-                      Icons.thumb_up,
-                      color: Colors.black,
-                    ),
-                    backgroundColor: Colors.white,
+                  CircleAvatar(
+                    radius: 12,
+                    backgroundImage: widget.userData.photoUrl != null
+                        ? NetworkImage(widget.userData.photoUrl)
+                        : AssetImage('assets/images/unknown-profile.png'),
+                    backgroundColor: Colors.transparent,
                   ),
-                  Spacer(),
-                  FloatingActionButton(
-                      //comment button
-                      onPressed: () => _showFeedComment(context),
-                      child: Icon(
-                        Icons.comment,
-                        color: Colors.black,
+                  SizedBox(
+                    width: 5,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => DynamicProfile(
+                              uid: widget.feedId, name: widget.author)));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(1.0),
+                      child: Text(
+                        widget.author != null ? widget.author : '',
+                        style: GoogleFonts.mcLaren(
+                            textStyle:
+                                TextStyle(color: Colors.black, fontSize: 20)),
                       ),
-                      backgroundColor: Colors.white)
+                    ),
+                  ),
                 ],
               ),
             ),
-          )
-        ],
-      ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: <Widget>[
+                //share button
+                FloatingActionButton(
+                  onPressed: () => _showFeedShare(context),
+                  child: Icon(
+                    Icons.share,
+                    color: Colors.black,
+                  ),
+                  backgroundColor: Colors.white,
+                ),
+                Spacer(),
+                FloatingActionButton.extended(
+                  //like button
+                  onPressed: () => UserDbService(uid: widget.userData.feedId)
+                      .addLike(
+                          widget.documentId, widget.ownerUid, widget.author),
+                  label: StreamBuilder<VideoFeedObject>(
+                    stream: UserDbService(uid: widget.userData.feedId)
+                        .getVideo(widget.feedId, widget.documentId),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData && snapshot.data.likes != null) {
+                        VideoFeedObject video = snapshot.data;
+                        return Text(
+                          video.likes.toString(),
+                          style: TextStyle(color: Colors.black),
+                        );
+                      } else {
+                        return Text(
+                          '0',
+                          style: TextStyle(color: Colors.black),
+                        );
+                      }
+                    },
+                  ),
+                  icon: Icon(
+                    Icons.thumb_up,
+                    color: Colors.black,
+                  ),
+                  backgroundColor: Colors.white,
+                ),
+                Spacer(),
+                FloatingActionButton(
+                    //comment button
+                    onPressed: () => _showFeedComment(context),
+                    child: Icon(
+                      Icons.comment,
+                      color: Colors.black,
+                    ),
+                    backgroundColor: Colors.white)
+              ],
+            ),
+          ),
+        )
+      ],
     );
   }
 }

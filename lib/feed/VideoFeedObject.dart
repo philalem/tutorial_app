@@ -1,6 +1,6 @@
 class VideoFeedObject {
   String author;
-  List<String> videoUrls;
+  List<dynamic> videoUrls;
   int likes;
   List<String> comments;
   String documentId;

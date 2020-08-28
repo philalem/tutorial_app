@@ -172,7 +172,9 @@ class UserDbService {
           .document(feedId)
           .collection('user-posts')
           .document(videoId)
-          .updateData({'likes': FieldValue.increment(1)});
+          .updateData(
+        {'likes': FieldValue.increment(1)},
+      ).catchError((e) => print(e));
     }
   }
 

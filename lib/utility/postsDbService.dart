@@ -15,7 +15,7 @@ class PostsDbService {
       'author': author,
       'title': title,
       'description': description,
-      'number-likes': 0,
+      'likes': 0,
       'date': date,
     };
     DocumentReference userRef = await postsCollection
