@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:creaid/feed/VideoFeedObject.dart';
 import 'package:creaid/feed/feedCommentPage.dart';
 import 'package:creaid/feed/feedDescription.dart';
@@ -47,6 +49,9 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   final interestHolder = TextEditingController();
   final userHolder = TextEditingController();
   AlgoliaService algoliaService = AlgoliaService();
+  Timer timeTapped;
+  bool userHoldingTap = false;
+  bool continuePlaying = false;
 
   clearTextInput() {
     interestHolder.clear();
@@ -89,7 +94,9 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
 
     attachListenerAndInit(_controllers[1]).then((_) {
       _controllers[1].play().then((_) {
-        setState(() {});
+        setState(() {
+          _controllers[1].pause();
+        });
       });
     });
 
@@ -197,13 +204,17 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
             height: height,
             width: width / 2,
             child: GestureDetector(
-              onTap: () {
-                setState(
-                  () {
-                    nextVideo();
-                  },
-                );
-              },
+              onTapDown: (details) => setState(() {
+                _controllers[1].pause();
+                userHoldingTap = true;
+                timeTapped = Timer(Duration(milliseconds: 300),
+                    () => continuePlaying = userHoldingTap);
+              }),
+              onTapUp: (details) => setState(() {
+                userHoldingTap = false;
+                continuePlaying ? _controllers[1].play() : nextVideo();
+                continuePlaying = false;
+              }),
             ),
           ),
         ),
@@ -213,13 +224,19 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
             height: height,
             width: width / 2,
             child: GestureDetector(
-              onTap: () {
-                setState(
-                  () {
-                    previousVideo();
-                  },
+              onTapDown: (details) => setState(() {
+                _controllers[1].pause();
+                userHoldingTap = true;
+                timeTapped = Timer(
+                  Duration(milliseconds: 300),
+                  () => continuePlaying = userHoldingTap,
                 );
-              },
+              }),
+              onTapUp: (details) => setState(() {
+                userHoldingTap = false;
+                continuePlaying ? _controllers[1].play() : previousVideo();
+                continuePlaying = false;
+              }),
             ),
           ),
         ),

@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class FeedCommentPage extends ModalRoute<void> {
   final int index;
-  final List<String> videos;
+  final List<dynamic> videos;
   final String documentId;
   final String author;
   final String feedId;
