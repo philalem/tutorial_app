@@ -52,6 +52,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   Timer timeTapped;
   bool userHoldingTap = false;
   bool continuePlaying = false;
+  bool videoIsPlaying = false;
 
   clearTextInput() {
     interestHolder.clear();
@@ -178,6 +179,17 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
     Navigator.of(context).push(FeedSharePage());
   }
 
+  void playOrPauseVideo() {
+    if (videoIsPlaying) {
+      _controllers[1].pause();
+      videoIsPlaying = false;
+    } else {
+      _controllers[1].play();
+      videoIsPlaying = true;
+    }
+    setState(() {});
+  }
+
   void _showFeedComment(BuildContext context) {
     Navigator.of(context).push(FeedCommentPage(
         index: index,
@@ -206,11 +218,13 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
             child: GestureDetector(
               onTapDown: (details) => setState(() {
                 _controllers[1].pause();
+                videoIsPlaying = false;
                 userHoldingTap = true;
                 timeTapped = Timer(Duration(milliseconds: 300),
                     () => continuePlaying = userHoldingTap);
               }),
               onTapUp: (details) => setState(() {
+                videoIsPlaying = true;
                 userHoldingTap = false;
                 continuePlaying ? _controllers[1].play() : nextVideo();
                 continuePlaying = false;
@@ -226,6 +240,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
             child: GestureDetector(
               onTapDown: (details) => setState(() {
                 _controllers[1].pause();
+                videoIsPlaying = false;
                 userHoldingTap = true;
                 timeTapped = Timer(
                   Duration(milliseconds: 300),
@@ -233,6 +248,7 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                 );
               }),
               onTapUp: (details) => setState(() {
+                videoIsPlaying = true;
                 userHoldingTap = false;
                 continuePlaying ? _controllers[1].play() : previousVideo();
                 continuePlaying = false;
@@ -240,6 +256,31 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
             ),
           ),
         ),
+        Positioned(
+            //title/description
+            child: Container(
+                height: 140,
+                width: width,
+                child: Align(
+                  alignment: FractionalOffset.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Spacer(),
+                        FloatingActionButton(
+                          child: Icon(
+                            videoIsPlaying ? Icons.pause : Icons.play_arrow,
+                            color: Colors.black,
+                          ),
+                          backgroundColor: Colors.white,
+                          onPressed: () => playOrPauseVideo(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ))),
         Positioned(
             //title/description
             child: Container(
