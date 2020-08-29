@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:creaid/feed/VideoFeedObject.dart';
 import 'package:creaid/feed/feedCommentPage.dart';
 import 'package:creaid/feed/feedDescription.dart';
@@ -12,10 +14,24 @@ import 'package:creaid/utility/algoliaService.dart';
 import 'package:video_player/video_player.dart';
 
 class FeedVideoPlayer extends StatefulWidget {
-  final List<VideoFeedObject> videos;
+  final List<dynamic> videos;
+  final String ownerUid;
+  final String documentId;
+  final String author;
+  final String description;
+  final String title;
   final String feedId;
   final UserData userData;
-  FeedVideoPlayer({Key key, this.videos, this.feedId, this.userData})
+  FeedVideoPlayer(
+      {Key key,
+      this.videos,
+      this.feedId,
+      this.userData,
+      this.documentId,
+      this.author,
+      this.description,
+      this.title,
+      this.ownerUid})
       : super(key: key);
 
   @override
@@ -33,6 +49,10 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   final interestHolder = TextEditingController();
   final userHolder = TextEditingController();
   AlgoliaService algoliaService = AlgoliaService();
+  Timer timeTapped;
+  bool userHoldingTap = false;
+  bool continuePlaying = false;
+  bool videoIsPlaying = false;
 
   clearTextInput() {
     interestHolder.clear();
@@ -55,18 +75,29 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   }
 
   _initControllers() async {
-    _controllers.add(null);
-    for (int i = 0; i < widget.videos.length; i++) {
-      print(widget.videos[i].videoUrl);
-      if (i == 2) {
-        break;
+    if (widget.videos.length == 1) {
+      for (var i = 0; i < 3; i++) {
+        _controllers.add(VideoPlayerController.network(widget.videos[0]));
       }
-      _controllers
-          .add(VideoPlayerController.network(widget.videos[i].videoUrl));
+    } else if (widget.videos.length == 2) {
+      _controllers.add(VideoPlayerController.network(widget.videos[0]));
+      _controllers.add(VideoPlayerController.network(widget.videos[0]));
+      _controllers.add(VideoPlayerController.network(widget.videos[1]));
+    } else {
+      _controllers.add(VideoPlayerController.network(
+          widget.videos[widget.videos.length - 1]));
+      for (int i = 0;
+          i < ((widget.videos.length > 2) ? 2 : widget.videos.length);
+          i++) {
+        _controllers.add(VideoPlayerController.network(widget.videos[i]));
+      }
     }
+
     attachListenerAndInit(_controllers[1]).then((_) {
       _controllers[1].play().then((_) {
-        setState(() {});
+        setState(() {
+          _controllers[1].pause();
+        });
       });
     });
 
@@ -76,50 +107,41 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
   }
 
   Future<void> attachListenerAndInit(VideoPlayerController controller) async {
-    if (!controller.hasListeners && controller.value.duration != null) {
-      controller.addListener(() {
-        int dur = controller.value.duration.inMilliseconds;
-        int pos = controller.value.position.inMilliseconds;
-        setState(() {
-          if (dur <= pos) {
-            _progress = 0;
-          } else {
-            _progress = (dur - (dur - pos)) / dur;
-          }
-        });
-        if (dur - pos < 1) {
-          controller.seekTo(Duration(milliseconds: 0));
-          //nextVideo();
-        }
-      });
+    if (!controller.hasListeners) {
+      addNewListener(controller);
     }
-    await controller.initialize().then((_) {});
+    controller.initialize().then((_) {});
     return;
   }
 
+  void addNewListener(VideoPlayerController controller) {
+    controller.addListener(() {
+      if (controller.value.initialized &&
+          controller.value.duration.inMilliseconds -
+                  controller.value.position.inMilliseconds <
+              1) {
+        controller.seekTo(Duration(milliseconds: 0));
+        nextVideo();
+      }
+    });
+  }
+
   void previousVideo() {
-    if (_changeLock) {
-      return;
-    }
-    _changeLock = true;
-
-    if (index == 0) {
-      _changeLock = false;
-      return;
-    }
     _controllers[1]?.pause();
-    index--;
+    index = index - 1 < 0 ? widget.videos.length - 1 : index - 1;
+    _controllers.last?.dispose();
+    _controllers.removeLast();
 
-    if (index != widget.videos.length - 2) {
-      _controllers.last?.dispose();
-      _controllers.removeLast();
-    }
     if (index != 0) {
       _controllers.insert(
-          0, VideoPlayerController.network(widget.videos[index - 1].videoUrl));
+          0, VideoPlayerController.network(widget.videos[index - 1]));
       attachListenerAndInit(_controllers.first);
-    } else {
-      _controllers.insert(0, null);
+    } else if (index == 0) {
+      _controllers.insert(
+          0,
+          VideoPlayerController.network(
+              widget.videos[widget.videos.length - 1]));
+      attachListenerAndInit(_controllers.first);
     }
 
     _controllers[1].play().then((_) {
@@ -133,18 +155,16 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
     if (_changeLock) {
       return;
     }
+    index = index + 1 == widget.videos.length ? 0 : index + 1;
     _changeLock = true;
-    if (index == widget.videos.length - 1) {
-      _changeLock = false;
-      return;
-    }
     _controllers[1]?.pause();
-    index++;
     _controllers.first?.dispose();
     _controllers.removeAt(0);
     if (index != widget.videos.length - 1) {
-      _controllers.add(
-          VideoPlayerController.network(widget.videos[index + 1].videoUrl));
+      _controllers.add(VideoPlayerController.network(widget.videos[index + 1]));
+      attachListenerAndInit(_controllers.last);
+    } else if (index == widget.videos.length - 1) {
+      _controllers.add(VideoPlayerController.network(widget.videos[0]));
       attachListenerAndInit(_controllers.last);
     }
 
@@ -159,120 +179,177 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
     Navigator.of(context).push(FeedSharePage());
   }
 
+  void playOrPauseVideo() {
+    if (videoIsPlaying) {
+      _controllers[1].pause();
+      videoIsPlaying = false;
+    } else {
+      _controllers[1].play();
+      videoIsPlaying = true;
+    }
+    setState(() {});
+  }
+
   void _showFeedComment(BuildContext context) {
     Navigator.of(context).push(FeedCommentPage(
-        index: index, videos: widget.videos, feedId: widget.feedId));
+        index: index,
+        videos: widget.videos,
+        documentId: widget.documentId,
+        author: widget.author,
+        feedId: widget.feedId));
   }
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      key: _scaffoldKey,
-      navigationBar: CupertinoNavigationBar(
-        backgroundColor: Colors.indigo,
-        middle: Text(
-          'Creaid',
-          style: GoogleFonts.satisfy(fontSize: 34, color: Colors.white),
-        ),
-      ),
-      child: Stack(
-        children: <Widget>[
-          SizedBox(
-              //video
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: Center(child: VideoPlayer(_controllers[1]))),
-          Positioned(
-            //swipe
-            right: 0,
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: GestureDetector(onPanUpdate: (details) {
-                if (details.delta.dx > 20.0) {
-                  // swiping in right direction
-                  setState(() {
-                    nextVideo();
-                  });
-                } else if (details.delta.dx < -20.0) {
-                  setState(() {
-                    previousVideo();
-                  });
-                }
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
+    return Stack(
+      children: <Widget>[
+        SizedBox(
+            //video
+            height: height,
+            width: width,
+            child: Center(child: VideoPlayer(_controllers[1]))),
+        Positioned(
+          right: 0,
+          child: SizedBox(
+            height: height,
+            width: width / 2,
+            child: GestureDetector(
+              onTapDown: (details) => setState(() {
+                _controllers[1].pause();
+                videoIsPlaying = false;
+                userHoldingTap = true;
+                timeTapped = Timer(Duration(milliseconds: 300),
+                    () => continuePlaying = userHoldingTap);
+              }),
+              onTapUp: (details) => setState(() {
+                videoIsPlaying = true;
+                userHoldingTap = false;
+                continuePlaying ? _controllers[1].play() : nextVideo();
+                continuePlaying = false;
               }),
             ),
           ),
-          Positioned(
-              //title/description
-              child: Container(
-                  height: 70,
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.black12,
-                  child: Align(
-                    alignment: FractionalOffset.bottomCenter,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(FeedDescription(
-                            description: widget.videos[index].description));
-                      },
-                      child: Text(
-                        widget.videos[index].title,
-                        style: GoogleFonts.mcLaren(
-                            textStyle: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                        )),
-                      ),
-                    ),
-                  ))),
-          Positioned(
-            //user
+        ),
+        Positioned(
+          left: 0,
+          child: SizedBox(
+            height: height,
+            width: width / 2,
+            child: GestureDetector(
+              onTapDown: (details) => setState(() {
+                _controllers[1].pause();
+                videoIsPlaying = false;
+                userHoldingTap = true;
+                timeTapped = Timer(
+                  Duration(milliseconds: 300),
+                  () => continuePlaying = userHoldingTap,
+                );
+              }),
+              onTapUp: (details) => setState(() {
+                videoIsPlaying = true;
+                userHoldingTap = false;
+                continuePlaying ? _controllers[1].play() : previousVideo();
+                continuePlaying = false;
+              }),
+            ),
+          ),
+        ),
+        Positioned(
+            //title/description
             child: Container(
-              height: 45,
-              width: MediaQuery.of(context).size.width,
-              color: Colors.white,
-              child: Align(
-                alignment: FractionalOffset.centerLeft,
-                child: Row(
-                  children: <Widget>[
-                    SizedBox(
-                      width: 5,
-                    ),
-                    CircleAvatar(
-                      radius: 12,
-                      backgroundImage: widget.userData.photoUrl != null
-                          ? NetworkImage(widget.userData.photoUrl)
-                          : AssetImage('assets/images/unknown-profile.png'),
-                      backgroundColor: Colors.transparent,
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => DynamicProfile(
-                                uid: widget.videos[index].uid,
-                                name: widget.videos[index].author)));
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(1.0),
-                        child: Text(
-                          widget.videos[index].author != null
-                              ? widget.videos[index].author
-                              : '',
-                          style: GoogleFonts.mcLaren(
-                              textStyle:
-                                  TextStyle(color: Colors.black, fontSize: 20)),
+                height: 140,
+                width: width,
+                child: Align(
+                  alignment: FractionalOffset.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Spacer(),
+                        FloatingActionButton(
+                          child: Icon(
+                            videoIsPlaying ? Icons.pause : Icons.play_arrow,
+                            color: Colors.black,
+                          ),
+                          backgroundColor: Colors.white,
+                          onPressed: () => playOrPauseVideo(),
                         ),
+                      ],
+                    ),
+                  ),
+                ))),
+        Positioned(
+            //title/description
+            child: Container(
+                height: 70,
+                width: width,
+                color: Colors.black12,
+                child: Align(
+                  alignment: FractionalOffset.bottomCenter,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(
+                          FeedDescription(description: widget.description));
+                    },
+                    child: Text(
+                      widget.title,
+                      style: GoogleFonts.mcLaren(
+                          textStyle: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                      )),
+                    ),
+                  ),
+                ))),
+        Positioned(
+          //user
+          child: Container(
+            height: 45,
+            width: width,
+            color: Colors.white,
+            child: Align(
+              alignment: FractionalOffset.centerLeft,
+              child: Row(
+                children: <Widget>[
+                  SizedBox(
+                    width: 5,
+                  ),
+                  CircleAvatar(
+                    radius: 12,
+                    backgroundImage: widget.userData.photoUrl != null
+                        ? NetworkImage(widget.userData.photoUrl)
+                        : AssetImage('assets/images/unknown-profile.png'),
+                    backgroundColor: Colors.transparent,
+                  ),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => DynamicProfile(
+                              uid: widget.feedId, name: widget.author)));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(1.0),
+                      child: Text(
+                        widget.author != null ? widget.author : '',
+                        style: GoogleFonts.mcLaren(
+                            textStyle:
+                                TextStyle(color: Colors.black, fontSize: 20)),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
-          Align(
+        ),
+        Positioned.fill(
+          child: Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -290,17 +367,14 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                   Spacer(),
                   FloatingActionButton.extended(
                     //like button
-                    onPressed: () =>
-                        UserDbService(uid: widget.videos[index].uid).addLike(
-                            widget.videos[index].documentId,
-                            widget.videos[index].ownerUid,
-                            widget.videos[index].author),
+                    onPressed: () => UserDbService(uid: widget.userData.feedId)
+                        .addLike(
+                            widget.documentId, widget.ownerUid, widget.author),
                     label: StreamBuilder<VideoFeedObject>(
-                      stream: UserDbService(uid: widget.videos[index].uid)
-                          .getVideo(
-                              widget.feedId, widget.videos[index].documentId),
+                      stream: UserDbService(uid: widget.userData.feedId)
+                          .getVideo(widget.feedId, widget.documentId),
                       builder: (context, snapshot) {
-                        if (snapshot.hasData) {
+                        if (snapshot.hasData && snapshot.data.likes != null) {
                           VideoFeedObject video = snapshot.data;
                           return Text(
                             video.likes.toString(),
@@ -332,9 +406,9 @@ class _FeedVideoPlayerState extends State<FeedVideoPlayer> {
                 ],
               ),
             ),
-          )
-        ],
-      ),
+          ),
+        ),
+      ],
     );
   }
 }

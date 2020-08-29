@@ -68,7 +68,7 @@ class UserDbService {
     List<VideoFeedObject> res = new List();
     snapshot.documents.forEach((document) => res.add(VideoFeedObject(
         author: document['author'],
-        videoUrl: document['videos'][0],
+        videoUrls: document['videos'],
         likes: document['likes'],
         documentId: document.documentID,
         title: document['title'],
@@ -172,7 +172,9 @@ class UserDbService {
           .document(feedId)
           .collection('user-posts')
           .document(videoId)
-          .updateData({'likes': FieldValue.increment(1)});
+          .updateData(
+        {'likes': FieldValue.increment(1)},
+      ).catchError((e) => print(e));
     }
   }
 

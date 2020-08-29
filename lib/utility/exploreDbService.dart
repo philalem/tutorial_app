@@ -11,8 +11,8 @@ class ExploreDbService {
   VideoFeedObject _mapToPost(DocumentSnapshot snapshot) {
     return VideoFeedObject(
       author: snapshot['author'],
-      videoUrl: snapshot['videos'][0],
-      likes: snapshot['number-likes'],
+      videoUrls: snapshot['videos'],
+      likes: snapshot['likes'],
       documentId: snapshot.documentID,
       title: snapshot['title'],
       description: snapshot['description'],
