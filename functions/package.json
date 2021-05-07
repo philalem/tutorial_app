@@ -22,7 +22,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "mkdirp": "^1.0.4",
     "mkdirp-promise": "^5.0.1",
-    "underscore": "^1.10.2"
+    "underscore": "^1.12.1"
   },
   "devDependencies": {
     "eslint": "^5.12.0",
